@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Pusula Logo">
+                Pusula
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html" class="active"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <div class="chat-section">
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2><i class="fas fa-robot"></i> AI Chat Asistanı</h2>
+                <p>Derslerinizle ilgili sorularınızı sorabilirsiniz</p>
+            </div>
+            <div class="chat-messages">
+            </div>
+            
+            <div class="floating-suggestions" id="floating-suggestions">
+            </div>
+            
+            <div class="chat-input">
+                <textarea placeholder="Mesajınızı yazın..." rows="1"></textarea>
+                <button type="button"><i class="fas fa-paper-plane"></i> Gönder</button>
+            </div>
+        </div>
+    </div>
+    <script src="chat.js"></script>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Pusula - Tüm Hakları Saklıdır</p>
+        </div>
+    </footer>
+</body>
+</html> 

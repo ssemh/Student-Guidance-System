@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusula - Hücre Macerası</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin:  2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .cell-container {
+            width: 100%;
+            height: 400px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            position: relative;
+            margin: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .organelle {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .organelle:hover {
+            transform: scale(1.05);
+        }
+        .question-box {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .timer {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Pusula Logo">
+                Pusula
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>Hücre Macerası</h2>
+            <div class="game-container">
+                <div class="score-display">
+                    Puan: <span id="score">0</span>
+                    Seviye: <span id="level">1</span>
+                </div>
+                <div class="timer">
+                    Kalan Süre: <span id="timer">40</span> saniye
+                </div>
+                <div class="question-box">
+                    <h3>Soru:</h3>
+                    <p id="question"></p>
+                </div>
+                <div class="cell-container" id="cellContainer"></div>
+                <div class="game-controls">
+                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
+                    <button id="nextQuestion" class="game-btn" disabled>Sonraki Soru</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cellContainer = document.getElementById('cellContainer');
+            const questionDisplay = document.getElementById('question');
+            const startButton = document.getElementById('startGame');
+            const nextButton = document.getElementById('nextQuestion');
+            const scoreDisplay = document.getElementById('score');
+            const levelDisplay = document.getElementById('level');
+            const timerDisplay = document.getElementById('timer');
+
+            let score = 0;
+            let level = 1;
+            let currentQuestion = null;
+            let timeLeft = 40;
+            let timerInterval;
+            let usedQuestions = new Set();
+
+            const organelles = [
+                {name: 'Mitokondri', function: 'Enerji üretimi'},
+                {name: 'Golgi Aygıtı', function: 'Protein paketleme ve salgılama'},
+                {name: 'Endoplazmik Retikulum', function: 'Protein sentezi ve taşıma'},
+                {name: 'Lizozom', function: 'Hücre sindirimi'},
+                {name: 'Ribozom', function: 'Protein sentezi'},
+                {name: 'Çekirdek', function: 'Genetik materyal depolama'},
+                {name: 'Hücre Zarı', function: 'Hücre koruması ve madde alışverişi'},
+                {name: 'Kloroplast', function: 'Fotosentez'},
+                {name: 'Sentrozom', function: 'Hücre bölünmesi'},
+                {name: 'Peroksizom', function: 'Hücresel detoksifikasyon'},
+                {name: 'Vakuol', function: 'Depolama ve homeostazi'},
+                {name: 'Sitoplazma', function: 'Hücre içi ortam'},
+                {name: 'Hücre İskeleti', function: 'Hücre şeklini koruma ve hareket'},
+                {name: 'Sentriyol', function: 'Hücre bölünmesinde iğ ipliklerini oluşturma'},
+                {name: 'Plastitler', function: 'Fotosentez ve besin depolama'},
+                {name: 'Koful', function: 'Madde depolama ve taşıma'},
+                {name: 'Nukleolus', function: 'Ribozom alt birimlerinin üretimi'},
+                {name: 'Kromatin', function: 'Genetik materyal organizasyonu'}
+            ];
+
+            const questions = [
+                // Seviye 1-5: Temel Sorular
+                {
+                    question: 'Hücrenin enerji üretim merkezi olan organel hangisidir?',
+                    answer: 'Mitokondri',
+                    level: 1
+                },
+                {
+                    question: 'Protein sentezinden sorumlu organel hangisidir?',
+                    answer: 'Ribozom',
+                    level: 1
+                },
+                {
+                    question: 'Fotosentez yapan organel hangisidir?',
+                    answer: 'Kloroplast',
+                    level: 2
+                },
+                {
+                    question: 'Hücrenin yönetim merkezi olan organel hangisidir?',
+                    answer: 'Çekirdek',
+                    level: 2
+                },
+                {
+                    question: 'Hücre içi sindirimden sorumlu organel hangisidir?',
+                    answer: 'Lizozom',
+                    level: 3
+                },
+                
+                // Seviye 6-10: Orta Seviye Sorular
+                {
+                    question: 'Hücrede protein paketleme ve salgılama görevini üstlenen organel hangisidir?',
+                    answer: 'Golgi Aygıtı',
+                    level: 6
+                },
+                {
+                    question: 'Hücre bölünmesi sırasında iğ ipliklerinin oluşumundan sorumlu organel hangisidir?',
+                    answer: 'Sentrozom',
+                    level: 7
+                },
+                {
+                    question: 'Bitki hücrelerinde su ve besin depolayan organel hangisidir?',
+                    answer: 'Vakuol',
+                    level: 8
+                },
+                {
+                    question: 'Hücrede detoksifikasyon işlemlerini gerçekleştiren organel hangisidir?',
+                    answer: 'Peroksizom',
+                    level: 9
+                },
+                {
+                    question: 'Hücre içi madde taşınmasında görev alan ve protein sentezinde rol oynayan organel sistemi hangisidir?',
+                    answer: 'Endoplazmik Retikulum',
+                    level: 10
+                },
+                
+                // Seviye 11-15: İleri Seviye Sorular
+                {
+                    question: 'Hangi organel hem pürüzlü hem de düz formda bulunabilir?',
+                    answer: 'Endoplazmik Retikulum',
+                    level: 11
+                },
+                {
+                    question: 'ATP sentezinin gerçekleştiği organel hangisidir?',
+                    answer: 'Mitokondri',
+                    level: 12
+                },
+                {
+                    question: 'DNA replikasyonunun gerçekleştiği organel hangisidir?',
+                    answer: 'Çekirdek',
+                    level: 13
+                },
+                {
+                    question: 'Hangi organel hücre zarının yenilenmesinde görev alır?',
+                    answer: 'Golgi Aygıtı',
+                    level: 14
+                },
+                {
+                    question: 'Hangi organel bitki hücrelerinde bulunup hayvan hücrelerinde bulunmaz?',
+                    answer: 'Kloroplast',
+                    level: 15
+                },
+                
+                // Seviye 16-20: Uzman Seviye Sorular
+                {
+                    question: 'Hangi organel hidrolaz enzimlerini içerir ve hücre içi sindirimi gerçekleştirir?',
+                    answer: 'Lizozom',
+                    level: 16
+                },
+                {
+                    question: 'Hangi organel hücre iskeleti organizasyonunda rol oynar?',
+                    answer: 'Sentrozom',
+                    level: 17
+                },
+                {
+                    question: 'Hangi organel hücre zarı lipidlerinin sentezinde görev alır?',
+                    answer: 'Endoplazmik Retikulum',
+                    level: 18
+                },
+                {
+                    question: 'Hangi organel H2O2 detoksifikasyonunu gerçekleştirir?',
+                    answer: 'Peroksizom',
+                    level: 19
+                },
+                {
+                    question: 'Hangi organel glikoprotein sentezinde rol oynar?',
+                    answer: 'Golgi Aygıtı',
+                    level: 20
+                },
+                
+                // Seviye 21-25: Master Seviye Sorular
+                {
+                    question: 'Hangi organel apoptoz sürecinde önemli rol oynar?',
+                    answer: 'Mitokondri',
+                    level: 21
+                },
+                {
+                    question: 'Hangi organel hücre polaritesinin belirlenmesinde görev alır?',
+                    answer: 'Golgi Aygıtı',
+                    level: 22
+                },
+                {
+                    question: 'Hangi organel nükleer por komplekslerini içerir?',
+                    answer: 'Çekirdek',
+                    level: 23
+                },
+                {
+                    question: 'Hangi organel hücre bölünmesi sırasında kromozomların ayrılmasını sağlar?',
+                    answer: 'Sentrozom',
+                    level: 24
+                },
+                {
+                    question: 'Hangi organel oksidatif fosforilasyonu gerçekleştirir?',
+                    answer: 'Mitokondri',
+                    level: 25
+                }
+            ];
+
+            function startTimer() {
+                timeLeft = 40;
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        nextQuestion();
+                    }
+                }, 1000);
+            }
+
+            function getQuestionsForLevel(level) {
+                return questions.filter(q => q.level <= level && !usedQuestions.has(q.question));
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function generateGame() {
+                cellContainer.innerHTML = '';
+                const availableQuestions = getQuestionsForLevel(level);
+                if (availableQuestions.length === 0) {
+                    usedQuestions.clear(); // Tüm sorular kullanıldıysa sıfırla
+                    currentQuestion = questions.find(q => q.level === level);
+                } else {
+                    currentQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+                }
+                usedQuestions.add(currentQuestion.question);
+                questionDisplay.textContent = currentQuestion.question;
+
+                const shuffledOrganelles = shuffleArray([...organelles]);
+                const displayOrganelles = shuffledOrganelles.slice(0, Math.min(8 + Math.floor(level/5), organelles.length));
+
+                // Doğru cevabın mutlaka seçenekler arasında olmasını sağla
+                const correctOrganelle = organelles.find(o => o.name === currentQuestion.answer);
+                if (!displayOrganelles.some(o => o.name === currentQuestion.answer)) {
+                    displayOrganelles[0] = correctOrganelle;
+                }
+
+                shuffleArray(displayOrganelles).forEach(organelle => {
+                    const organelleDiv = document.createElement('div');
+                    organelleDiv.className = 'organelle';
+                    organelleDiv.textContent = organelle.name;
+                    organelleDiv.addEventListener('click', () => checkAnswer(organelle.name));
+                    cellContainer.appendChild(organelleDiv);
+                });
+
+                startTimer();
+            }
+
+            function checkAnswer(selectedOrganelle) {
+                if (selectedOrganelle === currentQuestion.answer) {
+                    score += level * 10;
+                    alert('Doğru cevap!');
+                }
+                nextQuestion();
+            }
+
+            function nextQuestion() {
+                level++;
+                if (level > 25) {
+                    alert('Tebrikler! Tüm seviyeleri tamamladınız!');
+                    startButton.disabled = false;
+                    nextButton.disabled = true;
+                    clearInterval(timerInterval);
+                    return;
+                }
+                generateGame();
+                scoreDisplay.textContent = score;
+                levelDisplay.textContent = level;
+            }
+
+            startButton.addEventListener('click', () => {
+                level = 1;
+                score = 0;
+                usedQuestions.clear();
+                generateGame();
+                startButton.disabled = true;
+                nextButton.disabled = false;
+            });
+
+            nextButton.addEventListener('click', nextQuestion);
+        });
+    </script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>

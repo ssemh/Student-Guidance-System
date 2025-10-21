@@ -1,0 +1,2824 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusula - Ana Sayfa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Ana Sayfa Dashboard Stilleri */
+        .dashboard-section {
+            padding: 120px 0 50px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            margin-bottom: 3rem;
+        }
+
+        .welcome-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-light), #ff6b6b, #4ecdc4);
+            background-size: 300% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .welcome-content {
+            text-align: center;
+            width: 100%;
+        }
+
+        .dashboard-header h1 {
+            color: var(--text-color);
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light), #ff6b6b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: textShimmer 2s ease-in-out infinite;
+            font-weight: 700;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .dashboard-header p {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .daily-motivation {
+            margin-top: 2rem;
+        }
+
+        .motivation-card {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(255, 107, 107, 0.1));
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .motivation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.15);
+        }
+
+        .motivation-card i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .motivation-card p {
+            font-style: italic;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .quick-actions h3 {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--secondary-color);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .action-btn i {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .stats-overview {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .stats-overview h3 {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Progress Bar Stilleri */
+        .progress-bars {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .progress-item {
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .progress-item:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-item.active {
+            background-color: #f8f9fa;
+            border-color: #3498db;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .progress {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 5px;
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .progress-details {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .progress-info span {
+            background-color: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* Progress bar'ların başlangıç durumunu ayarla */
+        .progress-item[data-subject="math"] .progress-fill {
+            width: var(--math-progress);
+        }
+
+        .progress-item[data-subject="physics"] .progress-fill {
+            width: var(--physics-progress);
+        }
+
+        .progress-item[data-subject="chemistry"] .progress-fill {
+            width: var(--chemistry-progress);
+        }
+
+        .progress-item[data-subject="biology"] .progress-fill {
+            width: var(--biology-progress);
+        }
+
+        .progress-item[data-subject="turkish"] .progress-fill {
+            width: var(--turkish-progress);
+        }
+
+        .progress-item[data-subject="history"] .progress-fill {
+            width: var(--history-progress);
+        }
+
+        .progress-item[data-subject="geography"] .progress-fill {
+            width: var(--geography-progress);
+        }
+
+        .progress-item[data-subject="philosophy"] .progress-fill {
+            width: var(--philosophy-progress);
+        }
+
+        .progress-item[data-subject="literature"] .progress-fill {
+            width: var(--literature-progress);
+        }
+
+        .progress-item[data-subject="religion"] .progress-fill {
+            width: var(--religion-progress);
+        }
+
+        /* Konu Menüsü Modal Stilleri */
+        .topics-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .topics-modal.show {
+            display: flex;
+            animation: modalFadeIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .topics-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            margin: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .topics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .topics-header h3 {
+            color: var(--text-color);
+            font-size: 1.8rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .close-topics {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-topics:hover {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .topics-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .topic-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .topic-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .topic-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .topics-list {
+            display: none;
+        }
+
+        .topics-list.active {
+            display: block;
+        }
+
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            user-select: none;
+        }
+
+        .topic-item:hover {
+            background: #e9ecef;
+            transform: translateX(3px);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .topic-item:active {
+            transform: translateX(3px) scale(0.98);
+            transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .topic-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .topic-status {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .status-not-started {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .topic-progress {
+            width: 100px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .topic-progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 3px;
+            transition: width 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+
+
+        /* Mantar Pano Stilleri */
+        .board-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 3rem;
+        }
+
+        /* Pano başlık stilleri */
+        .board-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .board-header h3 {
+            color: var(--text-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .board-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .board-header h3 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .board-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .board-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .board-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .board {
+            position: relative;
+            margin: 0 auto;
+            width: var(--board-width, 900px);
+            min-height: var(--board-height, 550px);
+            background-image: url('https://img.freepik.com/free-photo/wood-board-background_1339-5417.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 20px solid;
+            border-image: url('https://img.freepik.com/free-photo/brown-wood-textured-background-with-design-space_53876-160425.jpg') 100 stretch;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: width 0.3s ease, min-height 0.3s ease;
+            overflow: hidden;
+        }
+
+        #notesContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transition: width 0.3s ease, min-height 0.3s ease;
+            overflow: hidden;
+        }
+
+
+
+        .note {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: grab;
+            user-select: none;
+            position: absolute;
+            min-width: 200px;
+            min-height: 150px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+            transform: rotate(var(--rotation, 0deg));
+            border: 2px solid transparent;
+        }
+
+        /* Hover animasyonları */
+        .note:hover {
+            transform: rotate(var(--rotation, 0deg)) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: rgba(67, 97, 238, 0.3);
+            z-index: 10;
+        }
+
+
+
+        /* Hover durumunda resize handle'ları göster */
+        .note:hover .resize-handle {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Resize handle'ların varsayılan durumu */
+        .resize-handle {
+            opacity: 0.7;
+            transition: all 0.2s ease;
+        }
+        
+        .note:active {
+            cursor: grabbing;
+        }
+
+
+
+        .note.rectangle {
+            border-radius: 0;
+        }
+
+        .note.rounded {
+            border-radius: 20px;
+        }
+
+        .note.circle {
+            border-radius: 50%;
+            aspect-ratio: 1;
+        }
+
+        .note.dragging {
+            opacity: 0.9;
+            transform: rotate(0deg) scale(1.05);
+            resize: none;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+            z-index: 1000;
+            border-color: rgba(67, 97, 238, 0.5);
+        }
+
+        /* Sürükleme sırasında hover efektini devre dışı bırak */
+        .note.dragging:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+
+        .note.editing {
+            transform: rotate(0deg);
+            resize: none;
+            cursor: text;
+        }
+
+        .note.isDailyQuestion {
+            resize: none;
+            cursor: default;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Not boyutlandırma tutamaçları */
+        .note {
+            position: relative;
+        }
+
+        .resize-handles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(67, 97, 238, 0.8);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: se-resize;
+            z-index: 10;
+            transition: all 0.2s ease;
+            pointer-events: all;
+        }
+
+        .resize-handle:hover {
+            background: rgba(67, 97, 238, 1);
+            transform: scale(1.3);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.5);
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Resize handle pulse animasyonu */
+        .resize-handle {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 2px 4px rgba(67, 97, 238, 0.1);
+            }
+            50% {
+                box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+            }
+            100% {
+                box-shadow: 0 2px 4px rgba(67, 97, 238, 0.1);
+            }
+        }
+
+        /* Hover durumunda pulse animasyonunu durdur */
+        .resize-handle:hover {
+            animation: none;
+        }
+
+        .resize-handle.se {
+            bottom: -6px;
+            right: -6px;
+            cursor: se-resize;
+        }
+
+        .resize-handle.sw {
+            bottom: -6px;
+            left: -6px;
+            cursor: sw-resize;
+        }
+
+        .resize-handle.ne {
+            top: -6px;
+            right: -6px;
+            cursor: ne-resize;
+        }
+
+        .resize-handle.nw {
+            top: -6px;
+            left: -6px;
+            cursor: nw-resize;
+        }
+
+        .note.resizing {
+            cursor: move;
+            user-select: none;
+        }
+
+        .note.resizing .resize-handle {
+            pointer-events: none;
+        }
+
+        .note.editing .resize-handles {
+            display: none;
+        }
+
+        .note-title-input,
+        .note-content-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 5px;
+            outline: none;
+        }
+
+        .note-content-input {
+            font-weight: normal;
+            flex-grow: 1;
+            resize: none;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .note-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            color: #666;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .note-actions button:hover {
+            color: #333;
+            transform: scale(1.1);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .note-actions button:active {
+            transform: scale(0.95);
+            transition: all 0.1s ease;
+        }
+
+        /* Renk Seçici Stilleri */
+        .color-picker {
+            position: fixed;
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            flex-wrap: wrap;
+            width: 280px;
+        }
+
+        .color-picker.show {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .color-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .color-picker-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .color-picker-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .color-picker-close:hover {
+            color: #333;
+        }
+
+        .color-gradient {
+            width: 100%;
+            height: 40px;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 0 2px rgba(255,255,255,0.5);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .color-gradient:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.7);
+        }
+
+        .color-gradient::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-gradient::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.15);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Günün Sorusu Stilleri kaldırıldı */
+
+        /* Floating buton stilleri kaldırıldı */
+
+        /* Sayaç Stilleri - sayaclar.html'e benzer */
+        .counters-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            border: 2px solid #e4e8f0;
+            transition: transform 0.3s ease;
+            width: 400px;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .counters-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .counters-section h3 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        .counters-section h3.hide-icon i {
+            display: none !important;
+        }
+
+        .counters-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #4361ee, #3f37c9);
+            border-radius: 2px;
+        }
+
+        .counter-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .counter-btn {
+            background: #fff;
+            border: 2px solid #e4e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .counter-btn:hover {
+            background: #f8f9fa;
+            border-color: #4361ee;
+            transform: translateY(-2px);
+            z-index: 5;
+        }
+
+        .counter-btn i {
+            font-size: 1.2rem;
+            color: #4361ee;
+        }
+
+        .counter-display {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 1rem;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .counter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e4e8f0;
+        }
+
+        .counter-header h4 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .countdown-display {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-unit {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            background: #fff;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+            min-height: 80px;
+            aspect-ratio: 1;
+            transition: all 0.3s ease;
+        }
+
+        .time-unit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .separator {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin: 0 0.5rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            height: 80px;
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 0.5rem;
+        }
+
+        .countdown-item .value {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            background: #fff;
+            padding: 0.9rem;
+            border-radius: 50%;
+            min-width: 65px;
+            min-height: 65px;
+            aspect-ratio: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .countdown-item .value:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .countdown-item .label {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .counter-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .custom-counter-input {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .custom-counter-input input {
+            width: 120px;
+            padding: 0.8rem;
+            border: 2px solid #e4e8f0;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .custom-counter-input input:focus {
+            border-color: #4361ee;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome-container {
+                padding: 2rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .dashboard-header p {
+                font-size: 1.1rem;
+            }
+
+            .motivation-card {
+                padding: 1rem;
+            }
+
+            .motivation-card p {
+                font-size: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .counters-section {
+                width: 100%;
+                height: 500px;
+            }
+            
+            .board {
+                width: 100% !important;
+                min-height: 300px !important;
+            }
+            
+            #notesContainer {
+                width: 100% !important;
+                min-height: 300px !important;
+            }
+
+            .progress-bars {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .counter-selection {
+                flex-direction: column;
+            }
+
+            .time-unit {
+                font-size: 1.6rem;
+                min-width: 60px;
+                min-height: 60px;
+                padding: 0.8rem;
+            }
+
+            .separator {
+                font-size: 1.6rem;
+                height: 60px;
+            }
+
+            .countdown-item .value {
+                font-size: 1.5rem;
+                min-width: 50px;
+                min-height: 50px;
+                padding: 0.6rem;
+            }
+
+            .counter-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .control-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .custom-counter-input {
+                flex-direction: column;
+            }
+
+            .custom-counter-input input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .counters-section {
+                padding: 1rem;
+                width: 100%;
+                height: 450px;
+            }
+
+            .progress-bars {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .counter-display {
+                padding: 1.5rem;
+            }
+
+            .countdown-display {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+
+            .counter-selection {
+                flex-direction: column;
+            }
+
+            .time-unit {
+                font-size: 1.5rem;
+                min-width: 50px;
+                min-height: 50px;
+                padding: 0.8rem;
+            }
+
+            .separator {
+                font-size: 1.5rem;
+                height: 50px;
+            }
+
+            .counter-controls {
+                flex-direction: column;
+            }
+
+            .control-btn {
+                width: 100%;
+            }
+
+            .countdown-item .value {
+                font-size: 1.4rem;
+                min-width: 45px;
+                min-height: 45px;
+                padding: 0.6rem;
+            }
+        }
+
+        /* Fullscreen counter styling */
+        .counter-display:fullscreen,
+        .counter-display:-webkit-full-screen {
+            background: radial-gradient(1200px 800px at 50% 50%, #1f2335 0%, #0f1226 60%, #0b0e1f 100%);
+            color: #fff;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 4rem 2rem;
+            position: relative;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .counter-display:fullscreen .counter-header,
+        .counter-display:-webkit-full-screen .counter-header {
+            border: 0;
+            margin-bottom: 1rem;
+        }
+
+        .counter-display:fullscreen .counter-header h4,
+        .counter-display:-webkit-full-screen .counter-header h4 {
+            color: #fff;
+            font-size: clamp(2rem, 4vw, 3rem);
+        }
+
+        .counter-display:fullscreen .back-btn,
+        .counter-display:-webkit-full-screen .back-btn {
+            display: none;
+        }
+
+        .counter-display:fullscreen .countdown-display,
+        .counter-display:-webkit-full-screen .countdown-display {
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            gap: 1rem;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .counter-display:fullscreen .time-unit,
+        .counter-display:-webkit-full-screen .time-unit {
+            font-size: clamp(2.4rem, 10vw, 6rem);
+            min-width: clamp(70px, 12vw, 140px);
+            min-height: clamp(70px, 12vw, 140px);
+            padding: clamp(0.6rem, 2vw, 1.2rem);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .counter-display:fullscreen .separator,
+        .counter-display:-webkit-full-screen .separator {
+            font-size: clamp(2.4rem, 10vw, 6rem);
+            height: auto;
+            color: #fff;
+            margin: 0 clamp(0.3rem, 1.2vw, 1rem);
+        }
+
+        .counter-display:fullscreen .countdown-item .value,
+        .counter-display:-webkit-full-screen .countdown-item .value {
+            font-size: clamp(2rem, 8vw, 5rem);
+            min-width: clamp(60px, 10vw, 120px);
+            min-height: clamp(60px, 10vw, 120px);
+            padding: clamp(0.5rem, 2vw, 1rem);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .counter-display:fullscreen .countdown-item .label,
+        .counter-display:-webkit-full-screen .countdown-item .label {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+        }
+
+        .counter-display:fullscreen .counter-controls,
+        .counter-display:-webkit-full-screen .counter-controls {
+            gap: clamp(0.4rem, 1.2vw, 1rem);
+        }
+
+        .counter-display:fullscreen .control-btn,
+        .counter-display:-webkit-full-screen .control-btn {
+            font-size: clamp(1rem, 2.2vw, 1.4rem);
+            padding: clamp(0.6rem, 1.8vw, 1rem) clamp(1rem, 3vw, 1.6rem);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.95) 0%, rgba(63, 55, 201, 0.95) 100%);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.35);
+        }
+        /* Sayaç açılış animasyonu - Optimize edilmiş */
+        @keyframes counterSlideIn {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.95) translateY(10px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0px); 
+            }
+        }
+        .counter-display.animate-in {
+            animation: counterSlideIn 200ms ease-out;
+            will-change: transform, opacity;
+        }
+        
+        /* Sayaç kapanış animasyonu - Optimize edilmiş */
+        @keyframes counterSlideOut {
+            0% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0px); 
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0.95) translateY(-10px); 
+            }
+        }
+        .counter-display.animate-out {
+            animation: counterSlideOut 150ms ease-in forwards;
+            will-change: transform, opacity;
+            pointer-events: none;
+        }
+        
+        /* Animasyon sonrası temizlik */
+        .counter-display:not(.animate-in):not(.animate-out) {
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        
+        /* Buton animasyonları - Çok daha güzel */
+        .counter-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .counter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.3s;
+        }
+        
+        .counter-btn:hover::before {
+            left: 100%;
+        }
+        
+        .counter-btn:active {
+            transform: scale(0.92) translateY(3px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .counter-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Settings Panel Stilleri */
+        .settings-panel {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background-color: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .settings-panel.open {
+            left: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-header h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+        }
+
+        .settings-section h4 {
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        .settings-option {
+            margin-bottom: 15px;
+        }
+
+        .settings-option label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .settings-option select,
+        .settings-option input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Pusula Logo">
+                Pusula
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html" class="active"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard-header">
+                <div class="welcome-container">
+                    <div class="welcome-content">
+                        <h1 id="welcomeTitle">Hoş Geldin!</h1>
+                        <p id="welcomeMessage">Bugün öğrenme yolculuğuna devam etmeye hazır mısın?</p>
+                        <div class="daily-motivation">
+                            <div class="motivation-card">
+                                <i class="fas fa-quote-left"></i>
+                                <p id="dailyQuote">"Başarı, hazırlık ile fırsatın buluştuğu yerdir."</p>
+                                <span class="quote-author">- Seneca</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="board-section">
+                <div class="board-header">
+                    <h3><i class="fas fa-thumbtack"></i> Mantar Pano</h3>
+                    <div class="board-controls">
+                        <button class="board-btn" onclick="toggleSettings();">
+                            <i class="fas fa-cog"></i> Ayarlar
+                        </button>
+                        <button class="board-btn" onclick="createNewNote();" style="background: #4CAF50;">
+                            <i class="fas fa-plus"></i> Not Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <div class="board" id="board">
+                    <div id="notesContainer">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="counters-section">
+                    <h3><i class="fas fa-stopwatch"></i> Sayaçlar</h3>
+                    
+                    <div class="counter-selection" id="counterSelection">
+                        <button class="counter-btn" data-type="kronometre" onclick="showCounter('kronometre')">
+                            <i class="fas fa-stopwatch"></i>
+                            <span>Kronometre</span>
+                        </button>
+                        <button class="counter-btn" data-type="tyt" onclick="showCounter('tyt')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>TYT Geri Sayım</span>
+                        </button>
+                        <button class="counter-btn" data-type="ayt" onclick="showCounter('ayt')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>AYT Geri Sayım</span>
+                        </button>
+                        <button class="counter-btn" data-type="tyt-deneme" onclick="showCounter('tyt-deneme')">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>TYT Deneme</span>
+                        </button>
+                        <button class="counter-btn" data-type="ayt-deneme" onclick="showCounter('ayt-deneme')">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>AYT Deneme</span>
+                        </button>
+                        <button class="counter-btn" data-type="ozel" onclick="showCounter('ozel')">
+                            <i class="fas fa-user-clock"></i>
+                            <span>Özel Geri Sayım</span>
+                        </button>
+                    </div>
+
+                    <div class="counter-display" id="kronometreCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-stopwatch"></i> Kronometre</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="countdown-display">
+                            <span class="time-unit hours">00</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit minutes">00</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit seconds">00</span>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="startKronometre()">
+                                <i class="fas fa-play"></i> Başlat
+                            </button>
+                            <button class="control-btn" onclick="resetKronometre()">
+                                <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="fullscreenKronometre()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="counter-display" id="tytCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-calendar-alt"></i> TYT Sınavına Kalan Süre</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="countdown-display countdown">
+                            <div class="countdown-item">
+                                <span class="value days">0</span>
+                                <span class="label">Gün</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value hours">0</span>
+                                <span class="label">Saat</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value minutes">0</span>
+                                <span class="label">Dakika</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value seconds">0</span>
+                                <span class="label">Saniye</span>
+                            </div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="fullscreenTYT()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="counter-display" id="aytCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-calendar-alt"></i> AYT Sınavına Kalan Süre</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="countdown-display countdown">
+                            <div class="countdown-item">
+                                <span class="value days">0</span>
+                                <span class="label">Gün</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value hours">0</span>
+                                <span class="label">Saat</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value minutes">0</span>
+                                <span class="label">Dakika</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span class="value seconds">0</span>
+                                <span class="label">Saniye</span>
+                            </div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="fullscreenAYT()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="counter-display" id="tyt-denemeCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-hourglass-half"></i> TYT Deneme Süresi</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="countdown-display">
+                            <span class="time-unit minutes">165</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit seconds">00</span>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="startTYTDeneme()">
+                                <i class="fas fa-play"></i> Başlat
+                            </button>
+                            <button class="control-btn" onclick="resetTYTDeneme()">
+                                <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="fullscreenTYTDeneme()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="counter-display" id="ayt-denemeCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-hourglass-half"></i> AYT Deneme Süresi</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="countdown-display">
+                            <span class="time-unit minutes">180</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit seconds">00</span>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="startAYTDeneme()">
+                                <i class="fas fa-play"></i> Başlat
+                            </button>
+                            <button class="control-btn" onclick="resetAYTDeneme()">
+                                <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="fullscreenAYTDeneme()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="counter-display" id="ozelCounter" style="display: none;">
+                        <div class="counter-header">
+                            <h4><i class="fas fa-user-clock"></i> Özel Geri Sayım Ayarla</h4>
+                            <button class="back-btn" onclick="showCounterSelection()">
+                                <i class="fas fa-arrow-left"></i> Geri
+                            </button>
+                        </div>
+                        <div class="custom-counter-input">
+                            <div class="input-group">
+                                <label>Saat:</label>
+                                <input type="number" id="saat" min="0" value="0">
+                            </div>
+                            <div class="input-group">
+                                <label>Dakika:</label>
+                                <input type="number" id="dakika" min="0" max="59" value="0">
+                            </div>
+                            <div class="input-group">
+                                <label>Saniye:</label>
+                                <input type="number" id="saniye" min="0" max="59" value="0">
+                            </div>
+                        </div>
+                        <div class="countdown-display">
+                            <span class="time-unit hours">00</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit minutes">00</span>
+                            <span class="separator">:</span>
+                            <span class="time-unit seconds">00</span>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="control-btn" onclick="startOzelCounter()">
+                                <i class="fas fa-play"></i> Başlat
+                            </button>
+                            <button class="control-btn" onclick="resetOzelCounter()">
+                                <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="fullscreenOzel()">
+                                <i class="fas fa-expand"></i> Tam Ekran
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-overview">
+                    <h3><i class="fas fa-chart-line"></i> Ders İlerlemeleri</h3>
+                    <div class="progress-bars">
+                        <div class="progress-item" data-subject="math" style="--math-progress: 75%;" onclick="openTopicsModal('math', 'Matematik')">
+                            <div class="progress-label">
+                                <span>Matematik</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                    <span id="math-ayt-info">AYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="physics" style="--physics-progress: 50%;" onclick="openTopicsModal('physics', 'Fizik')">
+                            <div class="progress-label">
+                                <span>Fizik</span>
+                                <span>50%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                    <span id="physics-ayt-info">AYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="chemistry" style="--chemistry-progress: 60%;" onclick="openTopicsModal('chemistry', 'Kimya')">
+                            <div class="progress-label">
+                                <span>Kimya</span>
+                                <span>60%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                    <span id="chemistry-ayt-info">AYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="biology" style="--biology-progress: 85%;" onclick="openTopicsModal('biology', 'Biyoloji')">
+                            <div class="progress-label">
+                                <span>Biyoloji</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                    <span id="biology-ayt-info">AYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="turkish" style="--turkish-progress: 80%;" onclick="openTopicsModal('turkish', 'Türkçe')">
+                            <div class="progress-label">
+                                <span>Türkçe</span>
+                                <span>80%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                    <span id="turkish-ayt-info">AYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="history" style="--history-progress: 65%;" onclick="openTopicsModal('history', 'Tarih')">
+                            <div class="progress-label">
+                                <span>Tarih</span>
+                                <span>65%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="geography" style="--geography-progress: 55%;" onclick="openTopicsModal('geography', 'Coğrafya')">
+                            <div class="progress-label">
+                                <span>Coğrafya</span>
+                                <span>55%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="philosophy" style="--philosophy-progress: 45%;" onclick="openTopicsModal('philosophy', 'Felsefe')">
+                            <div class="progress-label">
+                                <span>Felsefe</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-item" data-subject="religion" style="--religion-progress: 40%;" onclick="openTopicsModal('religion', 'Din Kültürü')">
+                            <div class="progress-label">
+                                <span>Din Kültürü</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-details">
+                                <div class="progress-info">
+                                    <span>TYT: 0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3>Pano Ayarları</h3>
+            <button class="close-settings" onclick="toggleSettings()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="settings-section">
+            <h4>Görünüm</h4>
+            <div class="settings-option">
+                <label for="backgroundSelect">Arka Plan</label>
+                <select id="backgroundSelect" onchange="changeBackground(this.value)">
+                    <option value="default">Varsayılan</option>
+                    <option value="custom-image">Özel Resim</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>Not Ayarları</h4>
+            <div class="settings-option">
+                <label for="defaultNoteShape">Varsayılan Not Şekli</label>
+                <select id="defaultNoteShape" onchange="changeNoteShape(this.value)">
+                    <option value="rectangle" selected>Dikdörtgen</option>
+                    <option value="rounded">Yuvarlak Köşeli</option>
+                    <option value="circle">Yuvarlak</option>
+                </select>
+            </div>
+            <div class="settings-option">
+                <label for="defaultNoteFont">Varsayılan Font</label>
+                <select id="defaultNoteFont" onchange="changeNoteFont(this.value)">
+                    <option value="Arial" selected>Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Georgia">Georgia</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h4>Pano Ayarları</h4>
+            <div class="settings-option">
+                <label for="boardWidth">Pano Genişliği</label>
+                <input type="number" id="boardWidth" min="600" max="1100" value="900" onchange="changeBoardSize()">
+            </div>
+            <div class="settings-option">
+                <label for="boardWidth">Pano Yüksekliği</label>
+                <input type="number" id="boardHeight" min="400" max="800" value="550" onchange="changeBoardSize()">
+            </div>
+        </div>
+    </div>
+
+    <div class="topics-modal" id="topicsModal">
+        <div class="topics-content">
+            <div class="topics-header">
+                <h3 id="modalSubjectTitle">
+                    <i class="fas fa-book"></i>
+                    <span id="modalSubjectName">Ders Adı</span>
+                </h3>
+                <button class="close-topics" onclick="closeTopicsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="topics-tabs">
+                <button class="topic-tab active" onclick="showTopicsTab('tyt')">TYT Konuları</button>
+                <button class="topic-tab" onclick="showTopicsTab('ayt')">AYT Konuları</button>
+            </div>
+            
+            <div class="topics-list active" id="tytTopics">
+            </div>
+            
+            <div class="topics-list" id="aytTopics">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script src="ana-sayfa.js"></script>
+    
+    <script>
+        // Konu modal fonksiyonları
+        function openTopicsModal(subject, subjectName) {
+            const modal = document.getElementById('topicsModal');
+            const modalSubjectName = document.getElementById('modalSubjectName');
+            
+            modalSubjectName.textContent = subjectName;
+            modal.classList.add('show');
+            
+            // Konuları yükle
+            loadTopics(subject);
+        }
+
+        function closeTopicsModal() {
+            const modal = document.getElementById('topicsModal');
+            modal.classList.remove('show');
+        }
+
+        function showTopicsTab(tabName) {
+            // Tüm tab'ları gizle
+            document.querySelectorAll('.topic-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.topics-list').forEach(list => list.classList.remove('active'));
+            
+            // Seçilen tab'ı aktif yap
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Topics').classList.add('active');
+        }
+
+        function loadTopics(subject) {
+            const tytTopics = document.getElementById('tytTopics');
+            const aytTopics = document.getElementById('aytTopics');
+            
+            // Konuları temizle
+            tytTopics.innerHTML = '';
+            aytTopics.innerHTML = '';
+            
+            // Ders konularını tanımla
+            const topics = getSubjectTopics(subject);
+            
+            // TYT konularını ekle
+            topics.tyt.forEach(topic => {
+                const topicItem = createTopicItem(topic, 'tyt', subject);
+                tytTopics.appendChild(topicItem);
+            });
+            
+            // AYT konularını ekle (branşa göre)
+            const userBranch = localStorage.getItem('userBranch') || 'sayisal';
+            let showAYT = false;
+            
+            if (userBranch === 'sayisal' && ['math', 'physics', 'chemistry', 'biology'].includes(subject)) {
+                showAYT = true;
+            } else if (userBranch === 'sozel' && ['history', 'geography', 'philosophy', 'literature', 'religion'].includes(subject)) {
+                showAYT = true;
+            } else if (userBranch === 'esit-agirlik' && ['math', 'history', 'geography', 'philosophy', 'literature', 'religion'].includes(subject)) {
+                showAYT = true;
+            }
+            
+            if (showAYT && topics.ayt && topics.ayt.length > 0) {
+                topics.ayt.forEach(topic => {
+                    const topicItem = createTopicItem(topic, 'ayt', subject);
+                    aytTopics.appendChild(topicItem);
+                });
+            } else {
+                // AYT konuları yoksa mesaj göster
+                const noAYTMessage = document.createElement('div');
+                noAYTMessage.className = 'no-ayt-message';
+                noAYTMessage.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem; color: #3498db;"></i>
+                        <p>Bu ders ${getBranchDisplayName(userBranch)} branşında AYT konuları içermiyor.</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Sadece TYT konuları gösteriliyor.</p>
+                    </div>
+                `;
+                aytTopics.appendChild(noAYTMessage);
+            }
+        }
+
+        function getBranchDisplayName(branch) {
+            const branchNames = {
+                'sayisal': 'Sayısal',
+                'sozel': 'Sözel',
+                'esit-agirlik': 'Eşit Ağırlık'
+            };
+            return branchNames[branch] || 'Sayısal';
+        }
+
+        function getSubjectTopics(subject) {
+            // Kullanıcının branşını al
+            const userBranch = localStorage.getItem('userBranch') || 'sayisal';
+            
+            const topics = {
+                math: {
+                    tyt: ['Temel Kavramlar', 'Sayılar', 'Rasyonel Sayılar', 'Mutlak Değer', 'Üslü Sayılar', 'Köklü Sayılar', 'Çarpanlara Ayırma', 'Eşitsizlikler', 'Fonksiyonlar', 'Geometri Temelleri'],
+                    ayt: userBranch === 'sayisal' || userBranch === 'esit-agirlik' ? 
+                        ['Polinomlar', 'İkinci Dereceden Denklemler', 'Trigonometri', 'Logaritma', 'Limit ve Türev', 'İntegral', 'Analitik Geometri', 'Diziler ve Seriler'] : []
+                },
+                physics: {
+                    tyt: ['Fizik Bilimine Giriş', 'Madde ve Özellikleri', 'Hareket ve Kuvvet', 'Enerji', 'Isı ve Sıcaklık', 'Basınç', 'Elektrik Temelleri', 'Manyetizma Temelleri'],
+                    ayt: userBranch === 'sayisal' ? 
+                        ['Elektrik ve Manyetizma', 'Dalgalar', 'Modern Fizik', 'Atom Fiziği', 'Nükleer Fizik', 'Optik', 'Mekanik', 'Termodinamik'] : []
+                },
+                chemistry: {
+                    tyt: ['Kimya Bilimi', 'Atomun Yapısı', 'Periyodik Sistem', 'Kimyasal Bağlar', 'Mol Kavramı', 'Gazlar', 'Çözeltiler', 'Asit-Baz'],
+                    ayt: userBranch === 'sayisal' ? 
+                        ['Gazlar', 'Sıvı Çözeltiler', 'Kimyasal Tepkimeler', 'Organik Kimya', 'Kimyasal Hesaplamalar', 'Elektrokimya', 'Termokimya', 'Kimyasal Denge'] : []
+                },
+                biology: {
+                    tyt: ['Canlıların Yapısı', 'Hücre', 'Sistemler', 'Kalıtım', 'Ekoloji', 'Bitki Biyolojisi', 'Hayvan Biyolojisi', 'İnsan Biyolojisi'],
+                    ayt: userBranch === 'sayisal' ? 
+                        ['Protein Sentezi', 'Fotosentez', 'Solunum', 'Evrim', 'Biyoteknoloji', 'Genetik', 'Populasyon Genetiği', 'Ekosistem'] : []
+                },
+               turkish: {
+                   tyt: ['Paragraf', 'Dil Bilgisi', 'Anlatım Bozuklukları', 'Noktalama İşaretleri', 'Yazım Kuralları', 'Ses Bilgisi', 'Kelime Bilgisi', 'Cümle Bilgisi'],
+                   ayt: userBranch === 'sozel' || userBranch === 'esit-agirlik' ? 
+                       ['Eski Türk Edebiyatı', 'Tanzimat Edebiyatı', 'Servet-i Fünun Edebiyatı', 'Milli Edebiyat', 'Cumhuriyet Dönemi Edebiyatı', 'Çağdaş Türk Edebiyatı', 'Dünya Edebiyatı', 'Edebiyat Akımları'] : []
+               },
+                history: {
+                    tyt: ['İlk Uygarlıklar', 'İslam Tarihi', 'Türk-İslam Tarihi', 'Osmanlı Kuruluş', 'Osmanlı Yükselme', 'Osmanlı Duraklama', 'Osmanlı Gerileme', 'Osmanlı Dağılma'],
+                    ayt: userBranch === 'sozel' ? 
+                        ['İlk Çağ Uygarlıkları', 'Orta Çağ Tarihi', 'Yeni Çağ Tarihi', 'Yakın Çağ Tarihi', 'Türkiye Cumhuriyeti Tarihi', 'Dünya Savaşları', 'Soğuk Savaş Dönemi', 'Günümüz Dünyası'] : []
+                },
+                geography: {
+                    tyt: ['Doğa ve İnsan', 'Dünya\'da İklimler', 'Türkiye\'nin İklimi', 'Nüfus ve Yerleşme', 'Ekonomik Faaliyetler', 'Türkiye\'nin Coğrafi Konumu', 'Türkiye\'nin Fiziki Coğrafyası', 'Türkiye\'nin Beşeri Coğrafyası'],
+                    ayt: userBranch === 'sozel' ? 
+                        ['Fiziki Coğrafya', 'Beşeri Coğrafya', 'Ekonomik Coğrafya', 'Siyasi Coğrafya', 'Çevre ve Toplum', 'Küresel Ortam', 'Bölgeler ve Ülkeler', 'Türkiye Coğrafyası'] : []
+                },
+                philosophy: {
+                    tyt: ['Felsefeye Giriş', 'Bilgi Felsefesi', 'Varlık Felsefesi', 'Ahlak Felsefesi', 'Sanat Felsefesi', 'Din Felsefesi', 'Siyaset Felsefesi', 'Bilim Felsefesi'],
+                    ayt: userBranch === 'sozel' ? 
+                        ['Felsefe Tarihi', 'Mantık', 'Psikoloji', 'Sosyoloji', 'Mantık ve Akıl Yürütme', 'Felsefi Düşünce', 'Felsefe ve Bilim', 'Felsefe ve Sanat'] : []
+                },
+                religion: {
+                    tyt: ['İslam Dini Temel Bilgileri', 'Kur\'an-ı Kerim', 'Hz. Muhammed\'in Hayatı', 'İslam Ahlakı', 'İbadetler', 'İslam Tarihi', 'İslam Kültürü', 'Din ve Toplum'],
+                    ayt: userBranch === 'sozel' ? 
+                        ['İslam Dini Temel Bilgileri', 'Kur\'an-ı Kerim', 'Hz. Muhammed\'in Hayatı', 'İslam Ahlakı', 'İbadetler', 'İslam Tarihi', 'İslam Kültürü', 'Din ve Toplum'] : []
+                }
+            };
+            
+            return topics[subject] || { tyt: [], ayt: [] };
+        }
+
+        function createTopicItem(topicName, examType, subject) {
+            const topicItem = document.createElement('div');
+            topicItem.className = 'topic-item';
+            
+            // localStorage'dan konu durumunu al
+            const status = getTopicStatus(subject, examType, topicName);
+            
+            topicItem.innerHTML = `
+                <div class="topic-name">${topicName}</div>
+                <div class="topic-status">
+                    <span class="status-badge status-${status}">${getStatusText(status)}</span>
+                    <div class="topic-progress">
+                        <div class="topic-progress-fill" style="width: ${getProgressWidth(status)}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            // Konuya tıklama olayı ekle
+            topicItem.addEventListener('click', function() {
+                toggleTopicStatus(subject, examType, topicName, this);
+            });
+            
+            return topicItem;
+        }
+
+        function getRandomStatus() {
+            const statuses = ['not-started', 'in-progress', 'completed'];
+            return statuses[Math.floor(Math.random() * statuses.length)];
+        }
+
+        function getStatusText(status) {
+            const statusTexts = {
+                'not-started': 'Başlanmadı',
+                'in-progress': 'Devam Ediyor',
+                'completed': 'Tamamlandı'
+            };
+            return statusTexts[status];
+        }
+
+        function getProgressWidth(status) {
+            const progressWidths = {
+                'not-started': 0,
+                'in-progress': 50,
+                'completed': 100
+            };
+            return progressWidths[status];
+        }
+
+        // Konu durumunu localStorage'dan al
+        function getTopicStatus(subject, examType, topicName) {
+            const key = `topic_${subject}_${examType}_${topicName.replace(/\s+/g, '_')}`;
+            return localStorage.getItem(key) || 'not-started';
+        }
+
+        // Konu durumunu değiştir
+        function toggleTopicStatus(subject, examType, topicName, topicElement) {
+            const currentStatus = getTopicStatus(subject, examType, topicName);
+            let newStatus;
+            
+            // Durum döngüsü: Başlanmadı -> Devam Ediyor -> Tamamlandı -> Başlanmadı
+            switch(currentStatus) {
+                case 'not-started':
+                    newStatus = 'in-progress';
+                    break;
+                case 'in-progress':
+                    newStatus = 'completed';
+                    break;
+                case 'completed':
+                    newStatus = 'not-started';
+                    break;
+                default:
+                    newStatus = 'not-started';
+            }
+            
+            // localStorage'a kaydet
+            const key = `topic_${subject}_${examType}_${topicName.replace(/\s+/g, '_')}`;
+            localStorage.setItem(key, newStatus);
+            
+            // UI'ı güncelle
+            updateTopicUI(topicElement, newStatus);
+            
+            // Ana sayfa progress bar'larını güncelle
+            updateMainProgressBars(subject);
+        }
+
+        // Konu UI'ını güncelle
+        function updateTopicUI(topicElement, newStatus) {
+            const statusBadge = topicElement.querySelector('.status-badge');
+            const progressFill = topicElement.querySelector('.topic-progress-fill');
+            
+            // Badge'i güncelle
+            statusBadge.className = `status-badge status-${newStatus}`;
+            statusBadge.textContent = getStatusText(newStatus);
+            
+            // Progress bar'ı güncelle
+            progressFill.style.width = `${getProgressWidth(newStatus)}%`;
+            
+            // Animasyon efekti ekle
+            topicElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                topicElement.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Ana sayfa progress bar'larını güncelle
+        function updateMainProgressBars(subject) {
+            const progressItem = document.querySelector(`[data-subject="${subject}"]`);
+            if (!progressItem) return;
+            
+            // Kullanıcının branşını al
+            const userBranch = localStorage.getItem('userBranch') || 'sayisal';
+            
+            // TYT ve AYT konularını say
+            const tytTopics = getSubjectTopics(subject).tyt;
+            const aytTopics = getSubjectTopics(subject).ayt;
+            
+            let tytCompleted = 0;
+            let aytCompleted = 0;
+            let totalCompleted = 0;
+            
+            // TYT konularını kontrol et
+            tytTopics.forEach(topic => {
+                const status = getTopicStatus(subject, 'tyt', topic);
+                if (status === 'completed') {
+                    tytCompleted++;
+                    totalCompleted++;
+                }
+            });
+            
+            // AYT konularını kontrol et (branşa göre)
+            let showAYT = false;
+            if (userBranch === 'sayisal' && ['math', 'physics', 'chemistry', 'biology'].includes(subject)) {
+                showAYT = true;
+            } else if (userBranch === 'sozel' && ['turkish', 'history', 'geography', 'philosophy', 'religion'].includes(subject)) {
+                showAYT = true;
+            } else if (userBranch === 'esit-agirlik' && ['math', 'turkish'].includes(subject)) {
+                showAYT = true;
+            }
+            
+            if (showAYT && aytTopics && aytTopics.length > 0) {
+                aytTopics.forEach(topic => {
+                    const status = getTopicStatus(subject, 'ayt', topic);
+                    if (status === 'completed') {
+                        aytCompleted++;
+                        totalCompleted++;
+                    }
+                });
+            }
+            
+            // Progress bar'ları güncelle
+            const progressFill = progressItem.querySelector('.progress-fill');
+            const progressLabel = progressItem.querySelector('.progress-label span:last-child');
+            const progressDetails = progressItem.querySelector('.progress-details');
+            
+            if (progressFill && progressLabel) {
+                const totalTopics = tytTopics.length + (showAYT && aytTopics ? aytTopics.length : 0);
+                const totalProgress = totalTopics > 0 ? (totalCompleted / totalTopics) * 100 : 0;
+                
+                progressFill.style.width = `${totalProgress}%`;
+                progressLabel.textContent = `${Math.round(totalProgress)}%`;
+                
+                // CSS değişkenini güncelle
+                progressItem.style.setProperty(`--${subject}-progress`, `${totalProgress}%`);
+            }
+            
+            // Progress detaylarını güncelle
+            if (progressDetails) {
+                const tytProgress = tytTopics.length > 0 ? (tytCompleted / tytTopics.length) * 100 : 0;
+                
+                if (showAYT && aytTopics && aytTopics.length > 0) {
+                    const aytProgress = aytTopics.length > 0 ? (aytCompleted / aytTopics.length) * 100 : 0;
+                    progressDetails.innerHTML = `
+                        <div class="progress-info">
+                            <span>TYT: ${Math.round(tytProgress)}%</span>
+                            <span id="${subject}-ayt-info">AYT: ${Math.round(aytProgress)}%</span>
+                        </div>
+                    `;
+                } else {
+                    // AYT konuları yoksa sadece TYT göster
+                    if (tytTopics.length > 0) {
+                        progressDetails.innerHTML = `
+                            <div class="progress-info">
+                                <span>TYT: ${Math.round(tytProgress)}%</span>
+                            </div>
+                        `;
+                    } else {
+                        // TYT de yoksa sadece AYT göster (Edebiyat gibi)
+                        const aytProgress = aytTopics && aytTopics.length > 0 ? (aytCompleted / aytTopics.length) * 100 : 0;
+                        progressDetails.innerHTML = `
+                            <div class="progress-info">
+                                <span id="${subject}-ayt-info">AYT: ${Math.round(aytProgress)}%</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        }
+
+        // Modal dışına tıklandığında kapatma
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('topicsModal');
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeTopicsModal();
+                }
+            });
+            
+            // Sayfa yüklendiğinde tüm progress bar'ları güncelle
+            updateAllProgressBars();
+            
+            // Branş değişikliğini dinle
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'userBranch') {
+                    updateAllProgressBars();
+                }
+            });
+            
+            // Branş değişikliği event'ini dinle
+            window.addEventListener('branchChanged', function(e) {
+                updateAllProgressBars();
+            });
+            
+            // Varsayılan not şeklini ve fontunu ayarla
+            window.defaultNoteShape = 'rectangle';
+            window.defaultNoteFont = 'Arial';
+            
+            // Varsayılan pano boyutlarını ayarla
+            document.documentElement.style.setProperty('--board-width', '900px');
+            document.documentElement.style.setProperty('--board-height', '550px');
+            
+            // Hoş geldin mesajını ve günlük sözü güncelle
+            updateWelcomeMessage();
+            updateDailyQuote();
+            
+            // Günün sorusu sistemi kaldırıldı
+        });
+
+        // Hoş geldin mesajını güncelle
+        function updateWelcomeMessage() {
+            const hour = new Date().getHours();
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            
+            let greeting = '';
+            let message = '';
+            
+            if (hour < 6) {
+                greeting = 'İyi Geceler!';
+                message = 'Geç saatlerde çalışıyorsun, harika!';
+            } else if (hour < 12) {
+                greeting = 'Günaydın!';
+                message = 'Yeni bir gün, yeni hedefler! Bugün ne öğreneceksin?';
+            } else if (hour < 18) {
+                greeting = 'İyi Günler!';
+                message = 'Günün ortasında enerjik görünüyorsun!';
+            } else {
+                greeting = 'İyi Akşamlar!';
+                message = 'Günün nasıl geçti? Akşam çalışmasına hazır mısın?';
+            }
+            
+            welcomeTitle.textContent = greeting;
+            welcomeMessage.textContent = message;
+        }
+
+
+
+        // Günlük motivasyon sözü güncelle
+        function updateDailyQuote() {
+            const quotes = [
+                { text: "Başarı, hazırlık ile fırsatın buluştuğu yerdir.", author: "Seneca" },
+                { text: "Öğrenmek, yaşam boyu süren bir yolculuktur.", author: "Konfüçyüs" },
+                { text: "Bilgi güçtür, ancak uygulama gücü ortaya çıkarır.", author: "Tony Robbins" },
+                { text: "Bugün yapabileceğin en iyi yatırım, kendine yaptığın yatırımdır.", author: "Warren Buffett" },
+                { text: "Hayallerin gerçekleşmesi için önce onları görmen gerekir.", author: "Steve Jobs" },
+                { text: "Başarısızlık, başarının anahtarıdır.", author: "Morihei Ueshiba" },
+                { text: "Öğrenmek asla yaşlılıkta durmaz.", author: "Cicero" },
+                { text: "Bugünün işini yarına bırakma.", author: "Benjamin Franklin" }
+            ];
+            
+            // Günün tarihine göre sabit bir söz seç
+            const today = new Date().getDate();
+            const selectedQuote = quotes[today % quotes.length];
+            
+            document.getElementById('dailyQuote').textContent = `"${selectedQuote.text}"`;
+            document.querySelector('.quote-author').textContent = `- ${selectedQuote.author}`;
+        }
+
+        // Tüm progress bar'ları güncelle
+        function updateAllProgressBars() {
+            const userBranch = localStorage.getItem('userBranch') || 'sayisal';
+            const subjects = ['math', 'physics', 'chemistry', 'biology', 'turkish', 'history', 'geography', 'philosophy', 'religion'];
+            
+            subjects.forEach(subject => {
+                const progressItem = document.querySelector(`[data-subject="${subject}"]`);
+                if (!progressItem) return;
+                
+                // Branşa göre progress bar'ları göster/gizle
+                let shouldShow = true;
+                
+                if (['math', 'physics', 'chemistry', 'biology', 'turkish', 'history', 'geography', 'philosophy', 'religion'].includes(subject)) {
+                    // Tüm dersler tüm branşlarda gösterilir (TYT konuları için)
+                    shouldShow = true;
+                }
+                
+                // Progress bar'ı göster/gizle
+                progressItem.style.display = shouldShow ? 'block' : 'none';
+                
+                // Progress bar'ı güncelle
+                updateMainProgressBars(subject);
+            });
+        }
+
+        // Sayaç fonksiyonları
+        function showCounter(counterType) {
+            // Sayaç seçim butonlarını gizle
+            const counterSelection = document.getElementById('counterSelection');
+            if (counterSelection) {
+                counterSelection.style.display = 'none';
+            }
+            
+            // Tüm sayaçları gizle (animasyonlu)
+            document.querySelectorAll('.counter-display').forEach(counter => {
+                if (counter.style.display !== 'none') {
+                    counter.classList.add('animate-out');
+                    setTimeout(() => {
+                        counter.style.display = 'none';
+                        counter.classList.remove('animate-out');
+                        // Animasyon sonrası temizlik
+                        counter.style.transform = '';
+                        counter.style.opacity = '';
+                    }, 180);
+                }
+            });
+            
+            // Seçilen sayaç tipini göster (kısa gecikme ile)
+            setTimeout(() => {
+                const selectedCounter = document.getElementById(counterType + 'Counter');
+                if (selectedCounter) {
+                    selectedCounter.style.display = 'flex';
+                    selectedCounter.classList.add('animate-in');
+                    
+                    // Animasyon bitince class'ı kaldır
+                    setTimeout(() => {
+                        selectedCounter.classList.remove('animate-in');
+                        // Animasyon sonrası temizlik
+                        selectedCounter.style.transform = '';
+                        selectedCounter.style.opacity = '';
+                    }, 220);
+                }
+            }, 180);
+        }
+
+        function showCounterSelection() {
+            // Tüm sayaçları gizle (animasyonlu)
+            document.querySelectorAll('.counter-display').forEach(counter => {
+                if (counter.style.display !== 'none') {
+                    counter.classList.add('animate-out');
+                    setTimeout(() => {
+                        counter.style.display = 'none';
+                        counter.classList.remove('animate-out');
+                        // Animasyon sonrası temizlik
+                        counter.style.transform = '';
+                        counter.style.opacity = '';
+                    }, 180);
+                }
+            });
+            
+            // Sayaç seçim butonlarını tekrar göster (kısa gecikme ile)
+            setTimeout(() => {
+                const counterSelection = document.getElementById('counterSelection');
+                if (counterSelection) {
+                    counterSelection.style.display = 'flex';
+                }
+            }, 180);
+        }
+
+        // Kronometre fonksiyonları
+        let kronometreInterval;
+        let kronometreTime = 0;
+
+        function startKronometre() {
+            if (!kronometreInterval) {
+                kronometreInterval = setInterval(() => {
+                    kronometreTime++;
+                    updateKronometreDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetKronometre() {
+            clearInterval(kronometreInterval);
+            kronometreInterval = null;
+            kronometreTime = 0;
+            updateKronometreDisplay();
+        }
+
+        function updateKronometreDisplay() {
+            const hours = Math.floor(kronometreTime / 3600);
+            const minutes = Math.floor((kronometreTime % 3600) / 60);
+            const seconds = kronometreTime % 60;
+            
+            document.querySelector('#kronometreCounter .hours').textContent = hours.toString().padStart(2, '0');
+            document.querySelector('#kronometreCounter .minutes').textContent = minutes.toString().padStart(2, '0');
+            document.querySelector('#kronometreCounter .seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function fullscreenKronometre() {
+            const counter = document.getElementById('kronometreCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+
+        // TYT ve AYT deneme fonksiyonları
+        let tytDenemeInterval;
+        let tytDenemeTime = 165 * 60; // 165 dakika
+
+        function startTYTDeneme() {
+            if (!tytDenemeInterval) {
+                tytDenemeInterval = setInterval(() => {
+                    tytDenemeTime--;
+                    if (tytDenemeTime <= 0) {
+                        clearInterval(tytDenemeInterval);
+                        tytDenemeInterval = null;
+                        alert('TYT Deneme süresi doldu!');
+                        return;
+                    }
+                    updateTYTDenemeDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetTYTDeneme() {
+            clearInterval(tytDenemeInterval);
+            tytDenemeInterval = null;
+            tytDenemeTime = 165 * 60;
+            updateTYTDenemeDisplay();
+        }
+
+        function updateTYTDenemeDisplay() {
+            const minutes = Math.floor(tytDenemeTime / 60);
+            const seconds = tytDenemeTime % 60;
+            
+            document.querySelector('#tyt-denemeCounter .minutes').textContent = minutes.toString().padStart(2, '0');
+            document.querySelector('#tyt-denemeCounter .seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function fullscreenTYTDeneme() {
+            const counter = document.getElementById('tyt-denemeCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+
+        // AYT deneme fonksiyonları
+        let aytDenemeInterval;
+        let aytDenemeTime = 180 * 60; // 180 dakika
+
+        function startAYTDeneme() {
+            if (!aytDenemeInterval) {
+                aytDenemeInterval = setInterval(() => {
+                    aytDenemeTime--;
+                    if (aytDenemeTime <= 0) {
+                        clearInterval(aytDenemeInterval);
+                        aytDenemeInterval = null;
+                        alert('AYT Deneme süresi doldu!');
+                        return;
+                    }
+                    updateAYTDenemeDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetAYTDeneme() {
+            clearInterval(aytDenemeInterval);
+            aytDenemeInterval = null;
+            aytDenemeTime = 180 * 60;
+            updateAYTDenemeDisplay();
+        }
+
+        function updateAYTDenemeDisplay() {
+            const minutes = Math.floor(aytDenemeTime / 60);
+            const seconds = aytDenemeTime % 60;
+            
+            document.querySelector('#ayt-denemeCounter .minutes').textContent = minutes.toString().padStart(2, '0');
+            document.querySelector('#ayt-denemeCounter .seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function fullscreenAYTDeneme() {
+            const counter = document.getElementById('ayt-denemeCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+
+        // Özel sayaç fonksiyonları
+        let ozelCounterInterval;
+        let ozelCounterTime = 0;
+
+        function startOzelCounter() {
+            const saat = parseInt(document.getElementById('saat').value) || 0;
+            const dakika = parseInt(document.getElementById('dakika').value) || 0;
+            const saniye = parseInt(document.getElementById('saniye').value) || 0;
+            
+            ozelCounterTime = saat * 3600 + dakika * 60 + saniye;
+            
+            if (ozelCounterTime <= 0) {
+                alert('Lütfen geçerli bir süre girin!');
+                return;
+            }
+            
+            if (!ozelCounterInterval) {
+                ozelCounterInterval = setInterval(() => {
+                    ozelCounterTime--;
+                    if (ozelCounterTime <= 0) {
+                        clearInterval(ozelCounterInterval);
+                        ozelCounterInterval = null;
+                        alert('Süre doldu!');
+                        return;
+                    }
+                    updateOzelCounterDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetOzelCounter() {
+            clearInterval(ozelCounterInterval);
+            ozelCounterInterval = null;
+            ozelCounterTime = 0;
+            updateOzelCounterDisplay();
+        }
+
+        function updateOzelCounterDisplay() {
+            const hours = Math.floor(ozelCounterTime / 3600);
+            const minutes = Math.floor((ozelCounterTime % 3600) / 60);
+            const seconds = ozelCounterTime % 60;
+            
+            document.querySelector('#ozelCounter .hours').textContent = hours.toString().padStart(2, '0');
+            document.querySelector('#ozelCounter .minutes').textContent = minutes.toString().padStart(2, '0');
+            document.querySelector('#ozelCounter .seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function fullscreenOzel() {
+            const counter = document.getElementById('ozelCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+
+        // TYT ve AYT tarih ayarlama fonksiyonları
+        function setTYTDate() {
+            const date = prompt('TYT sınav tarihini girin (GG/AA/YYYY):');
+            if (date) {
+                // Tarih hesaplama ve geri sayım başlatma
+                alert('TYT tarihi ayarlandı: ' + date);
+            }
+        }
+
+        function setAYTDate() {
+            const date = prompt('AYT sınav tarihini girin (GG/AA/YYYY):');
+            if (date) {
+                // Tarih hesaplama ve geri sayım başlatma
+                alert('AYT tarihi ayarlandı: ' + date);
+            }
+        }
+
+        function fullscreenTYT() {
+            const counter = document.getElementById('tytCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+
+        function fullscreenAYT() {
+            const counter = document.getElementById('aytCounter');
+            if (counter.requestFullscreen) {
+                counter.requestFullscreen();
+            } else if (counter.webkitRequestFullscreen) {
+                counter.webkitRequestFullscreen();
+            }
+        }
+        
+        // Sayfa kapatıldığında tüm interval'leri temizle
+        window.addEventListener('beforeunload', function() {
+            if (window.countdownIntervals) {
+                Object.values(window.countdownIntervals).forEach(interval => {
+                    clearInterval(interval);
+                });
+                window.countdownIntervals = {};
+            }
+        });
+    </script>
+    <script src="floating-chat.js"></script>
+</body>
+</html> 
