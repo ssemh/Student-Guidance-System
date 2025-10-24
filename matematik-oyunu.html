@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusula - İkinci Dereceden Denklem Çözücü</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .equation-display {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .option {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .option:hover {
+            transform: scale(1.05);
+        }
+        .option.selected {
+            background: #357abd;
+        }
+        .equation {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        .timer {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Pusula Logo">
+                Pusula
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>İkinci Dereceden Denklem Çözücü</h2>
+            <div class="game-container">
+                <div class="score-display">
+                    Puan: <span id="score">0</span>
+                    Seviye: <span id="level">1</span>
+                </div>
+                <div class="timer">
+                    Kalan Süre: <span id="timer">40</span> saniye
+                </div>
+                <div class="equation-display">
+                    <h3>Denklem:</h3>
+                    <p id="equation" class="equation"></p>
+                </div>
+                <div class="options-container" id="optionsContainer"></div>
+                <div class="game-controls">
+                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
+                    <button id="checkAnswer" class="game-btn" disabled>Kontrol Et</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const equationDisplay = document.getElementById('equation');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const startButton = document.getElementById('startGame');
+            const checkButton = document.getElementById('checkAnswer');
+            const scoreDisplay = document.getElementById('score');
+            const levelDisplay = document.getElementById('level');
+            const timerDisplay = document.getElementById('timer');
+
+            let score = 0;
+            let level = 1;
+            let selectedOptions = [];
+            let currentEquation = null;
+            let currentRoots = [];
+            let timeLeft = 40;
+            let timerInterval;
+
+            const equations = [
+                // Seviye 1-5: Basit denklemler
+                {equation: "x² + 2x + 1 = 0", roots: [-1], level: 1},
+                {equation: "x² - 4 = 0", roots: [-2, 2], level: 1},
+                {equation: "x² + 3x + 2 = 0", roots: [-2, -1], level: 2},
+                {equation: "x² - 5x + 6 = 0", roots: [2, 3], level: 2},
+                {equation: "x² + x - 6 = 0", roots: [-3, 2], level: 3},
+                
+                // Seviye 6-10: Temel denklemler
+                {equation: "2x² + 5x + 2 = 0", roots: [-2, -1], level: 6},
+                {equation: "3x² - 12x + 12 = 0", roots: [2, 2], level: 6},
+                {equation: "x² - 6x + 9 = 0", roots: [3], level: 7},
+                {equation: "2x² - 7x + 3 = 0", roots: [3, 1], level: 8},
+                {equation: "4x² - 4x + 1 = 0", roots: [1], level: 9},
+                
+                // Seviye 11-15: Orta seviye denklemler
+                {equation: "6x² + x - 2 = 0", roots: [-1, 1], level: 11},
+                {equation: "3x² + 10x + 3 = 0", roots: [-3, -1], level: 12},
+                {equation: "2x² - x - 3 = 0", roots: [-1, 2], level: 13},
+                {equation: "4x² + 12x + 9 = 0", roots: [-2], level: 14},
+                {equation: "x² + 4x + 3 = 0", roots: [-3, -1], level: 15},
+                
+                // Seviye 16-20: Zor denklemler
+                {equation: "8x² + 14x + 3 = 0", roots: [-2, -1], level: 16},
+                {equation: "3x² - 7x + 4 = 0", roots: [1, 2], level: 17},
+                {equation: "5x² + 6x + 1 = 0", roots: [-1, -1], level: 18},
+                {equation: "2x² - 3x - 2 = 0", roots: [2, -1], level: 19},
+                {equation: "4x² + x - 3 = 0", roots: [1, -1], level: 20},
+                
+                // Seviye 21-25: Çok zor denklemler
+                {equation: "6x² - 13x + 6 = 0", roots: [2, 1], level: 21},
+                {equation: "9x² + 12x + 4 = 0", roots: [-1, -1], level: 22},
+                {equation: "3x² - 5x - 2 = 0", roots: [2, -1], level: 23},
+                {equation: "7x² + 15x + 8 = 0", roots: [-1, -2], level: 24},
+                {equation: "5x² - 9x + 4 = 0", roots: [2, 1], level: 25}
+            ];
+
+            function startTimer() {
+                timeLeft = 40;
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        nextQuestion();
+                    }
+                }, 1000);
+            }
+
+            function generateOptions(roots) {
+                const allOptions = new Set();
+                
+                // Doğru kökleri ekle
+                roots.forEach(root => allOptions.add(root));
+                
+                // Yanlış seçenekler için tam sayılar üret
+                while(allOptions.size < 5) {
+                    // -5 ile 5 arasında rastgele tam sayılar
+                    const fakeRoot = Math.floor(Math.random() * 11) - 5;
+                    // Eğer üretilen sayı gerçek köklerden biri değilse ekle
+                    if (!roots.includes(fakeRoot)) {
+                        allOptions.add(fakeRoot);
+                    }
+                }
+                
+                return Array.from(allOptions).sort((a, b) => a - b);
+            }
+
+            function getEquationsForLevel(level) {
+                return equations.filter(eq => eq.level <= level);
+            }
+
+            function generateGame() {
+                optionsContainer.innerHTML = '';
+                selectedOptions = [];
+                startTimer();
+                
+                const availableEquations = getEquationsForLevel(level);
+                currentEquation = availableEquations[Math.floor(Math.random() * availableEquations.length)];
+                currentRoots = currentEquation.roots;
+                
+                equationDisplay.textContent = currentEquation.equation;
+                
+                const options = generateOptions(currentRoots);
+                
+                options.forEach(option => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.textContent = option;
+                    optionDiv.addEventListener('click', () => selectOption(optionDiv, option));
+                    optionsContainer.appendChild(optionDiv);
+                });
+            }
+
+            function selectOption(optionDiv, value) {
+                if(selectedOptions.includes(value)) {
+                    selectedOptions = selectedOptions.filter(v => v !== value);
+                    optionDiv.classList.remove('selected');
+                } else if(selectedOptions.length < currentRoots.length) {
+                    selectedOptions.push(value);
+                    optionDiv.classList.add('selected');
+                }
+            }
+
+            function checkAnswer() {
+                const correct = selectedOptions.length === currentRoots.length &&
+                              selectedOptions.every(option => currentRoots.includes(option));
+
+                if(correct) {
+                    score += level * 10;
+                    alert('Tebrikler! Doğru kökleri buldun!');
+                }
+                
+                nextQuestion();
+            }
+
+            function nextQuestion() {
+                level++;
+                if (level > 25) {
+                    alert('Tebrikler! Tüm seviyeleri tamamladınız!');
+                    startButton.disabled = false;
+                    checkButton.disabled = true;
+                    clearInterval(timerInterval);
+                    return;
+                }
+                generateGame();
+                scoreDisplay.textContent = score;
+                levelDisplay.textContent = level;
+            }
+
+            startButton.addEventListener('click', () => {
+                level = 1;
+                score = 0;
+                generateGame();
+                startButton.disabled = true;
+                checkButton.disabled = false;
+            });
+
+            checkButton.addEventListener('click', checkAnswer);
+        });
+    </script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>
