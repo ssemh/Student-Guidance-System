@@ -3,15 +3,53 @@ class FloatingChatWidget {
     constructor() {
         this.isOpen = false;
         this.chatHistory = [];
-        this.API_KEY = 'Your_API_KEY';
-        this.API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
+        this.API_KEY = 'Your_API_Key';
+        this.API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent';
         this.retryCount = 0;
         this.MAX_RETRIES = 3;
         this.RETRY_DELAY = 2000;
         this.TIMEOUT_DURATION = 60000;
         
+        // Initialize system prompt
+        this.initializeSystemPrompt();
+        
         this.init();
     }
+
+    initializeSystemPrompt() {
+        const SYSTEM_PROMPT = `Sen Pusula adlı bir eğitim platformunun AI asistanısın. Görevin öğrencilere derslerinde yardımcı olmak ve eğitim konularında rehberlik etmek.
+
+Özelliklerin:
+- Kişisel koçluk yapay zekasısın
+- Öğrencilere rehberlik edersin
+- YKS sınavına yönelik bir AI asistanısın
+- YKS sınavına hazırlık ödevlerinde yardım edersin
+- YKS sınavına hazırlık konularında rehberlik edersin
+- YKS sınavına hazırlık sorularını yanıtlarsın
+- YKS sınavına hazırlık ödevlerinin çözümlerini yapar ve açıklamalar yaparsın
+- YKS sınavına hazırlık ödevlerinin açıklamalarını yaparsın
+- YKS sınavına hazırlık ödevlerinin öğrenme stratejilerini önerirsin
+- YKS sınavına hazırlık ödevlerinin öğrencileri motive edersin ve cesaretlendirirsin
+- Matematik, Fizik, Kimya, Biyoloji gibi derslerde soruları yanıtlarsın
+- Ödevlerde yardım edersin ve açıklamalar yaparsın
+- Öğrenme stratejileri önerirsin
+- Türkçe konuşursun ve samimi bir ton kullanırsın
+- Karmaşık konuları basit ve anlaşılır şekilde açıklarsın
+- Öğrencileri motive edersin ve cesaretlendirirsin
+
+Kuralların:
+- Cümleleri çok uzatmadan anlaşılır bir şekilde açıkla
+- Sadece eğitim ve öğrenme konularında yardım et, diğer konularda da az çok yardımcı olursun
+- Ödevleri tamamen çözme, sadece yol göster en son adım olarak ödevleri tamamen çözmeyi yaparsın
+- Güvenli ve uygun içerik üret
+- Öğrencinin yaş seviyesine uygun açıklamalar yap`;
+
+        this.chatHistory.push({
+            role: 'user',
+            content: SYSTEM_PROMPT
+        });
+    }
+
 
     init() {
         this.createWidget();
@@ -277,23 +315,23 @@ class FloatingChatWidget {
     }
 
     addWelcomeMessage() {
+        // Check if welcome message already exists (only system prompt should be present)
+        const hasWelcomeMessage = this.chatHistory.some(msg => 
+            msg.role === 'model' && msg.content.includes('Merhaba')
+        );
 
-        if (this.chatHistory.length === 0) {
+        if (!hasWelcomeMessage) {
             setTimeout(() => {
-
                 const firstName = localStorage.getItem('firstName') || '';
                 let userName = '';
                 
                 if (firstName) {
-
                     userName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
                 } else {
-
                     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                     if (currentUser) {
                         const nameFromUser = currentUser.name || currentUser.username;
                         if (nameFromUser) {
-
                             const firstWord = nameFromUser.split(' ')[0];
                             userName = firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
                         } else {
@@ -306,16 +344,37 @@ class FloatingChatWidget {
                 
                 const greetingMessage = `Merhaba ${userName}! 👋\n\nDerslerle ilgili bir sorun mu var?`;
                 this.addMessage(greetingMessage, 'ai');
+                
+                // Add greeting to chat history
+                this.chatHistory.push({
+                    role: 'model',
+                    content: greetingMessage
+                });
             }, 500);
         }
     }
 
     formatMarkdown(text) {
 
+        text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+        text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+        text = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+        
+
         text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        
+
+        text = text.replace(/^\s*[-*+]\s+(.*$)/gm, '<li>$1</li>');
+        text = text.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+        
+
+        text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
         text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-        text = text.replace(/\n/g, '<br>');
+        
+
+        text = text.replace(/\n\n/g, '</p><p>');
+        text = '<p>' + text + '</p>';
         
         return text;
     }
