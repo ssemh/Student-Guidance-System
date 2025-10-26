@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusula - Edebiyat Kahramanları</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .game-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .game-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .stat-box label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .matching-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .column-header {
+            background: white;
+            color: #667eea;
+            padding: 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .matching-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .match-item {
+            background: white;
+            color: #333;
+            padding: 1.3rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 3px solid transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .match-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .match-item.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            border-color: #764ba2;
+        }
+        
+        .match-item.matched {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .match-item.matched.correct {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            opacity: 1;
+            border-color: #27ae60;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .match-item.matched.incorrect {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border-color: #e74c3c;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .feedback-box {
+            background: #fff3cd;
+            padding: 1.3rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            text-align: center;
+            display: none;
+            border: 3px solid #ffc107;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+        }
+        
+        .feedback-box.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+        
+        .feedback-box.success {
+            background: #d4edda;
+            border: 3px solid #27ae60;
+            color: #155724;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .countdown {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        h2 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .game-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .game-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .game-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Pusula Logo">
+                Pusula
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>📚 Edebiyat Kahramanları</h2>
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <label>🏆 Puan</label>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>📖 Set</label>
+                        <span id="setNum">0</span>/5
+                    </div>
+                    <div class="stat-box">
+                        <label>⏱️ Süre</label>
+                        <span id="timer">60</span>s
+                    </div>
+                </div>
+                <div class="feedback-box" id="feedbackBox"></div>
+                <div class="matching-area">
+                    <div class="matching-column">
+                        <div class="column-header">Yazarlar</div>
+                        <div id="authorsContainer"></div>
+                    </div>
+                    <div class="matching-column">
+                        <div class="column-header">Eserler</div>
+                        <div id="worksContainer"></div>
+                    </div>
+                </div>
+                <div class="game-controls">
+                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
+                    <button id="nextSet" class="game-btn" disabled>Sonraki Set</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const authorsContainer = document.getElementById('authorsContainer');
+            const worksContainer = document.getElementById('worksContainer');
+            const feedbackBox = document.getElementById('feedbackBox');
+            const startButton = document.getElementById('startGame');
+            const nextButton = document.getElementById('nextSet');
+            const scoreDisplay = document.getElementById('score');
+            const setNumDisplay = document.getElementById('setNum');
+            // const progressDisplay = document.getElementById('progress');
+            const timerDisplay = document.getElementById('timer');
+            
+            let score = 0;
+            let currentSet = 0;
+            let selectedAuthor = null;
+            let matchedCount = 0;
+            let timeLeft = 60;
+            let timerInterval;
+            let currentPairs = [];
+
+            const authorWorkPairs = [
+                [
+                    { author: "Halit Ziya Uşaklıgil", work: "Mai ve Siyah" },
+                    { author: "Reşat Nuri Güntekin", work: "Çalıkuşu" },
+                    { author: "Halide Edib Adıvar", work: "Sinekli Bakkal" },
+                    { author: "Sabahattin Ali", work: "Kuyucaklı Yusuf" },
+                    { author: "Yaşar Kemal", work: "İnce Memed" }
+                ],
+                [
+                    { author: "Oğuz Atay", work: "Tutunamayanlar" },
+                    { author: "Yusuf Atılgan", work: "Aylak Adam" },
+                    { author: "Orhan Kemal", work: "Eskici ve Oğulları" },
+                    { author: "Sait Faik Abasıyanık", work: "Semaver" },
+                    { author: "Ahmet Hamdi Tanpınar", work: "Huzur" }
+                ],
+                [
+                    { author: "Namık Kemal", work: "İntibah" },
+                    { author: "Samipaşazade Sezai", work: "Sergüzeşt" },
+                    { author: "Recaizade Mahmut Ekrem", work: "Araba Sevdası" },
+                    { author: "Abdülhak Hamit Tarhan", work: "Makber" },
+                    { author: "Ziya Paşa", work: "Zafername" }
+                ],
+                [
+                    { author: "Fuzuli", work: "Leyla ile Mecnun" },
+                    { author: "Nedim", work: "Şarkılar" },
+                    { author: "Baki", work: "Kanunî Mersiyesi" },
+                    { author: "Nabi", work: "Hayriye" },
+                    { author: "Şeyhi", work: "Harname" }
+                ],
+                [
+                    { author: "Attila İlhan", work: "Kurtlar Sofrası" },
+                    { author: "Tarık Buğra", work: "Küçük Ağa" },
+                    { author: "Peyami Safa", work: "Fatih Harbiye" },
+                    { author: "Kemal Tahir", work: "Devlet Ana" },
+                    { author: "İnci Aral", work: "Ölü Erkek Kuşlar" }
+                ]
+            ];
+
+            function shuffleArray(array) {
+                return array.sort(() => Math.random() - 0.5);
+            }
+
+            function showFeedback(message, isSuccess = false) {
+                feedbackBox.textContent = message;
+                feedbackBox.classList.add('show');
+                if (isSuccess) {
+                    feedbackBox.classList.add('success');
+                } else {
+                    feedbackBox.classList.remove('success');
+                }
+            }
+
+            function startTimer() {
+                timeLeft = 60;
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft + 's';
+                    
+                    // Son 10 saniye kırmızı yap
+                    if (timeLeft <= 10) {
+                        timerDisplay.classList.add('countdown');
+                        timerDisplay.parentElement.style.color = '#e74c3c';
+                    } else {
+                        timerDisplay.classList.remove('countdown');
+                        timerDisplay.parentElement.style.color = '#667eea';
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        showFeedback("⏰ Süre Doldu! Tüm cevapları gösteriyorum.");
+                        revealAllAnswers();
+                    }
+                }, 1000);
+            }
+
+
+            function generateSet() {
+                if (currentSet >= 5) {
+                    endGame();
+                    return;
+                }
+
+                const set = authorWorkPairs[currentSet];
+                currentPairs = [...set];
+                matchedCount = 0;
+                selectedAuthor = null;
+                
+                authorsContainer.innerHTML = '';
+                worksContainer.innerHTML = '';
+
+                const shuffledAuthors = shuffleArray([...set.map(p => p.author)]);
+                const shuffledWorks = shuffleArray([...set.map(p => p.work)]);
+
+                shuffledAuthors.forEach((author, index) => {
+                    const authorDiv = document.createElement('div');
+                    authorDiv.className = 'match-item';
+                    authorDiv.textContent = author;
+                    authorDiv.dataset.author = author;
+                    authorDiv.addEventListener('click', () => selectAuthor(authorDiv, author));
+                    authorsContainer.appendChild(authorDiv);
+                });
+
+                shuffledWorks.forEach((work, index) => {
+                    const workDiv = document.createElement('div');
+                    workDiv.className = 'match-item';
+                    workDiv.textContent = work;
+                    workDiv.dataset.work = work;
+                    workDiv.addEventListener('click', () => selectWork(workDiv, work));
+                    worksContainer.appendChild(workDiv);
+                });
+
+                updateProgress();
+                startTimer();
+                setNumDisplay.textContent = currentSet + 1;
+                timerDisplay.parentElement.style.color = '#667eea';
+                feedbackBox.classList.remove('show');
+            }
+
+            function selectAuthor(authorDiv, author) {
+                if (authorDiv.classList.contains('matched')) return;
+
+                // Önceki seçimleri temizle
+                document.querySelectorAll('.match-item').forEach(item => {
+                    if (!item.classList.contains('matched')) {
+                        item.classList.remove('selected');
+                    }
+                });
+
+                authorDiv.classList.add('selected');
+                selectedAuthor = author;
+            }
+
+            function selectWork(workDiv, work) {
+                if (workDiv.classList.contains('matched')) return;
+                if (!selectedAuthor) return;
+
+                const correctPair = currentPairs.find(p => p.author === selectedAuthor);
+                const isCorrect = correctPair && correctPair.work === work;
+
+                const authorDiv = document.querySelector(`[data-author="${selectedAuthor}"]`);
+                const workDivSelected = document.querySelector(`[data-work="${work}"]`);
+
+                if (isCorrect) {
+                    authorDiv.classList.add('matched', 'correct');
+                    workDivSelected.classList.add('matched', 'correct');
+                    matchedCount++;
+                    updateProgress();
+                    score += 10;
+                    
+                 if (matchedCount === 5) {
+                         showFeedback("🎉 Harika! Tüm eşleştirmeleri doğru yaptınız!", true);
+                         clearInterval(timerInterval);
+                         setTimeout(() => {
+                             if (currentSet < 4) {
+                                 nextButton.disabled = false;
+                             } else {
+                                 endGame();
+                             }
+                         }, 2000);
+                     } else {
+                         showFeedback("✓ Doğru! Eşleştirme tamamlandı.", true);
+                     }
+                } else {
+                    authorDiv.classList.add('matched', 'incorrect');
+                    const correctWorkDiv = document.querySelector(`[data-work="${correctPair.work}"]`);
+                    correctWorkDiv.classList.add('matched', 'correct');
+                    showFeedback(`Yanlış! Doğru eşleştirme: "${selectedAuthor}" - "${correctPair.work}"`);
+                }
+
+                selectedAuthor = null;
+                scoreDisplay.textContent = score;
+            }
+
+            function updateProgress() {
+                // İlerleme gösterilmiyor
+            }
+
+             function revealAllAnswers() {
+                 currentPairs.forEach(pair => {
+                     const authorDiv = document.querySelector(`[data-author="${pair.author}"]`);
+                     const workDiv = document.querySelector(`[data-work="${pair.work}"]`);
+                     
+                     if (authorDiv && !authorDiv.classList.contains('matched')) {
+                         authorDiv.classList.add('matched', 'correct');
+                     }
+                     if (workDiv && !workDiv.classList.contains('matched')) {
+                         workDiv.classList.add('matched', 'correct');
+                     }
+                 });
+                 matchedCount = 5;
+                 updateProgress();
+                 setTimeout(() => {
+                     if (currentSet < 4) {
+                         nextButton.disabled = false;
+                     } else {
+                         endGame();
+                     }
+                 }, 2000);
+             }
+
+             function endGame() {
+                 clearInterval(timerInterval);
+                 const finalScore = score;
+                 const percentage = (finalScore / 250) * 100;
+                 
+                 let message = '';
+                 if (percentage >= 90) message = '🏆 Mükemmel!';
+                 else if (percentage >= 70) message = '🥇 Harika!';
+                 else if (percentage >= 50) message = '🎖️ İyi!';
+                 else message = '💪 Devam et!';
+                 
+                 alert(`${message}\n\nOyun Bitti!\nToplam Puan: ${finalScore}/250\nBaşarı Oranı: %${percentage.toFixed(0)}`);
+                 
+                 startButton.disabled = false;
+                 nextButton.disabled = true;
+                 authorsContainer.innerHTML = '';
+                 worksContainer.innerHTML = '';
+                 feedbackBox.classList.remove('show');
+             }
+
+            startButton.addEventListener('click', () => {
+                currentSet = 0;
+                score = 0;
+                generateSet();
+                startButton.disabled = true;
+                nextButton.disabled = false;
+            });
+
+            nextButton.addEventListener('click', () => {
+                currentSet++;
+                nextButton.disabled = true;
+                clearInterval(timerInterval);
+                generateSet();
+            });
+        });
+    </script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>
+
