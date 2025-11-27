@@ -27,27 +27,86 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(52, 152, 219, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .settings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 50%, #1abc9c 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .settings-card:hover::before {
+            opacity: 1;
         }
 
         .settings-card-header {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
+            margin: -20px -20px 25px -20px;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 50%, #1abc9c 100%);
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            z-index: 1;
         }
 
         .settings-card-header i {
-            font-size: 24px;
-            color: #3498db;
+            font-size: 28px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .settings-card:hover .settings-card-header i {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
         }
 
         .settings-card-header h3 {
             margin: 0;
-            color: #2c3e50;
-            font-size: 1.2em;
+            color: #ffffff;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.5px;
         }
 
         .settings-card-body {
@@ -65,27 +124,40 @@
         .form-group label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: #2c3e50;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
         }
 
         .form-group label i {
             color: #3498db;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
         }
 
         .form-group input {
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s ease;
+            background: #f8f9fa;
         }
 
         .form-group input:focus {
+            outline: none;
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            outline: none;
+            background: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .form-group input:hover {
+            border-color: #3498db;
+            background: #ffffff;
         }
 
         .toggle-group {
@@ -258,47 +330,6 @@
 
 
 
-        /* Profil Kodu Stilleri */
-        .profile-code {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .code-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        #profileCode {
-            font-family: monospace;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #3498db;
-            padding: 5px 10px;
-            background-color: #fff;
-            border-radius: 4px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .copy-code-btn {
-            background: none;
-            border: none;
-            color: #3498db;
-            cursor: pointer;
-            padding: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .copy-code-btn:hover {
-            color: #2980b9;
-            transform: scale(1.1);
-        }
 
         .user-branch {
             color: #3498db;
@@ -318,8 +349,8 @@
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
             </div>
             <div class="nav-links">
                 <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
@@ -350,15 +381,6 @@
                         <p class="user-school">İstanbul Lisesi</p>
                         <p class="user-branch" id="userBranch">Sayısal</p>
                         <p class="join-date">Üyelik: Ocak 2024</p>
-                        <div class="profile-code">
-                            <span>Profil Kodu:</span>
-                            <div class="code-container">
-                                <span id="profileCode">#123456</span>
-                                <button class="copy-code-btn" onclick="copyProfileCode()">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="achievement-section">
@@ -823,10 +845,11 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Pusula - Tüm Hakları Saklıdır</p>
+            <p>&copy; 2025 NetOdak - Tüm Hakları Saklıdır</p>
         </div>
     </footer>
     <script src="floating-chat.js"></script>
 </body>
 </html>
 </html>
+

@@ -3,72 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusula - Kimya Bileşik Birleştirme</title>
+    <title>NetOdak - Kimya Bileşik Birleştirme</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .game-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            margin: 1.5rem auto;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         }
+
+        .game-header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card label {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            margin: 1.5rem 0;
+            background: #e9ecef;
+            border-radius: 12px;
+            padding: 0.75rem;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar {
+            height: 25px;
+            background: linear-gradient(90deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.4);
+            position: relative;
+            min-width: 50px;
+        }
+
+        .progress-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #4361ee;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            z-index: 10;
+            text-shadow: 0 1px 3px rgba(255,255,255,0.8);
+        }
+
+        .target-compound {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.3);
+            border: 2px solid #ffc107;
+        }
+
+        .target-compound h3 {
+            color: #f57c00;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .target-compound .formula {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e65100;
+            margin: 0.75rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .target-compound .name {
+            font-size: 1.2rem;
+            color: #bf360c;
+            font-weight: 600;
+        }
+
         .elements-container {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
         }
+
         .element {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 1rem 0.75rem;
+            border-radius: 12px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 0.9rem;
             position: relative;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            border: 2px solid transparent;
         }
+
         .element:hover {
-            transform: scale(1.05);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5);
+            border-color: var(--primary-dark);
         }
+
         .element.selected {
-            background: #357abd;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-color: #2e7d32;
+            animation: pulse 0.5s ease;
         }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .element .symbol {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: block;
+        }
+
         .element-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #e74c3c;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.5);
+            border: 2px solid white;
         }
+
         .compound-display {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
             text-align: center;
-            margin: 2rem 0;
-            padding: 1rem;
-            background: #f5f5f5;
+            margin: 1.5rem 0;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.2);
+            border: 2px solid #2196F3;
+        }
+
+        .compound-display h3 {
+            color: #1565c0;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .selected-formula {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #0d47a1;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .selected-formula .element-badge {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
             border-radius: 8px;
+            display: inline-block;
+            margin: 0.15rem;
+            box-shadow: 0 3px 10px rgba(25, 118, 210, 0.4);
+            animation: slideIn 0.3s ease;
+            font-size: 0.9rem;
         }
-        .target-compound {
-            margin: 2rem 0;
-            text-align: center;
-            font-size: 1.2rem;
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .timer {
-            text-align: center;
+
+        .game-controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            padding: 0.75rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .game-btn.primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .game-btn.primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .game-btn.secondary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .game-btn.secondary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        .game-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .hint-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+        }
+
+        /* Toast Notification Styles */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+            min-width: 300px;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+        }
+
+        .toast.warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        .toast i {
             font-size: 1.5rem;
-            margin: 1rem 0;
+        }
+
+
+        /* Timer Styles */
+        .timer-container {
+            text-align: center;
+            margin: 1.25rem 0;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
             color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            border-radius: 12px;
+            display: inline-block;
+            min-width: 120px;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .timer-display.warning {
+            color: #f39c12;
+            background: linear-gradient(135deg, #fffbf0 0%, #ffe8cc 100%);
+            animation: pulse 1s infinite;
+        }
+
+        .timer-display.danger {
+            color: #e74c3c;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            animation: pulse 0.5s infinite;
+        }
+
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem;
+            }
+
+            .elements-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .target-compound .formula {
+                font-size: 1.8rem;
+            }
+
+            .toast {
+                min-width: 250px;
+                padding: 1rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -76,14 +394,13 @@
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
-            </div>            <div class="nav-links">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
                 <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
                 <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
-
                 <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
-
                 <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
                 <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
                 <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
@@ -94,127 +411,233 @@
 
     <section class="game-section">
         <div class="container">
-            <h2>Kimya Bileşik Birleştirme</h2>
+            <h2><i class="fas fa-flask"></i> Kimya Bileşik Birleştirme</h2>
             <div class="game-container">
-                <div class="score-display">
-                    Puan: <span id="score">0</span>
-                    Seviye: <span id="level">1</span>
+                <div class="game-header">
+                    <div class="stat-card">
+                        <label><i class="fas fa-star"></i> Puan</label>
+                        <div class="value" id="score">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <label><i class="fas fa-layer-group"></i> Seviye</label>
+                        <div class="value" id="level">1</div>
+                    </div>
+                    <div class="stat-card">
+                        <label><i class="fas fa-trophy"></i> Doğru</label>
+                        <div class="value" id="correctCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <label><i class="fas fa-times-circle"></i> Yanlış</label>
+                        <div class="value" id="wrongCount">0</div>
+                    </div>
                 </div>
-                <div class="timer">
-                    Kalan Süre: <span id="timer">40</span> saniye
+
+                <div class="progress-container">
+                    <div style="position: relative;">
+                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        <div class="progress-label">
+                            Seviye İlerlemesi: <span id="progressText">0%</span>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="timer-container">
+                    <div class="timer-display" id="timerDisplay">
+                        <i class="fas fa-clock"></i> <span id="timer">40</span>s
+                    </div>
+                </div>
+
                 <div class="target-compound">
-                    <h3>Hedef Bileşik:</h3>
-                    <p id="target"></p>
+                    <h3><i class="fas fa-bullseye"></i> Hedef Bileşik</h3>
+                    <div class="name" id="targetName">Oyunu başlatmak için butona tıklayın</div>
                 </div>
+
                 <div class="elements-container" id="elementsGrid"></div>
+
                 <div class="compound-display">
-                    <h3>Seçilen Elementler:</h3>
-                    <p id="selectedElements"></p>
+                    <h3><i class="fas fa-puzzle-piece"></i> Seçilen Elementler</h3>
+                    <div class="selected-formula" id="selectedElements">Henüz element seçilmedi</div>
                 </div>
+
                 <div class="game-controls">
-                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
-                    <button id="checkCompound" class="game-btn" disabled>Kontrol Et</button>
+                    <button id="startGame" class="game-btn primary">
+                        <i class="fas fa-play"></i> Oyunu Başlat
+                    </button>
+                    <button id="checkCompound" class="game-btn secondary" disabled>
+                        <i class="fas fa-check"></i> Kontrol Et
+                    </button>
+                    <button id="hintBtn" class="game-btn hint-btn" disabled>
+                        <i class="fas fa-lightbulb"></i> İpucu
+                    </button>
+                    <button id="resetBtn" class="game-btn secondary" disabled>
+                        <i class="fas fa-redo"></i> Sıfırla
+                    </button>
                 </div>
+
             </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
         </div>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const elementsGrid = document.getElementById('elementsGrid');
             const selectedElementsDisplay = document.getElementById('selectedElements');
             const startButton = document.getElementById('startGame');
             const checkButton = document.getElementById('checkCompound');
+            const hintButton = document.getElementById('hintBtn');
+            const resetButton = document.getElementById('resetBtn');
             const scoreDisplay = document.getElementById('score');
             const levelDisplay = document.getElementById('level');
-            const timerDisplay = document.getElementById('timer');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerText = document.getElementById('timer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const targetName = document.getElementById('targetName');
+            
+            // Stats
+            const correctCountDisplay = document.getElementById('correctCount');
+            const wrongCountDisplay = document.getElementById('wrongCount');
             
             let score = 0;
             let level = 1;
             let selectedElements = [];
-            let currentTarget = '';
+            let currentTarget = null;
             let timerInterval;
             let timeLeft = 40;
+            let gameStarted = false;
+            let correctCount = 0;
+            let wrongCount = 0;
+            let questionStartTime = 0;
+            let hintsUsed = 0;
+            let elementCounts = {};
+            let askedCompounds = []; // Sorulan bileşikleri takip et
 
             const elements = [
-                {symbol: 'H', name: 'Hidrojen'},
-                {symbol: 'O', name: 'Oksijen'},
-                {symbol: 'N', name: 'Azot'},
-                {symbol: 'C', name: 'Karbon'},
-                {symbol: 'Na', name: 'Sodyum'},
-                {symbol: 'Cl', name: 'Klor'},
-                {symbol: 'K', name: 'Potasyum'},
-                {symbol: 'Ca', name: 'Kalsiyum'},
-                {symbol: 'Mg', name: 'Magnezyum'},
-                {symbol: 'Al', name: 'Alüminyum'},
-                {symbol: 'Fe', name: 'Demir'},
-                {symbol: 'Cu', name: 'Bakır'},
-                {symbol: 'Zn', name: 'Çinko'},
-                {symbol: 'Ag', name: 'Gümüş'},
-                {symbol: 'Au', name: 'Altın'},
-                {symbol: 'P', name: 'Fosfor'},
-                {symbol: 'S', name: 'Kükürt'},
-                {symbol: 'Br', name: 'Brom'},
-                {symbol: 'I', name: 'İyot'},
-                {symbol: 'F', name: 'Flor'},
-                {symbol: 'Ba', name: 'Baryum'},
-                {symbol: 'Pb', name: 'Kurşun'},
-                {symbol: 'Mn', name: 'Mangan'},
-                {symbol: 'Cr', name: 'Krom'}
+                {symbol: 'H', name: 'Hidrojen', atomicNumber: 1, category: 'Ametal'},
+                {symbol: 'O', name: 'Oksijen', atomicNumber: 8, category: 'Ametal'},
+                {symbol: 'N', name: 'Azot', atomicNumber: 7, category: 'Ametal'},
+                {symbol: 'C', name: 'Karbon', atomicNumber: 6, category: 'Ametal'},
+                {symbol: 'Na', name: 'Sodyum', atomicNumber: 11, category: 'Metal'},
+                {symbol: 'Cl', name: 'Klor', atomicNumber: 17, category: 'Halojen'},
+                {symbol: 'K', name: 'Potasyum', atomicNumber: 19, category: 'Metal'},
+                {symbol: 'Ca', name: 'Kalsiyum', atomicNumber: 20, category: 'Metal'},
+                {symbol: 'Mg', name: 'Magnezyum', atomicNumber: 12, category: 'Metal'},
+                {symbol: 'Al', name: 'Alüminyum', atomicNumber: 13, category: 'Metal'},
+                {symbol: 'Fe', name: 'Demir', atomicNumber: 26, category: 'Geçiş Metali'},
+                {symbol: 'Cu', name: 'Bakır', atomicNumber: 29, category: 'Geçiş Metali'},
+                {symbol: 'Zn', name: 'Çinko', atomicNumber: 30, category: 'Geçiş Metali'},
+                {symbol: 'Ag', name: 'Gümüş', atomicNumber: 47, category: 'Geçiş Metali'},
+                {symbol: 'Au', name: 'Altın', atomicNumber: 79, category: 'Geçiş Metali'},
+                {symbol: 'P', name: 'Fosfor', atomicNumber: 15, category: 'Ametal'},
+                {symbol: 'S', name: 'Kükürt', atomicNumber: 16, category: 'Ametal'},
+                {symbol: 'Br', name: 'Brom', atomicNumber: 35, category: 'Halojen'},
+                {symbol: 'I', name: 'İyot', atomicNumber: 53, category: 'Halojen'},
+                {symbol: 'F', name: 'Flor', atomicNumber: 9, category: 'Halojen'},
+                {symbol: 'Ba', name: 'Baryum', atomicNumber: 56, category: 'Metal'},
+                {symbol: 'Pb', name: 'Kurşun', atomicNumber: 82, category: 'Metal'},
+                {symbol: 'Mn', name: 'Mangan', atomicNumber: 25, category: 'Geçiş Metali'},
+                {symbol: 'Cr', name: 'Krom', atomicNumber: 24, category: 'Geçiş Metali'},
+                {symbol: 'Li', name: 'Lityum', atomicNumber: 3, category: 'Metal'},
+                {symbol: 'Be', name: 'Berilyum', atomicNumber: 4, category: 'Metal'},
+                {symbol: 'B', name: 'Bor', atomicNumber: 5, category: 'Yarı Metal'},
+                {symbol: 'Si', name: 'Silisyum', atomicNumber: 14, category: 'Yarı Metal'},
+                {symbol: 'Ti', name: 'Titanyum', atomicNumber: 22, category: 'Geçiş Metali'},
+                {symbol: 'Ni', name: 'Nikel', atomicNumber: 28, category: 'Geçiş Metali'}
             ];
 
             const compounds = [
                 // Seviye 1-5: Basit Bileşikler
-                {formula: 'H₂O', name: 'Su', elements: ['H', 'H', 'O'], level: 1},
-                {formula: 'NaCl', name: 'Sodyum Klorür (Tuz)', elements: ['Na', 'Cl'], level: 1},
-                {formula: 'KCl', name: 'Potasyum Klorür', elements: ['K', 'Cl'], level: 2},
-                {formula: 'MgO', name: 'Magnezyum Oksit', elements: ['Mg', 'O'], level: 2},
-                {formula: 'CO₂', name: 'Karbondioksit', elements: ['C', 'O', 'O'], level: 3},
+                {formula: 'H₂O', name: 'Su', elements: ['H', 'H', 'O'], level: 1, hint: 'En yaygın bileşiklerden biri. İki hidrojen ve bir oksijen atomu içerir.'},
+                {formula: 'NaCl', name: 'Sodyum Klorür (Tuz)', elements: ['Na', 'Cl'], level: 1, hint: 'Mutfakta kullandığımız tuz. Bir sodyum ve bir klor atomu içerir.'},
+                {formula: 'KCl', name: 'Potasyum Klorür', elements: ['K', 'Cl'], level: 2, hint: 'Bir potasyum ve bir klor atomu içerir.'},
+                {formula: 'MgO', name: 'Magnezyum Oksit', elements: ['Mg', 'O'], level: 2, hint: 'Bir magnezyum ve bir oksijen atomu içerir.'},
+                {formula: 'CO₂', name: 'Karbondioksit', elements: ['C', 'O', 'O'], level: 3, hint: 'Solunum sonucu oluşan gaz. Bir karbon ve iki oksijen atomu içerir.'},
+                {formula: 'LiCl', name: 'Lityum Klorür', elements: ['Li', 'Cl'], level: 3, hint: 'Bir lityum ve bir klor atomu içerir.'},
+                {formula: 'CaO', name: 'Kalsiyum Oksit', elements: ['Ca', 'O'], level: 4, hint: 'Bir kalsiyum ve bir oksijen atomu içerir.'},
+                {formula: 'AlCl₃', name: 'Alüminyum Klorür', elements: ['Al', 'Cl', 'Cl', 'Cl'], level: 5, hint: 'Bir alüminyum ve üç klor atomu içerir.'},
                 
                 // Seviye 6-10: Temel Bileşikler
-                {formula: 'NH₃', name: 'Amonyak', elements: ['N', 'H', 'H', 'H'], level: 6},
-                {formula: 'HCl', name: 'Hidroklorik Asit', elements: ['H', 'Cl'], level: 6},
-                {formula: 'H₂SO₄', name: 'Sülfürik Asit', elements: ['H', 'H', 'S', 'O', 'O', 'O', 'O'], level: 7},
-                {formula: 'CaCO₃', name: 'Kalsiyum Karbonat', elements: ['Ca', 'C', 'O', 'O', 'O'], level: 8},
-                {formula: 'NaOH', name: 'Sodyum Hidroksit', elements: ['Na', 'O', 'H'], level: 9},
+                {formula: 'NH₃', name: 'Amonyak', elements: ['N', 'H', 'H', 'H'], level: 6, hint: 'Temizlik malzemelerinde kullanılır. Bir azot ve üç hidrojen atomu içerir.'},
+                {formula: 'HCl', name: 'Hidroklorik Asit', elements: ['H', 'Cl'], level: 6, hint: 'Güçlü bir asit. Bir hidrojen ve bir klor atomu içerir.'},
+                {formula: 'H₂SO₄', name: 'Sülfürik Asit', elements: ['H', 'H', 'S', 'O', 'O', 'O', 'O'], level: 7, hint: 'Endüstride çok kullanılır. İki hidrojen, bir kükürt ve dört oksijen atomu içerir.'},
+                {formula: 'CaCO₃', name: 'Kalsiyum Karbonat', elements: ['Ca', 'C', 'O', 'O', 'O'], level: 8, hint: 'Kireçtaşının ana bileşeni. Bir kalsiyum, bir karbon ve üç oksijen atomu içerir.'},
+                {formula: 'NaOH', name: 'Sodyum Hidroksit', elements: ['Na', 'O', 'H'], level: 9, hint: 'Güçlü bir baz. Bir sodyum, bir oksijen ve bir hidrojen atomu içerir.'},
+                {formula: 'HNO₃', name: 'Nitrik Asit', elements: ['H', 'N', 'O', 'O', 'O'], level: 10, hint: 'Bir hidrojen, bir azot ve üç oksijen atomu içerir.'},
                 
                 // Seviye 11-15: Orta Seviye Bileşikler
-                {formula: 'Fe₂O₃', name: 'Demir(III) Oksit', elements: ['Fe', 'Fe', 'O', 'O', 'O'], level: 11},
-                {formula: 'Cu(OH)₂', name: 'Bakır(II) Hidroksit', elements: ['Cu', 'O', 'H', 'O', 'H'], level: 12},
-                {formula: 'Al₂O₃', name: 'Alüminyum Oksit', elements: ['Al', 'Al', 'O', 'O', 'O'], level: 13},
-                {formula: 'ZnCl₂', name: 'Çinko Klorür', elements: ['Zn', 'Cl', 'Cl'], level: 14},
-                {formula: 'AgNO₃', name: 'Gümüş Nitrat', elements: ['Ag', 'N', 'O', 'O', 'O'], level: 15},
+                {formula: 'Fe₂O₃', name: 'Demir(III) Oksit', elements: ['Fe', 'Fe', 'O', 'O', 'O'], level: 11, hint: 'Pasın ana bileşeni. İki demir ve üç oksijen atomu içerir.'},
+                {formula: 'Cu(OH)₂', name: 'Bakır(II) Hidroksit', elements: ['Cu', 'O', 'H', 'O', 'H'], level: 12, hint: 'Bir bakır, iki oksijen ve iki hidrojen atomu içerir.'},
+                {formula: 'Al₂O₃', name: 'Alüminyum Oksit', elements: ['Al', 'Al', 'O', 'O', 'O'], level: 13, hint: 'İki alüminyum ve üç oksijen atomu içerir.'},
+                {formula: 'ZnCl₂', name: 'Çinko Klorür', elements: ['Zn', 'Cl', 'Cl'], level: 14, hint: 'Bir çinko ve iki klor atomu içerir.'},
+                {formula: 'AgNO₃', name: 'Gümüş Nitrat', elements: ['Ag', 'N', 'O', 'O', 'O'], level: 15, hint: 'Bir gümüş, bir azot ve üç oksijen atomu içerir.'},
                 
                 // Seviye 16-20: İleri Seviye Bileşikler
-                {formula: 'KMnO₄', name: 'Potasyum Permanganat', elements: ['K', 'Mn', 'O', 'O', 'O', 'O'], level: 16},
-                {formula: 'Na₂CO₃', name: 'Sodyum Karbonat', elements: ['Na', 'Na', 'C', 'O', 'O', 'O'], level: 17},
-                {formula: 'CuSO₄', name: 'Bakır Sülfat', elements: ['Cu', 'S', 'O', 'O', 'O', 'O'], level: 18},
-                {formula: 'Al₂(SO₄)₃', name: 'Alüminyum Sülfat', elements: ['Al', 'Al', 'S', 'S', 'S', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 19},
-                {formula: 'Fe(NO₃)₃', name: 'Demir(III) Nitrat', elements: ['Fe', 'N', 'N', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 20},
+                {formula: 'KMnO₄', name: 'Potasyum Permanganat', elements: ['K', 'Mn', 'O', 'O', 'O', 'O'], level: 16, hint: 'Oksitleyici bir madde. Bir potasyum, bir mangan ve dört oksijen atomu içerir.'},
+                {formula: 'Na₂CO₃', name: 'Sodyum Karbonat', elements: ['Na', 'Na', 'C', 'O', 'O', 'O'], level: 17, hint: 'Çamaşır sodası. İki sodyum, bir karbon ve üç oksijen atomu içerir.'},
+                {formula: 'CuSO₄', name: 'Bakır Sülfat', elements: ['Cu', 'S', 'O', 'O', 'O', 'O'], level: 18, hint: 'Mavi renkli bir tuz. Bir bakır, bir kükürt ve dört oksijen atomu içerir.'},
+                {formula: 'FeCl₃', name: 'Demir(III) Klorür', elements: ['Fe', 'Cl', 'Cl', 'Cl'], level: 19, hint: 'Bir demir ve üç klor atomu içerir.'},
+                {formula: 'Ca(OH)₂', name: 'Kalsiyum Hidroksit', elements: ['Ca', 'O', 'H', 'O', 'H'], level: 20, hint: 'Sönmüş kireç. Bir kalsiyum, iki oksijen ve iki hidrojen atomu içerir.'},
                 
                 // Seviye 21-25: Uzman Seviye Bileşikler
-                {formula: 'K₂Cr₂O₇', name: 'Potasyum Dikromat', elements: ['K', 'K', 'Cr', 'Cr', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 21},
-                {formula: 'NH₄NO₃', name: 'Amonyum Nitrat', elements: ['N', 'H', 'H', 'H', 'H', 'N', 'O', 'O', 'O'], level: 22},
-                {formula: 'Ca(ClO)₂', name: 'Kalsiyum Hipoklorit', elements: ['Ca', 'Cl', 'O', 'Cl', 'O'], level: 23},
-                {formula: 'Mg₃(PO₄)₂', name: 'Magnezyum Fosfat', elements: ['Mg', 'Mg', 'Mg', 'P', 'P', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 24},
-                {formula: 'Fe₃(PO₄)₂', name: 'Demir(II) Fosfat', elements: ['Fe', 'Fe', 'Fe', 'P', 'P', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 25}
+                {formula: 'K₂Cr₂O₇', name: 'Potasyum Dikromat', elements: ['K', 'K', 'Cr', 'Cr', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 21, hint: 'İki potasyum, iki krom ve yedi oksijen atomu içerir.'},
+                {formula: 'NH₄NO₃', name: 'Amonyum Nitrat', elements: ['N', 'H', 'H', 'H', 'H', 'N', 'O', 'O', 'O'], level: 22, hint: 'Gübre olarak kullanılır. İki azot, dört hidrojen ve üç oksijen atomu içerir.'},
+                {formula: 'AlCl₃', name: 'Alüminyum Klorür', elements: ['Al', 'Cl', 'Cl', 'Cl'], level: 23, hint: 'Bir alüminyum ve üç klor atomu içerir.'},
+                {formula: 'Mg₃(PO₄)₂', name: 'Magnezyum Fosfat', elements: ['Mg', 'Mg', 'Mg', 'P', 'P', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 24, hint: 'Üç magnezyum, iki fosfor ve sekiz oksijen atomu içerir.'},
+                {formula: 'Fe₃(PO₄)₂', name: 'Demir(II) Fosfat', elements: ['Fe', 'Fe', 'Fe', 'P', 'P', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'], level: 25, hint: 'Üç demir, iki fosfor ve sekiz oksijen atomu içerir.'}
             ];
 
+            // Toast Notification Function
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-times-circle',
+                    info: 'fa-info-circle',
+                    warning: 'fa-exclamation-triangle'
+                };
+                
+                toast.innerHTML = `
+                    <i class="fas ${icons[type]}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
             function startTimer() {
-                timeLeft = 40;
+                timeLeft = 40 - Math.floor(level / 3) * 5; // Zorluk arttıkça süre azalır
+                if (timeLeft < 15) timeLeft = 15; // Minimum 15 saniye
+                
+                timerText.textContent = timeLeft;
+                timerDisplay.className = 'timer-display';
+                
                 clearInterval(timerInterval);
                 timerInterval = setInterval(() => {
                     timeLeft--;
-                    timerDisplay.textContent = timeLeft;
+                    timerText.textContent = timeLeft;
+                    
+                    if (timeLeft <= 10) {
+                        timerDisplay.classList.add('danger');
+                    } else if (timeLeft <= 20) {
+                        timerDisplay.classList.add('warning');
+                    }
+                    
                     if (timeLeft <= 0) {
                         clearInterval(timerInterval);
-                        nextQuestion();
+                        showToast('Süre doldu! Sonraki soruya geçiliyor...', 'warning');
+                        handleWrongAnswer();
                     }
                 }, 1000);
             }
@@ -226,13 +649,40 @@
             function generateGame() {
                 elementsGrid.innerHTML = '';
                 selectedElements = [];
+                elementCounts = {};
                 updateSelectedDisplay();
                 startTimer();
+                questionStartTime = Date.now();
 
                 const availableCompounds = getCompoundsForLevel(level);
-                const targetCompound = availableCompounds[Math.floor(Math.random() * availableCompounds.length)];
+                if (availableCompounds.length === 0) {
+                    showToast('Tebrikler! Tüm seviyeleri tamamladınız!', 'success');
+                    endGame();
+                    return;
+                }
+                
+                // Sorulmamış bileşikleri filtrele
+                const unaskedCompounds = availableCompounds.filter(c => 
+                    !askedCompounds.some(asked => asked.formula === c.formula)
+                );
+                
+                // Eğer tüm bileşikler sorulmuşsa, listeyi sıfırla
+                let compoundsToChooseFrom = unaskedCompounds.length > 0 ? unaskedCompounds : availableCompounds;
+                if (unaskedCompounds.length === 0 && askedCompounds.length > 0) {
+                    askedCompounds = []; // Listeyi sıfırla
+                    compoundsToChooseFrom = availableCompounds;
+                }
+                
+                const targetCompound = compoundsToChooseFrom[Math.floor(Math.random() * compoundsToChooseFrom.length)];
                 currentTarget = targetCompound;
-                document.getElementById('target').textContent = targetCompound.name;
+                
+                // Sorulan bileşiği listeye ekle
+                askedCompounds.push({
+                    formula: targetCompound.formula,
+                    name: targetCompound.name
+                });
+                
+                targetName.textContent = targetCompound.name;
 
                 const requiredElements = new Set(targetCompound.elements);
                 const otherElements = elements.filter(e => !requiredElements.has(e.symbol));
@@ -240,85 +690,205 @@
                 
                 const displayElements = [
                     ...Array.from(requiredElements).map(symbol => elements.find(e => e.symbol === symbol)),
-                    ...shuffledOtherElements.slice(0, 12 - requiredElements.size)
+                    ...shuffledOtherElements.slice(0, 16 - requiredElements.size)
                 ].sort(() => Math.random() - 0.5);
 
                 displayElements.forEach(element => {
                     const elementDiv = document.createElement('div');
                     elementDiv.className = 'element';
+                    elementDiv.dataset.symbol = element.symbol;
                     elementDiv.innerHTML = `
-                        <strong>${element.symbol}</strong>
+                        <span class="symbol">${element.symbol}</span>
                         <span class="element-count" style="display: none;">0</span>
                     `;
+                    
                     elementDiv.addEventListener('click', () => selectElement(element, elementDiv));
                     elementsGrid.appendChild(elementDiv);
                 });
+                
+                updateProgress();
             }
 
             function selectElement(element, elementDiv) {
-                const countDisplay = elementDiv.querySelector('.element-count');
-                const currentCount = parseInt(countDisplay.textContent) || 0;
+                if (!gameStarted || !currentTarget) return;
                 
+                const countDisplay = elementDiv.querySelector('.element-count');
+                const currentCount = elementCounts[element.symbol] || 0;
+                const targetCount = currentTarget.elements.filter(e => e === element.symbol).length;
+                
+                // Eğer element seçili değilse veya hedef sayıdan az seçiliyse, ekle
                 if (currentCount === 0) {
+                    // Element ekle (hem doğru hem yanlış elementler seçilebilir)
                     selectedElements.push(element.symbol);
+                    elementCounts[element.symbol] = 1;
                     countDisplay.textContent = '1';
                     countDisplay.style.display = 'flex';
                     elementDiv.classList.add('selected');
+                } else if (currentCount < targetCount) {
+                    // Doğru element için hedef sayıya kadar ekle
+                    selectedElements.push(element.symbol);
+                    elementCounts[element.symbol] = currentCount + 1;
+                    countDisplay.textContent = elementCounts[element.symbol];
+                    countDisplay.style.display = 'flex';
+                    elementDiv.classList.add('selected');
                 } else {
-                    const targetCount = currentTarget.elements.filter(e => e === element.symbol).length;
-                    if (currentCount < targetCount) {
-                        selectedElements.push(element.symbol);
-                        countDisplay.textContent = (currentCount + 1).toString();
-                    } else {
-                        selectedElements = selectedElements.filter(e => e !== element.symbol);
-                        elementDiv.classList.remove('selected');
-                        countDisplay.style.display = 'none';
+                    // Element çıkar (tümünü çıkar)
+                    const removeCount = currentCount;
+                    for (let i = 0; i < removeCount; i++) {
+                        const index = selectedElements.indexOf(element.symbol);
+                        if (index > -1) selectedElements.splice(index, 1);
                     }
+                    elementCounts[element.symbol] = 0;
+                    elementDiv.classList.remove('selected');
+                    countDisplay.style.display = 'none';
+                    countDisplay.textContent = '0';
                 }
+                
                 updateSelectedDisplay();
             }
 
             function updateSelectedDisplay() {
-                selectedElementsDisplay.textContent = selectedElements.join(' + ');
+                if (selectedElements.length === 0) {
+                    selectedElementsDisplay.textContent = 'Henüz element seçilmedi';
+                    return;
+                }
+                
+                selectedElementsDisplay.innerHTML = '';
+                const grouped = {};
+                selectedElements.forEach(symbol => {
+                    grouped[symbol] = (grouped[symbol] || 0) + 1;
+                });
+                
+                Object.keys(grouped).forEach(symbol => {
+                    const badge = document.createElement('span');
+                    badge.className = 'element-badge';
+                    badge.textContent = `${symbol}${grouped[symbol] > 1 ? '₍' + grouped[symbol] + '₎' : ''}`;
+                    selectedElementsDisplay.appendChild(badge);
+                });
             }
 
             function checkCompound() {
+                if (!currentTarget) return;
+                
                 const correct = JSON.stringify(selectedElements.sort()) === 
                               JSON.stringify(currentTarget.elements.sort());
 
-                if(correct) {
-                    score += level * 10;
-                    alert('Tebrikler! Doğru bileşik!');
+                if (correct) {
+                    const baseScore = level * 10;
+                    const timeBonus = Math.max(0, timeLeft * 2);
+                    const perfectBonus = timeLeft >= 30 ? 50 : 0;
+                    const scoreGain = baseScore + timeBonus + perfectBonus;
+                    
+                    score += scoreGain;
+                    correctCount++;
+                    
+                    showToast(`🎉 Harika! +${scoreGain} puan kazandınız!`, 'success');
+                    
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 1500);
+                } else {
+                    wrongCount++;
+                    showToast('❌ Yanlış! Doğru bileşiği oluşturmaya çalışın.', 'error');
                 }
                 
-                nextQuestion();
+                updateDisplay();
+            }
+
+            function handleWrongAnswer() {
+                wrongCount++;
+                updateDisplay();
+                setTimeout(() => nextQuestion(), 1000);
             }
 
             function nextQuestion() {
                 level++;
                 if (level > 25) {
-                    alert('Tebrikler! Tüm seviyeleri tamamladınız!');
-                    startButton.disabled = false;
-                    checkButton.disabled = true;
-                    clearInterval(timerInterval);
+                    endGame();
                     return;
                 }
                 generateGame();
-                scoreDisplay.textContent = score;
+                updateDisplay();
+                updateProgress();
+            }
+
+            function updateDisplay() {
+                scoreDisplay.textContent = score.toLocaleString();
                 levelDisplay.textContent = level;
+                correctCountDisplay.textContent = correctCount;
+                wrongCountDisplay.textContent = wrongCount;
+            }
+
+            function updateProgress() {
+                const progress = (level / 25) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }
+
+
+            function showHint() {
+                if (!currentTarget || hintsUsed >= 3) {
+                    showToast('İpucu hakkınız kalmadı!', 'warning');
+                    return;
+                }
+                
+                hintsUsed++;
+                showToast(currentTarget.hint, 'info');
+                hintButton.disabled = hintsUsed >= 3;
+            }
+
+            function resetSelection() {
+                selectedElements = [];
+                elementCounts = {};
+                elementsGrid.querySelectorAll('.element').forEach(el => {
+                    el.classList.remove('selected');
+                    const countDisplay = el.querySelector('.element-count');
+                    if (countDisplay) {
+                        countDisplay.style.display = 'none';
+                    }
+                });
+                updateSelectedDisplay();
+            }
+
+            function endGame() {
+                gameStarted = false;
+                clearInterval(timerInterval);
+                startButton.disabled = false;
+                checkButton.disabled = true;
+                hintButton.disabled = true;
+                resetButton.disabled = true;
+                
+                const finalMessage = `🎊 Oyun Bitti! 🎊\n\nToplam Puan: ${score.toLocaleString()}\nSeviye: ${level}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`;
+                showToast(finalMessage, 'success');
             }
 
             startButton.addEventListener('click', () => {
                 level = 1;
                 score = 0;
+                correctCount = 0;
+                wrongCount = 0;
+                hintsUsed = 0;
+                askedCompounds = []; // Sorulan bileşikler listesini sıfırla
+                gameStarted = true;
+                
                 generateGame();
+                updateDisplay();
+                
                 startButton.disabled = true;
                 checkButton.disabled = false;
+                hintButton.disabled = false;
+                resetButton.disabled = false;
+                
+                showToast('Oyun başladı! İyi şanslar! 🎮', 'info');
             });
 
             checkButton.addEventListener('click', checkCompound);
+            hintButton.addEventListener('click', showHint);
+            resetButton.addEventListener('click', resetSelection);
         });
     </script>
     <script src="floating-chat.js"></script>
 </body>
 </html>
+
+

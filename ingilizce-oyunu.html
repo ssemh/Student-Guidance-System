@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetOdak - İngilizce Kelime Avı</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .game-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .game-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .stat-box label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .question-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .question-type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .question-text {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .pronunciation-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pronunciation-btn:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+        
+        .pronunciation-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            text-align: left;
+        }
+        
+        .option-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .option-btn.correct {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+        
+        .option-btn.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+        
+        .feedback.correct {
+            border: 3px solid #27ae60;
+        }
+        
+        .feedback.incorrect {
+            border: 3px solid #e74c3c;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .blank {
+            background: #fff3cd;
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            border-bottom: 2px dashed #667eea;
+            min-width: 100px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>İngilizce Kelime Avı</h2>
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <label>Puan</label>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Doğru</label>
+                        <span id="correct">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Yanlış</label>
+                        <span id="wrong">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Soru</label>
+                        <span id="question-num">0</span>/<span id="total-questions">0</span>
+                    </div>
+                </div>
+                
+                <div id="game-area">
+                    <div class="question-container">
+                        <div class="question-type" id="question-type">Kelime</div>
+                        <div class="question-text" id="question-text">
+                            Soru yükleniyor...
+                        </div>
+                        <div class="options-container" id="options-container">
+                            <!-- Seçenekler buraya eklenecek -->
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="check-btn">Cevabı Kontrol Et</button>
+                            <button class="btn btn-secondary" id="next-btn" style="display: none;">Sonraki Soru</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="feedback" class="feedback">
+        <h3 id="feedback-text"></h3>
+    </div>
+
+    <script>
+        // 30 İngilizce kelime
+        const words = [
+            { word: "apple", translation: "elma" },
+            { word: "book", translation: "kitap" },
+            { word: "cat", translation: "kedi" },
+            { word: "dog", translation: "köpek" },
+            { word: "elephant", translation: "fil" },
+            { word: "friend", translation: "arkadaş" },
+            { word: "garden", translation: "bahçe" },
+            { word: "house", translation: "ev" },
+            { word: "ice", translation: "buz" },
+            { word: "juice", translation: "meyve suyu" },
+            { word: "key", translation: "anahtar" },
+            { word: "love", translation: "sevgi" },
+            { word: "moon", translation: "ay" },
+            { word: "night", translation: "gece" },
+            { word: "orange", translation: "portakal" },
+            { word: "paper", translation: "kağıt" },
+            { word: "queen", translation: "kraliçe" },
+            { word: "rain", translation: "yağmur" },
+            { word: "sun", translation: "güneş" },
+            { word: "tree", translation: "ağaç" },
+            { word: "umbrella", translation: "şemsiye" },
+            { word: "violet", translation: "mor" },
+            { word: "water", translation: "su" },
+            { word: "xylophone", translation: "ksilofon" },
+            { word: "yellow", translation: "sarı" },
+            { word: "zoo", translation: "hayvanat bahçesi" },
+            { word: "table", translation: "masa" },
+            { word: "chair", translation: "sandalye" },
+            { word: "window", translation: "pencere" },
+            { word: "door", translation: "kapı" }
+        ];
+        
+        // 10 boşluk doldurma cümlesi
+        const fillInTheBlankSentences = [
+            { sentence: "I have a ___ in my garden.", answer: "tree", options: ["tree", "car", "book", "phone"] },
+            { sentence: "The ___ is shining today.", answer: "sun", options: ["sun", "moon", "star", "cloud"] },
+            { sentence: "It's raining, I need an ___.", answer: "umbrella", options: ["umbrella", "apple", "book", "car"] },
+            { sentence: "I love to read a good ___.", answer: "book", options: ["book", "car", "cat", "dog"] },
+            { sentence: "My favorite color is ___.", answer: "yellow", options: ["yellow", "sky", "snake", "love"] },
+            { sentence: "I drink ___ every morning.", answer: "water", options: ["water", "juice", "milk", "coffee"] },
+            { sentence: "The ___ is very big.", answer: "elephant", options: ["elephant", "cat", "dog", "bird"] },
+            { sentence: "I sit on a ___.", answer: "chair", options: ["chair", "table", "bed", "floor"] },
+            { sentence: "I can see through the ___.", answer: "window", options: ["window", "door", "wall", "roof"] },
+            { sentence: "I have a red ___.", answer: "apple", options: ["apple", "orange", "banana", "grape"] }
+        ];
+        
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let currentQuestion = null;
+        let selectedOption = null;
+        let currentQuestionIndex = 0;
+        let allQuestions = [];
+        let answered = false;
+        
+        // Tüm soruları oluştur
+        function generateAllQuestions() {
+            allQuestions = [];
+            
+            // Kelime soruları (30 soru)
+            words.forEach(word => {
+                // Rastgele 3 yanlış seçenek seç
+                const wrongOptions = words
+                    .filter(w => w.word !== word.word)
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3)
+                    .map(w => w.translation);
+                
+                // Seçenekleri karıştır
+                const options = [word.translation, ...wrongOptions].sort(() => Math.random() - 0.5);
+                
+                allQuestions.push({
+                    type: 'word',
+                    question: `"${word.word}" kelimesinin Türkçe karşılığı nedir?`,
+                    pronunciation: word.pronunciation,
+                    correctAnswer: word.translation,
+                    options: options
+                });
+            });
+            
+            // Boşluk doldurma soruları (10 soru)
+            fillInTheBlankSentences.forEach(sentence => {
+                allQuestions.push({
+                    type: 'fill',
+                    question: sentence.sentence.replace('___', '<span class="blank">___</span>'),
+                    correctAnswer: sentence.answer,
+                    options: sentence.options.sort(() => Math.random() - 0.5)
+                });
+            });
+            
+            // Soruları karıştır
+            allQuestions = allQuestions.sort(() => Math.random() - 0.5);
+        }
+        
+        // Oyunu başlat
+        function initGame() {
+            generateAllQuestions();
+            document.getElementById('total-questions').textContent = allQuestions.length;
+            currentQuestionIndex = 0;
+            score = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            updateStats();
+            loadQuestion();
+        }
+        
+        // Soru yükle
+        function loadQuestion() {
+            if (currentQuestionIndex >= allQuestions.length) {
+                alert(`Oyun Tamamlandı!\nPuan: ${score}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
+                initGame();
+                return;
+            }
+            
+            currentQuestion = allQuestions[currentQuestionIndex];
+            selectedOption = null;
+            answered = false;
+            
+            // Soru tipini göster
+            const questionType = currentQuestion.type === 'word' ? 'Kelime' : 'Boşluk Doldurma';
+            document.getElementById('question-type').textContent = questionType;
+            
+            // Soru metnini göster
+            let questionHTML = currentQuestion.question;
+            if (currentQuestion.type === 'word') {
+                // Kelime sorularında sesli okuma butonu ekle
+                const word = words.find(w => w.translation === currentQuestion.correctAnswer);
+                if (word) {
+                    questionHTML += `<button class="pronunciation-btn" onclick="playPronunciation('${word.word}')" title="Kelimeyi Dinle">
+                        <i class="fas fa-microphone"></i>
+                    </button>`;
+                }
+            }
+            document.getElementById('question-text').innerHTML = questionHTML;
+            
+            // Seçenekleri göster
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((option, index) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option;
+                optionBtn.dataset.option = option;
+                optionBtn.addEventListener('click', () => selectOption(optionBtn));
+                optionsContainer.appendChild(optionBtn);
+            });
+            
+            // Butonları güncelle
+            document.getElementById('check-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            // İstatistikleri güncelle
+            document.getElementById('question-num').textContent = currentQuestionIndex + 1;
+        }
+        
+        // Seçenek seç
+        function selectOption(btn) {
+            if (answered) return;
+            
+            // Önceki seçimi temizle
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            
+            // Yeni seçimi işaretle
+            btn.classList.add('selected');
+            selectedOption = btn.dataset.option;
+        }
+        
+        // Cevabı kontrol et
+        function checkAnswer() {
+            if (!selectedOption) {
+                alert('Lütfen bir seçenek seçin!');
+                return;
+            }
+            
+            if (answered) return;
+            answered = true;
+            
+            const isCorrect = selectedOption === currentQuestion.correctAnswer;
+            
+            // Seçenekleri renklendir
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.dataset.option === currentQuestion.correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (btn.dataset.option === selectedOption && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                score += 10;
+                correctCount++;
+                showFeedback('Doğru! ✓', true);
+            } else {
+                wrongCount++;
+                showFeedback('Yanlış! ✗ Doğru cevap: ' + currentQuestion.correctAnswer, false);
+            }
+            
+            updateStats();
+            
+            // Butonları güncelle
+            document.getElementById('check-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+        
+        // Sonraki soru
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+        
+        // İstatistikleri güncelle
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('wrong').textContent = wrongCount;
+        }
+        
+        // Geri bildirim göster
+        function showFeedback(message, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedbackText.textContent = message;
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect') + ' show';
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Sesli okuma fonksiyonu
+        function playPronunciation(word) {
+            if ('speechSynthesis' in window) {
+                // Önceki okumayı durdur
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8; // Biraz yavaş
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('Tarayıcınız sesli okuma özelliğini desteklemiyor.');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('check-btn').addEventListener('click', checkAnswer);
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        
+        // Sayfa yüklendiğinde oyunu başlat
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+    <script src="script.js"></script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>
+
+
+

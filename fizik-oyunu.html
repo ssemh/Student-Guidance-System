@@ -3,94 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusula - Fizik Laboratuvarı</title>
+    <title>NetOdak - Fizik Laboratuvarı</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .game-container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 2rem auto;
-            padding: 2rem;
+            padding: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .game-stats {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        .lab-area {
-            width: 100%;
-            height: 400px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-            margin: 2rem 0;
-        }
-        .object {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-color);
-            position: absolute;
-            border-radius: 50%;
-            cursor: move;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-        }
-        .reference-point {
-            width: 10px;
-            height: 10px;
-            background: red;
-            position: absolute;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .reference-line {
-            position: absolute;
-            background: rgba(255, 0, 0, 0.3);
-            height: 2px;
-            transform-origin: left center;
-            pointer-events: none;
-        }
-        .controls {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .control-btn {
-            padding: 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .physics-info {
-            background: #f8f9fa;
+        
+        .stat-box {
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .stat-box label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .experiment-area {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .experiment-title {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .experiment-description {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .controls-panel {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .control-group {
+            margin-bottom: 1rem;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
             border-radius: 8px;
-            margin-top: 1rem;
+            font-size: 1rem;
         }
-        .physics-info p {
-            margin: 0.5rem 0;
+        
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
         }
-        .object-controls {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1rem 0;
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 0.5rem;
         }
-        .object-control {
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .lab-area {
+            background: linear-gradient(to bottom, #e3f2fd 0%, #f5f5f5 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            min-height: 500px;
+            position: relative;
+            border: 3px solid #ddd;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
         }
-        .object-control label {
-            min-width: 80px;
-        }
-        .object-control input {
+        
+        #simulation-canvas {
             width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            background: transparent;
+            cursor: crosshair;
+        }
+        
+        .results-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .results-panel h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        
+        #results-text {
+            font-size: 1.1rem;
+            color: #333;
+            line-height: 1.8;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .data-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .data-item {
+            background: white;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .data-item label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        
+        .data-item span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
         }
     </style>
 </head>
@@ -98,15 +207,13 @@
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
             </div>
             <div class="nav-links">
                 <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
                 <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
-
                 <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
-
                 <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
                 <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
                 <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
@@ -119,283 +226,309 @@
         <div class="container">
             <h2>Fizik Laboratuvarı</h2>
             <div class="game-container">
-                <div class="object-controls">
-                    <div class="object-control">
-                        <label>Kütle (kg):</label>
-                        <input type="range" id="mass" min="1" max="10" value="1">
-                        <span id="massValue">1</span>
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <label>Seviye</label>
+                        <span id="level">1</span>
                     </div>
-                    <div class="object-control">
-                        <label>Hız (m/s):</label>
-                        <input type="range" id="velocity" min="0" max="20" value="0">
-                        <span id="velocityValue">0</span>
+                    <div class="stat-box">
+                        <label>Puan</label>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Deney</label>
+                        <span id="experiment-num">1</span>/20
                     </div>
                 </div>
+                
+                <div class="experiment-area">
+                    <h3 class="experiment-title" id="experiment-title">Fizik Laboratuvarı</h3>
+                    <div class="experiment-description" id="experiment-description">
+                        Sanal laboratuvarda fizik deneyleri yaparak fizik kanunlarını keşfedin. Deney kontrollerini kullanarak deneyi başlatın ve sonuçları gözlemleyin.
+                    </div>
+                    
+                    <div class="controls-panel">
+                        <h3>Deney Kontrolleri</h3>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                            <div class="control-group">
+                                <label>Kütle (m) - kg:</label>
+                                <input type="number" id="mass" value="5" step="0.1" min="0.1" onchange="updateSimulation()">
+                            </div>
+                            <div class="control-group">
+                                <label>İvme (a) - m/s²:</label>
+                                <input type="number" id="acceleration" value="9.8" step="0.1" min="0.1" onchange="updateSimulation()">
+                            </div>
+                            <div class="control-group">
+                                <label>Başlangıç Açısı (θ) - °:</label>
+                                <input type="number" id="angle" value="45" step="1" min="0" max="90" onchange="updateSimulation()">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                            <div class="control-group">
+                                <label>İp Uzunluğu (L) - m:</label>
+                                <input type="number" id="length" value="200" step="10" min="50" max="300" onchange="updateSimulation()">
+                            </div>
+                            <div class="control-group">
+                                <label>Sürtünme Katsayısı:</label>
+                                <input type="number" id="damping" value="0.995" step="0.001" min="0.9" max="1" onchange="updateSimulation()">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-primary" onclick="startExperiment()">Deneyi Başlat</button>
+                            <button class="btn btn-secondary" onclick="stopExperiment()">Durdur</button>
+                            <button class="btn btn-secondary" onclick="resetExperiment()">Sıfırla</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="lab-area" id="labArea">
-                    <div class="object" id="object">1kg</div>
+                    <canvas id="simulation-canvas"></canvas>
                 </div>
-                <div class="controls">
-                    <button class="control-btn" id="gravity">Yerçekimi</button>
-                    <button class="control-btn" id="friction">Sürtünme</button>
-                    <button class="control-btn" id="bounce">Sıçrama</button>
+                
+                <div class="results-panel">
+                    <h3>Gerçek Zamanlı Veriler</h3>
+                    <div class="data-display">
+                        <div class="data-item">
+                            <label>Hız (m/s)</label>
+                            <span id="velocity-display">0.00</span>
+                        </div>
+                        <div class="data-item">
+                            <label>İvme (m/s²)</label>
+                            <span id="accel-display">0.00</span>
+                        </div>
+                        <div class="data-item">
+                            <label>Kinetik Enerji (J)</label>
+                            <span id="kinetic-display">0.00</span>
+                        </div>
+                        <div class="data-item">
+                            <label>Açı (θ)</label>
+                            <span id="angle-display">45.0°</span>
                 </div>
-                <div class="physics-info">
-                    <h3>Fiziksel Özellikler:</h3>
-                    <p>Momentum: <span id="momentum">0</span> kg⋅m/s</p>
-                    <p>Kinetik Enerji: <span id="kineticEnergy">0</span> Joule</p>
-                    <p>Potansiyel Enerji: <span id="potentialEnergy">0</span> Joule</p>
-                    <p>İvme: <span id="acceleration">0</span> m/s²</p>
-                    <p>Kuvvet: <span id="force">0</span> N</p>
-                    <p>Tork: <span id="torque">0</span> N⋅m</p>
                 </div>
-                <div class="game-controls">
-                    <button id="setReference" class="game-btn">Referans Noktası Belirle</button>
-                    <button id="startGame" class="game-btn" disabled>Simülasyonu Başlat</button>
-                    <button id="resetGame" class="game-btn">Sıfırla</button>
+                    <p id="results-text" style="margin-top: 1.5rem;">Deneyi başlatın...</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
-        </div>
-    </footer>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const object = document.getElementById('object');
-            const labArea = document.getElementById('labArea');
-            const gravityBtn = document.getElementById('gravity');
-            const frictionBtn = document.getElementById('friction');
-            const bounceBtn = document.getElementById('bounce');
-            const startButton = document.getElementById('startGame');
-            const resetButton = document.getElementById('resetGame');
-            const setReferenceButton = document.getElementById('setReference');
-            const massInput = document.getElementById('mass');
-            const velocityInput = document.getElementById('velocity');
-            const massValue = document.getElementById('massValue');
-            const velocityValue = document.getElementById('velocityValue');
-            const momentumDisplay = document.getElementById('momentum');
-            const kineticEnergyDisplay = document.getElementById('kineticEnergy');
-            const potentialEnergyDisplay = document.getElementById('potentialEnergy');
-            const accelerationDisplay = document.getElementById('acceleration');
-            const forceDisplay = document.getElementById('force');
-            const torqueDisplay = document.getElementById('torque');
-
-            let isDragging = false;
-            let currentX;
-            let currentY;
-            let initialX;
-            let initialY;
-            let xOffset = 0;
-            let yOffset = 0;
-            let gravity = false;
-            let friction = false;
-            let bounce = false;
-            let animationId;
-            let velocity = { x: 0, y: 0 };
-            let mass = 1;
-            let acceleration = { x: 0, y: 0 };
-            let referencePoint = null;
-            let referenceLine = null;
-            const g = 9.81; // yerçekimi ivmesi
-
-            function createReferencePoint(x, y) {
-                if (referencePoint) {
-                    labArea.removeChild(referencePoint);
-                }
-                if (referenceLine) {
-                    labArea.removeChild(referenceLine);
-                }
-
-                referencePoint = document.createElement('div');
-                referencePoint.className = 'reference-point';
-                referencePoint.style.left = x + 'px';
-                referencePoint.style.top = y + 'px';
-
-                referenceLine = document.createElement('div');
-                referenceLine.className = 'reference-line';
-                referenceLine.style.left = x + 'px';
-                referenceLine.style.top = y + 'px';
-
-                labArea.appendChild(referencePoint);
-                labArea.appendChild(referenceLine);
-
-                startButton.disabled = false;
+        // Canvas ve simülasyon değişkenleri
+        const canvas = document.getElementById('simulation-canvas');
+        const ctx = canvas.getContext('2d');
+        let animationId = null;
+        let isRunning = false;
+        
+        // Simülasyon parametreleri
+        let simParams = {
+            mass: 5,
+            acceleration: 9.8,
+            angle: Math.PI / 4, // 45 derece
+            angleVelocity: 0,
+            length: 200,
+            damping: 0.995,
+            pivotX: 0,
+            pivotY: 0,
+            ballX: 0,
+            ballY: 0
+        };
+        
+        // Canvas boyutunu ayarla
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            simParams.pivotX = canvas.width / 2;
+            simParams.pivotY = 50;
+            updateSimulation();
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Simülasyonu güncelle
+        function updateSimulation() {
+            simParams.mass = parseFloat(document.getElementById('mass').value) || 5;
+            simParams.acceleration = parseFloat(document.getElementById('acceleration').value) || 9.8;
+            const angleDeg = parseFloat(document.getElementById('angle').value) || 45;
+            simParams.angle = (angleDeg * Math.PI) / 180;
+            simParams.length = parseFloat(document.getElementById('length').value) || 200;
+            simParams.damping = parseFloat(document.getElementById('damping').value) || 0.995;
+            
+            if (!isRunning) {
+                draw();
             }
-
-            function updatePhysics() {
-                const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-                const momentum = mass * speed;
-                const kineticEnergy = 0.5 * mass * speed * speed;
-                const height = labArea.clientHeight - yOffset - object.clientHeight;
-                const potentialEnergy = mass * g * height / 100; // yüksekliği metreye çevir
-                const totalAcceleration = Math.sqrt(acceleration.x * acceleration.x + acceleration.y * acceleration.y);
-                const force = mass * totalAcceleration;
-
-                let torque = 0;
-                if (referencePoint) {
-                    const dx = xOffset + object.clientWidth/2 - parseInt(referencePoint.style.left);
-                    const dy = yOffset + object.clientHeight/2 - parseInt(referencePoint.style.top);
-                    const distance = Math.sqrt(dx * dx + dy * dy) / 100; // metreye çevir
-                    const angle = Math.atan2(dy, dx);
-                    torque = force * distance * Math.sin(angle);
-
-                    // Referans çizgisini güncelle
-                    referenceLine.style.width = distance * 100 + 'px';
-                    referenceLine.style.transform = `rotate(${angle}rad)`;
-                }
-
-                momentumDisplay.textContent = momentum.toFixed(2);
-                kineticEnergyDisplay.textContent = kineticEnergy.toFixed(2);
-                potentialEnergyDisplay.textContent = potentialEnergy.toFixed(2);
-                accelerationDisplay.textContent = totalAcceleration.toFixed(2);
-                forceDisplay.textContent = force.toFixed(2);
-                torqueDisplay.textContent = torque.toFixed(2);
+        }
+        
+        // Çizim fonksiyonu
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Arka plan grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
             }
-
-            massInput.addEventListener('input', function() {
-                mass = parseFloat(this.value);
-                massValue.textContent = mass;
-                object.textContent = `${mass}kg`;
-                object.style.width = object.style.height = `${40 + mass * 2}px`;
-                updatePhysics();
-            });
-
-            velocityInput.addEventListener('input', function() {
-                const speed = parseFloat(this.value);
-                velocityValue.textContent = speed;
-                velocity.x = speed;
-                updatePhysics();
-            });
-
-            function dragStart(e) {
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-
-                if (e.target === object) {
-                    isDragging = true;
-                }
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
             }
-
-            function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-                    xOffset = currentX;
-                    yOffset = currentY;
-                    setTranslate(currentX, currentY, object);
-                    updatePhysics();
-                }
-            }
-
-            function setTranslate(xPos, yPos, el) {
-                el.style.transform = `translate(${xPos}px, ${yPos}px)`;
-            }
-
-            function dragEnd() {
-                initialX = currentX;
-                initialY = currentY;
-                isDragging = false;
-            }
-
+            
+            // Bağlanma noktası (pivot)
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(simParams.pivotX, simParams.pivotY, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // İp/çubuk çizimi
+            simParams.ballX = simParams.pivotX + simParams.length * Math.sin(simParams.angle);
+            simParams.ballY = simParams.pivotY + simParams.length * Math.cos(simParams.angle);
+            
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(simParams.pivotX, simParams.pivotY);
+            ctx.lineTo(simParams.ballX, simParams.ballY);
+            ctx.stroke();
+            
+            // Trajectory path (iz)
+            ctx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.arc(simParams.pivotX, simParams.pivotY, simParams.length, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Cisim (top)
+            const ballRadius = 15 + simParams.mass * 2;
+            const gradient = ctx.createRadialGradient(
+                simParams.ballX - 5, simParams.ballY - 5, 0,
+                simParams.ballX, simParams.ballY, ballRadius
+            );
+            gradient.addColorStop(0, '#fff');
+            gradient.addColorStop(0.5, '#667eea');
+            gradient.addColorStop(1, '#5568d3');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(simParams.ballX, simParams.ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Kütle bilgisi
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${simParams.mass.toFixed(1)} kg`, simParams.ballX, simParams.ballY + ballRadius + 20);
+            
+            // Açı bilgisi
+            ctx.fillStyle = '#667eea';
+            ctx.font = '12px Arial';
+            const angleDeg = (simParams.angle * 180) / Math.PI;
+            ctx.fillText(`θ: ${angleDeg.toFixed(1)}°`, simParams.pivotX, simParams.pivotY - 20);
+        }
+        
+        // Animasyon döngüsü
             function animate() {
-                if (gravity) {
-                    acceleration.y = g;
-                    velocity.y += acceleration.y * 0.1;
-                }
-                
-                if (friction) {
-                    const frictionCoef = 0.02;
-                    velocity.x *= (1 - frictionCoef);
-                    velocity.y *= (1 - frictionCoef);
-                }
-
-                xOffset += velocity.x;
-                yOffset += velocity.y;
-
-                const maxY = labArea.clientHeight - object.clientHeight;
-                const maxX = labArea.clientWidth - object.clientWidth;
-
-                if (yOffset > maxY) {
-                    yOffset = maxY;
-                    if (bounce) {
-                        velocity.y *= -0.8;
-                    } else {
-                        velocity.y = 0;
-                    }
-                }
-
-                if (xOffset > maxX || xOffset < 0) {
-                    velocity.x *= -1;
-                    xOffset = xOffset > maxX ? maxX : 0;
-                }
-
-                setTranslate(xOffset, yOffset, object);
-                updatePhysics();
+            if (!isRunning) return;
+            
+            // Sarkaç fiziği
+            const g = simParams.acceleration;
+            const L = simParams.length / 100; // Pikselden metreye çevir (basitleştirilmiş)
+            const angleAccel = -(g / L) * Math.sin(simParams.angle);
+            
+            simParams.angleVelocity += angleAccel * 0.016; // ~60 FPS için
+            simParams.angleVelocity *= simParams.damping; // Sürtünme
+            simParams.angle += simParams.angleVelocity * 0.016;
+            
+            // Hız ve enerji hesaplamaları
+            const velocity = simParams.angleVelocity * simParams.length / 100;
+            const kineticEnergy = 0.5 * simParams.mass * velocity * velocity;
+            const height = simParams.length * (1 - Math.cos(simParams.angle)) / 100;
+            const potentialEnergy = simParams.mass * g * height;
+            
+            // Verileri güncelle
+            document.getElementById('velocity-display').textContent = Math.abs(velocity).toFixed(2);
+            document.getElementById('accel-display').textContent = Math.abs(angleAccel * L).toFixed(2);
+            document.getElementById('kinetic-display').textContent = kineticEnergy.toFixed(2);
+            const angleDeg = (simParams.angle * 180) / Math.PI;
+            document.getElementById('angle-display').textContent = angleDeg.toFixed(1) + '°';
+            
+            draw();
                 animationId = requestAnimationFrame(animate);
             }
 
-            labArea.addEventListener('mousedown', dragStart);
-            labArea.addEventListener('mousemove', drag);
-            labArea.addEventListener('mouseup', dragEnd);
-            labArea.addEventListener('mouseleave', dragEnd);
-
-            setReferenceButton.addEventListener('click', () => {
-                const handler = (e) => {
-                    const rect = labArea.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    createReferencePoint(x, y);
-                    labArea.removeEventListener('click', handler);
-                };
-                labArea.addEventListener('click', handler);
-            });
-
-            gravityBtn.addEventListener('click', () => {
-                gravity = !gravity;
-                gravityBtn.style.background = gravity ? '#357abd' : '';
-                acceleration.y = gravity ? g : 0;
-            });
-
-            frictionBtn.addEventListener('click', () => {
-                friction = !friction;
-                frictionBtn.style.background = friction ? '#357abd' : '';
-            });
-
-            bounceBtn.addEventListener('click', () => {
-                bounce = !bounce;
-                bounceBtn.style.background = bounce ? '#357abd' : '';
-            });
-
-            startButton.addEventListener('click', () => {
-                cancelAnimationFrame(animationId);
+        // Deneyi başlat
+        function startExperiment() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            const angleDeg = parseFloat(document.getElementById('angle').value) || 45;
+            simParams.angle = (angleDeg * Math.PI) / 180;
+            simParams.angleVelocity = 0;
+            
+            document.getElementById('results-text').innerHTML = `
+                <strong>Simülasyon Başladı!</strong><br>
+                Kütle: ${simParams.mass.toFixed(1)} kg<br>
+                İvme: ${simParams.acceleration.toFixed(1)} m/s²<br>
+                İp Uzunluğu: ${simParams.length} px<br>
+                Başlangıç Açısı: ${angleDeg.toFixed(1)}°
+            `;
+            
+            experimentCount++;
+            document.getElementById('experiment-num').textContent = experimentCount;
                 animate();
-                startButton.disabled = true;
-            });
+        }
 
-            resetButton.addEventListener('click', () => {
+        // Deneyi durdur
+        function stopExperiment() {
+            isRunning = false;
+            if (animationId) {
                 cancelAnimationFrame(animationId);
-                xOffset = 0;
-                yOffset = 0;
-                velocity = { x: 0, y: 0 };
-                acceleration = { x: 0, y: 0 };
-                if (referencePoint) {
-                    labArea.removeChild(referencePoint);
-                    referencePoint = null;
-                }
-                if (referenceLine) {
-                    labArea.removeChild(referenceLine);
-                    referenceLine = null;
-                }
-                setTranslate(xOffset, yOffset, object);
-                startButton.disabled = true;
-                updatePhysics();
-            });
-        });
+            }
+        }
+        
+        // Sıfırla
+        function resetExperiment() {
+            stopExperiment();
+            document.getElementById('mass').value = 5;
+            document.getElementById('acceleration').value = 9.8;
+            document.getElementById('angle').value = 45;
+            document.getElementById('length').value = 200;
+            document.getElementById('damping').value = 0.995;
+            
+            simParams.angle = Math.PI / 4;
+            simParams.angleVelocity = 0;
+            
+            document.getElementById('velocity-display').textContent = '0.00';
+            document.getElementById('accel-display').textContent = '0.00';
+            document.getElementById('kinetic-display').textContent = '0.00';
+            document.getElementById('angle-display').textContent = '45.0°';
+            document.getElementById('results-text').textContent = 'Deneyi başlatın...';
+            
+            updateSimulation();
+        }
+        
+        let score = 0;
+        let level = 1;
+        let experimentCount = 0;
+        
+        // İlk çizim
+        draw();
     </script>
+    <script src="script.js"></script>
     <script src="floating-chat.js"></script>
 </body>
 </html>
+
+

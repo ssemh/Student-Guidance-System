@@ -3,408 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusula - Hücre Macerası</title>
+    <title>NetOdak - Organel Simülatörü</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .game-container {
-            max-width: 900px;
-            margin:  2rem auto;
-            padding: 2rem;
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .organelle-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .organelle-card {
             background: white;
-            border-radius: 10px;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 3px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-        .cell-diagram {
-            width: 100%;
-            height: 650px;
-            background: 
-                radial-gradient(ellipse at 30% 40%, rgba(255,249,196,0.8) 0%, #e3f2fd 100%),
-                linear-gradient(135deg, #fff9c4 0%, #e8f5e9 50%, #c8e6c9 100%);
-            border-radius: 50%;
-            position: relative;
-            margin: 2rem auto;
-            border: 6px double #1565c0;
-            overflow: hidden;
-            max-width: 650px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+
+        .organelle-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
         }
-        
-        .cell-membrane {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid #1976d2;
-            z-index: 0; /* En altta */
-            transition: all 0.3s;
-            pointer-events: none; /* Tıklanamaz */
-        }
-        
-        .cell-membrane:hover {
-            border-color: #0d47a1;
-            box-shadow: 0 0 20px rgba(21, 101, 192, 0.5);
-        }
-        
-        .cell-membrane::after {
-            content: '';
-            position: absolute;
-            width: 98%;
-            height: 98%;
-            border-radius: 50%;
-            border: 2px solid #1565c0;
-            top: 1%;
-            left: 1%;
-            pointer-events: none;
-        }
-        
-        .nucleus {
-            position: absolute;
-            width: 32%;
-            height: 32%;
-            background: 
-                radial-gradient(circle at 35% 35%, rgba(255, 235, 59, 0.8) 0%, #ffa726 50%, #fb8c00 100%),
-                linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-            border-radius: 50%;
-            border: 3px double #e65100;
-            top: 32%;
-            left: 32%;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 0 20px rgba(0,0,0,0.2);
-            z-index: 2;
-            cursor: pointer;
-            transition: all 0.3s;
-            overflow: hidden;
-        }
-        
-        .nucleus::before {
-            content: '';
-            position: absolute;
-            width: 40%;
-            height: 40%;
-            background: linear-gradient(135deg, rgba(255, 235, 59, 0.9) 0%, rgba(255, 193, 7, 0.7) 100%);
-            border-radius: 50%;
-            top: 30%;
-            left: 30%;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
-        }
-        
-        .nucleus:hover {
-            transform: scale(1.08);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.15), 0 0 30px rgba(255, 152, 0, 0.7);
-            border-color: #ef6c00;
-        }
-        
-        .nucleus-membrane {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid #bf360c;
-            pointer-events: none;
-        }
-        
-        .mitochondria {
-            position: absolute;
-            width: 13%;
-            height: 28%;
-            background: linear-gradient(135deg, #d32f2f 0%, #c62828 50%, #b71c1c 100%);
-            border-radius: 45% 45% 45% 45%;
-            transform: rotate(-35deg);
-            box-shadow: 0 3px 15px rgba(0,0,0,0.4);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #a71c1c;
-        }
-        
-        .mitochondria::before {
-            content: '';
-            position: absolute;
-            width: 70%;
-            height: 18%;
-            background: repeating-linear-gradient(90deg, #d32f2f 0%, #d32f2f 15%, #c62828 15%, #c62828 30%);
-            top: 45%;
-            left: 15%;
-            border-radius: 12px;
-            pointer-events: none;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        }
-        
-        .mitochondria::after {
-            content: '';
-            position: absolute;
-            width: 55%;
-            height: 12%;
-            background: repeating-linear-gradient(90deg, #c62828 0%, #c62828 12%, #b71c1c 12%, #b71c1c 24%);
-            top: 25%;
-            left: 20%;
-            border-radius: 10px;
-            pointer-events: none;
-        }
-        
-        .mitochondria:hover {
-            transform: rotate(-35deg) scale(1.25);
-            box-shadow: 0 5px 20px rgba(198, 40, 40, 0.8);
-        }
-        
-        .endoplasmic-reticulum {
-            position: absolute;
-            width: 32%;
-            height: 3px;
-            background: linear-gradient(90deg, #9e9e9e 0%, #757575 50%, #9e9e9e 100%);
-            transform: rotate(-30deg);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 2px;
-        }
-        
-        .endoplasmic-reticulum::before {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ff5722;
-            border-radius: 50%;
-            top: -3px;
-            left: 10%;
-            box-shadow: 0 0 0 2px #757575;
-        }
-        
-        .endoplasmic-reticulum::after {
-            content: '';
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ff5722;
-            border-radius: 50%;
-            bottom: -3px;
-            right: 20%;
-            box-shadow: 0 0 0 2px #757575;
-        }
-        
-        .endoplasmic-reticulum:hover {
-            box-shadow: 0 4px 15px rgba(117, 117, 117, 0.5);
-            transform: rotate(-30deg) scale(1.1);
-        }
-        
-        .golgi-apparatus {
-            position: absolute;
-            width: 18%;
-            height: 10%;
-            background: linear-gradient(90deg, #ffa726 0%, #ff9800 100%);
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #fb8c00;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        
-        .golgi-apparatus::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #ffb74d 0%, #ffa726 100%);
-            border-radius: 15px;
-            top: -3px;
-            left: -3px;
-            z-index: -1;
-            pointer-events: none;
-        }
-        
-        .golgi-apparatus::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
-            border-radius: 15px;
-            top: 3px;
-            left: 3px;
-            z-index: -2;
-            pointer-events: none;
-        }
-        
-        .golgi-apparatus:hover {
-            box-shadow: 0 0 20px rgba(255, 193, 7, 0.7);
-            transform: scale(1.15);
-        }
-        
-        .vacuole {
-            position: absolute;
-            width: 22%;
-            height: 22%;
-            background: linear-gradient(135deg, rgba(178, 235, 242, 0.9) 0%, rgba(129, 212, 250, 0.95) 100%);
-            border-radius: 35%;
-            border: 2px solid #0277bd;
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.5), 0 0 15px rgba(3, 169, 244, 0.3);
-            cursor: pointer;
-            transition: all 0.3s;
-            overflow: hidden;
-        }
-        
-        .vacuole::before {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            top: 15%;
-            left: 15%;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        
-        .vacuole:hover {
-            transform: scale(1.15);
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.5), 0 0 25px rgba(3, 169, 244, 0.6);
-        }
-        
-        .chloroplast {
-            position: absolute;
-            width: 16%;
-            height: 22%;
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            border-radius: 45% 45% 45% 45%;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #2e7d32;
-        }
-        
-        .chloroplast::before {
-            content: '';
-            position: absolute;
-            width: 95%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent 0%, #2e7d32 20%, #2e7d32 80%, transparent 100%);
-            top: 20%;
-            left: 2.5%;
-            pointer-events: none;
-        }
-        
-        .chloroplast::after {
-            content: '';
-            position: absolute;
-            width: 95%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent 0%, #2e7d32 20%, #2e7d32 80%, transparent 100%);
-            bottom: 20%;
-            left: 2.5%;
-            pointer-events: none;
-        }
-        
-        .chloroplast:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 20px rgba(76, 175, 80, 0.7);
-        }
-        
-        .lysosome {
-            position: absolute;
-            width: 9%;
-            height: 9%;
-            background: linear-gradient(135deg, #8e24aa 0%, #6a1b9a 100%);
-            border-radius: 50%;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 0 10px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #6a1b9a;
-        }
-        
-        .lysosome::before {
-            content: '';
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, transparent 70%);
-            top: 20%;
-            left: 20%;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        
-        .lysosome::after {
-            content: '';
-            position: absolute;
-            width: 30%;
-            height: 30%;
-            background: rgba(255,255,255,0.3);
-            border-radius: 50%;
-            top: 15%;
-            left: 15%;
-            pointer-events: none;
-        }
-        
-        .lysosome:hover {
-            transform: scale(1.25);
-            box-shadow: 0 5px 20px rgba(156, 39, 176, 0.7);
-        }
-        
-        .ribosome {
-            position: absolute;
-            width: 5%;
-            height: 5%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 152, 0, 0.8) 0%, #ff5722 50%, #e64a19 100%),
-                linear-gradient(135deg, #ff5722 0%, #d84315 100%);
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 0 5px rgba(255,255,255,0.2);
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid #d84315;
-        }
-        
-        .ribosome:hover {
-            transform: scale(1.6);
-            box-shadow: 0 3px 15px rgba(255, 87, 34, 0.7);
-        }
-        .organelle {
-            position: absolute;
-            padding: 0.8rem 1rem;
-            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+
+        .organelle-card.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid white;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-color: var(--primary-dark);
+        }
+
+        .organelle-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .organelle-card.active .organelle-icon {
+            color: white;
+        }
+
+        .organelle-name {
             font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
-        .organelle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+
+        .organelle-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
         }
-        .organelle.selected {
-            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
-            animation: pulse 0.5s ease-in-out;
+
+        .simulation-area {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            min-height: 500px;
+            border: 3px solid #4caf50;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        .question-box {
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            border-radius: 8px;
+
+        .simulation-title {
             text-align: center;
-            border: 2px solid #4caf50;
-        }
-        .timer {
-            text-align: center;
-            font-size: 1.5rem;
-            margin: 1rem 0;
-            color: #e74c3c;
+            color: #2e7d32;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
             font-weight: bold;
         }
-        .cell-info {
+
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .process-step {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .process-step.active {
+            opacity: 1;
+            transform: translateX(0);
+            border-left-color: #4caf50;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .process-step.completed {
+            opacity: 0.7;
+            border-left-color: #81c784;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             text-align: center;
-            margin: 1rem 0;
-            color: #666;
-            font-style: italic;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .process-step.active .step-number {
+            background: #4caf50;
+            animation: pulse 1s infinite;
+        }
+
+        .process-step.completed .step-number {
+            background: #81c784;
+        }
+
+        .step-content {
+            display: inline-block;
+            vertical-align: top;
+            width: calc(100% - 50px);
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .step-animation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .animation-element {
+            display: inline-block;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            border-radius: 8px;
+            margin: 0 0.5rem;
+            font-weight: 600;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .arrow {
+            display: inline-block;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 0 0.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .control-btn.primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .control-btn.primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .control-btn.secondary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .control-btn.secondary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 2px solid #ffc107;
+        }
+
+        .info-panel h3 {
+            color: #f57c00;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .info-panel p {
+            color: #bf360c;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+            min-width: 300px;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
         }
     </style>
 </head>
@@ -412,15 +317,13 @@
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
             </div>
             <div class="nav-links">
                 <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
                 <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
-
                 <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
-
                 <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
                 <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
                 <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
@@ -431,23 +334,33 @@
 
     <section class="game-section">
         <div class="container">
-            <h2>Hücre Macerası</h2>
+            <h2><i class="fas fa-flask"></i> Organel Simülatörü</h2>
             <div class="game-container">
-                <div class="score-display">
-                    Puan: <span id="score">0</span>
-                    Seviye: <span id="level">1</span>
+                <div class="info-panel">
+                    <h3><i class="fas fa-info-circle"></i> Nasıl Kullanılır?</h3>
+                    <p>Bir organel seçin ve çalışma sürecini adım adım öğrenin. "Sonraki Adım" butonuyla ilerleyin!</p>
                 </div>
-                <div class="timer">
-                    Kalan Süre: <span id="timer">40</span> saniye
+
+                <div class="organelle-selector" id="organelleSelector"></div>
+
+                <div class="simulation-area" id="simulationArea" style="display: none;">
+                    <div class="simulation-title" id="simulationTitle"></div>
+                    <div class="process-steps" id="processSteps"></div>
                 </div>
-                <div class="question-box">
-                    <h3 id="question"></h3>
-                    <p class="cell-info">Aşağıdaki hücrede doğru organeli seçiniz</p>
-                </div>
-                <div class="cell-diagram" id="cellDiagram"></div>
-                <div class="game-controls">
-                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
-                    <button id="nextQuestion" class="game-btn" disabled>Sonraki Soru</button>
+
+                <div class="controls" id="controls" style="display: none;">
+                    <button id="prevStep" class="control-btn secondary">
+                        <i class="fas fa-arrow-left"></i> Önceki Adım
+                    </button>
+                    <button id="nextStep" class="control-btn primary">
+                        <i class="fas fa-arrow-right"></i> Sonraki Adım
+                    </button>
+                    <button id="restart" class="control-btn secondary">
+                        <i class="fas fa-redo"></i> Baştan Başla
+                    </button>
+                    <button id="backToSelection" class="control-btn secondary">
+                        <i class="fas fa-arrow-left"></i> Organel Seç
+                    </button>
                 </div>
             </div>
         </div>
@@ -455,438 +368,306 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
         </div>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const cellDiagram = document.getElementById('cellDiagram');
-            const questionDisplay = document.getElementById('question');
-            const startButton = document.getElementById('startGame');
-            const nextButton = document.getElementById('nextQuestion');
-            const scoreDisplay = document.getElementById('score');
-            const levelDisplay = document.getElementById('level');
-            const timerDisplay = document.getElementById('timer');
-
-            let score = 0;
-            let level = 1;
-            let currentQuestion = null;
-            let timeLeft = 40;
-            let timerInterval;
-            let usedQuestions = new Set();
+            const organelleSelector = document.getElementById('organelleSelector');
+            const simulationArea = document.getElementById('simulationArea');
+            const simulationTitle = document.getElementById('simulationTitle');
+            const processSteps = document.getElementById('processSteps');
+            const controls = document.getElementById('controls');
+            const prevStepBtn = document.getElementById('prevStep');
+            const nextStepBtn = document.getElementById('nextStep');
+            const restartBtn = document.getElementById('restart');
+            const backToSelectionBtn = document.getElementById('backToSelection');
+            let currentOrganelle = null;
+            let currentStep = 0;
 
             const organelles = [
-                {name: 'Mitokondri', function: 'Enerji üretimi'},
-                {name: 'Golgi Aygıtı', function: 'Protein paketleme ve salgılama'},
-                {name: 'Endoplazmik Retikulum', function: 'Protein sentezi ve taşıma'},
-                {name: 'Lizozom', function: 'Hücre sindirimi'},
-                {name: 'Ribozom', function: 'Protein sentezi'},
-                {name: 'Çekirdek', function: 'Genetik materyal depolama'},
-                {name: 'Hücre Zarı', function: 'Hücre koruması ve madde alışverişi'},
-                {name: 'Kloroplast', function: 'Fotosentez'},
-                {name: 'Sentrozom', function: 'Hücre bölünmesi'},
-                {name: 'Peroksizom', function: 'Hücresel detoksifikasyon'},
-                {name: 'Vakuol', function: 'Depolama ve homeostazi'},
-                {name: 'Sitoplazma', function: 'Hücre içi ortam'},
-                {name: 'Hücre İskeleti', function: 'Hücre şeklini koruma ve hareket'},
-                {name: 'Sentriyol', function: 'Hücre bölünmesinde iğ ipliklerini oluşturma'},
-                {name: 'Plastitler', function: 'Fotosentez ve besin depolama'},
-                {name: 'Koful', function: 'Madde depolama ve taşıma'},
-                {name: 'Nukleolus', function: 'Ribozom alt birimlerinin üretimi'},
-                {name: 'Kromatin', function: 'Genetik materyal organizasyonu'}
-            ];
-
-            const questions = [
-                // Seviye 1-5: Temel Sorular
                 {
-                    question: 'Hücrenin enerji üretim merkezi olan organel hangisidir?',
-                    answer: 'Mitokondri',
-                    level: 1
-                },
-                {
-                    question: 'Protein sentezinden sorumlu organel hangisidir?',
-                    answer: 'Ribozom',
-                    level: 1
-                },
-                {
-                    question: 'Fotosentez yapan organel hangisidir?',
-                    answer: 'Kloroplast',
-                    level: 2
-                },
-                {
-                    question: 'Hücrenin yönetim merkezi olan organel hangisidir?',
-                    answer: 'Çekirdek',
-                    level: 2
-                },
-                {
-                    question: 'Hücre içi sindirimden sorumlu organel hangisidir?',
-                    answer: 'Lizozom',
-                    level: 3
-                },
-                
-                // Seviye 6-10: Orta Seviye Sorular
-                {
-                    question: 'Hücrede protein paketleme ve salgılama görevini üstlenen organel hangisidir?',
-                    answer: 'Golgi Aygıtı',
-                    level: 6
-                },
-                {
-                    question: 'Hücre bölünmesi sırasında iğ ipliklerinin oluşumundan sorumlu organel hangisidir?',
-                    answer: 'Sentrozom',
-                    level: 7
-                },
-                {
-                    question: 'Bitki hücrelerinde su ve besin depolayan organel hangisidir?',
-                    answer: 'Vakuol',
-                    level: 8
-                },
-                {
-                    question: 'Hücrede detoksifikasyon işlemlerini gerçekleştiren organel hangisidir?',
-                    answer: 'Peroksizom',
-                    level: 9
-                },
-                {
-                    question: 'Hücre içi madde taşınmasında görev alan ve protein sentezinde rol oynayan organel sistemi hangisidir?',
-                    answer: 'Endoplazmik Retikulum',
-                    level: 10
-                },
-                
-                // Seviye 11-15: İleri Seviye Sorular
-                {
-                    question: 'Hangi organel hem pürüzlü hem de düz formda bulunabilir?',
-                    answer: 'Endoplazmik Retikulum',
-                    level: 11
-                },
-                {
-                    question: 'ATP sentezinin gerçekleştiği organel hangisidir?',
-                    answer: 'Mitokondri',
-                    level: 12
-                },
-                {
-                    question: 'DNA replikasyonunun gerçekleştiği organel hangisidir?',
-                    answer: 'Çekirdek',
-                    level: 13
-                },
-                {
-                    question: 'Hangi organel hücre zarının yenilenmesinde görev alır?',
-                    answer: 'Golgi Aygıtı',
-                    level: 14
-                },
-                {
-                    question: 'Hangi organel bitki hücrelerinde bulunup hayvan hücrelerinde bulunmaz?',
-                    answer: 'Kloroplast',
-                    level: 15
-                },
-                
-                // Seviye 16-20: Uzman Seviye Sorular
-                {
-                    question: 'Hangi organel hidrolaz enzimlerini içerir ve hücre içi sindirimi gerçekleştirir?',
-                    answer: 'Lizozom',
-                    level: 16
-                },
-                {
-                    question: 'Hangi organel hücre iskeleti organizasyonunda rol oynar?',
-                    answer: 'Sentrozom',
-                    level: 17
-                },
-                {
-                    question: 'Hangi organel hücre zarı lipidlerinin sentezinde görev alır?',
-                    answer: 'Endoplazmik Retikulum',
-                    level: 18
-                },
-                {
-                    question: 'Hangi organel H2O2 detoksifikasyonunu gerçekleştirir?',
-                    answer: 'Peroksizom',
-                    level: 19
-                },
-                {
-                    question: 'Hangi organel glikoprotein sentezinde rol oynar?',
-                    answer: 'Golgi Aygıtı',
-                    level: 20
-                },
-                
-                // Seviye 21-25: Master Seviye Sorular
-                {
-                    question: 'Hangi organel apoptoz sürecinde önemli rol oynar?',
-                    answer: 'Mitokondri',
-                    level: 21
-                },
-                {
-                    question: 'Hangi organel hücre polaritesinin belirlenmesinde görev alır?',
-                    answer: 'Golgi Aygıtı',
-                    level: 22
-                },
-                {
-                    question: 'Hangi organel nükleer por komplekslerini içerir?',
-                    answer: 'Çekirdek',
-                    level: 23
-                },
-                {
-                    question: 'Hangi organel hücre bölünmesi sırasında kromozomların ayrılmasını sağlar?',
-                    answer: 'Sentrozom',
-                    level: 24
-                },
-                {
-                    question: 'Hangi organel oksidatif fosforilasyonu gerçekleştirir?',
-                    answer: 'Mitokondri',
-                    level: 25
-                }
-            ];
-
-            function startTimer() {
-                timeLeft = 40;
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        // Tüm tıklanabilir elementleri devre dışı bırak
-                        const allClickable = cellDiagram.querySelectorAll('[data-name]');
-                        allClickable.forEach(el => {
-                            el.style.pointerEvents = 'none';
-                        });
-                        
-                        const correctElement = cellDiagram.querySelector(`[data-name="${currentQuestion.answer}"]`);
-                        if (correctElement) {
-                            correctElement.style.boxShadow = '0 0 20px 5px #4caf50';
-                            correctElement.style.transform = 'scale(1.15)';
+                    name: 'Mitokondri',
+                    icon: 'fa-fire',
+                    description: 'Enerji üretim merkezi',
+                    process: [
+                        {
+                            title: 'Glikoz Girişi',
+                            description: 'Hücre solunumu için glikoz molekülü mitokondriye girer.',
+                            animation: () => '<div class="animation-element">Glikoz</div><span class="arrow">→</span><div class="animation-element" style="background: #d32f2f;">Mitokondri</div>'
+                        },
+                        {
+                            title: 'Glikoliz',
+                            description: 'Glikoz, sitoplazmada glikoliz sürecinde parçalanır ve pirüvat oluşur.',
+                            animation: () => '<div class="animation-element">Glikoz</div><span class="arrow">→</span><div class="animation-element" style="background: #f57c00;">Pirüvat</div>'
+                        },
+                        {
+                            title: 'Krebs Döngüsü',
+                            description: 'Pirüvat, mitokondri matriksinde Krebs döngüsüne girer ve CO₂, NADH, FADH₂ üretilir.',
+                            animation: () => '<div class="animation-element" style="background: #f57c00;">Pirüvat</div><span class="arrow">→</span><div class="animation-element" style="background: #1976d2;">NADH</div><span class="arrow">+</span><div class="animation-element" style="background: #7b1fa2;">FADH₂</div>'
+                        },
+                        {
+                            title: 'Elektron Taşıma Zinciri',
+                            description: 'NADH ve FADH₂, elektron taşıma zincirinde oksidize olur ve proton gradienti oluşur.',
+                            animation: () => '<div class="animation-element" style="background: #1976d2;">NADH</div><span class="arrow">→</span><div class="animation-element" style="background: #0288d1;">Elektronlar</div><span class="arrow">→</span><div class="animation-element" style="background: #00acc1;">Proton Gradient</div>'
+                        },
+                        {
+                            title: 'ATP Sentezi',
+                            description: 'Proton gradienti sayesinde ATP sentaz enzimi ATP üretir. Bu süreç oksidatif fosforilasyon olarak adlandırılır.',
+                            animation: () => '<div class="animation-element" style="background: #00acc1;">Proton Gradient</div><span class="arrow">→</span><div class="animation-element" style="background: #4caf50;">ATP</div><span class="arrow">+</span><div class="animation-element" style="background: #388e3c;">Enerji</div>'
                         }
-                        
-                        setTimeout(() => {
-                            alert(`Süre doldu! Doğru cevap: ${currentQuestion.answer}`);
-                        nextQuestion();
-                        }, 800);
-                    }
-                }, 1000);
+                    ]
+                },
+                {
+                    name: 'Kloroplast',
+                    icon: 'fa-leaf',
+                    description: 'Fotosentez organeli',
+                    process: [
+                        {
+                            title: 'Işık Absorpsiyonu',
+                            description: 'Klorofil pigmentleri güneş ışığını absorbe eder.',
+                            animation: () => '<div class="animation-element" style="background: #ffd700;">Güneş Işığı</div><span class="arrow">→</span><div class="animation-element" style="background: #4caf50;">Klorofil</div>'
+                        },
+                        {
+                            title: 'Fotoliz (Su Parçalanması)',
+                            description: 'Işık enerjisi su molekülünü parçalar ve O₂, H⁺ ve elektronlar açığa çıkar.',
+                            animation: () => '<div class="animation-element">H₂O</div><span class="arrow">→</span><div class="animation-element" style="background: #2196f3;">O₂</div><span class="arrow">+</span><div class="animation-element" style="background: #f44336;">H⁺</div><span class="arrow">+</span><div class="animation-element" style="background: #ff9800;">e⁻</div>'
+                        },
+                        {
+                            title: 'NADPH ve ATP Üretimi',
+                            description: 'Elektronlar NADP⁺\'yi NADPH\'ye indirger ve ATP üretilir (fotofosforilasyon).',
+                            animation: () => '<div class="animation-element" style="background: #ff9800;">e⁻</div><span class="arrow">→</span><div class="animation-element" style="background: #1976d2;">NADPH</div><span class="arrow">+</span><div class="animation-element" style="background: #4caf50;">ATP</div>'
+                        },
+                        {
+                            title: 'Calvin Döngüsü',
+                            description: 'CO₂, Calvin döngüsünde NADPH ve ATP kullanılarak glikoz üretilir.',
+                            animation: () => '<div class="animation-element">CO₂</div><span class="arrow">+</span><div class="animation-element" style="background: #1976d2;">NADPH</div><span class="arrow">+</span><div class="animation-element" style="background: #4caf50;">ATP</div><span class="arrow">→</span><div class="animation-element" style="background: #ff9800;">Glikoz</div>'
+                        },
+                        {
+                            title: 'Glikoz Üretimi',
+                            description: 'Fotosentez tamamlandı! Glikoz, bitkinin enerji kaynağı olarak kullanılır.',
+                            animation: () => '<div class="animation-element" style="background: #ff9800;">Glikoz</div><span class="arrow">✓</span><div class="animation-element" style="background: #4caf50;">Enerji</div>'
+                        }
+                    ]
+                },
+                {
+                    name: 'Ribozom',
+                    icon: 'fa-dna',
+                    description: 'Protein sentezi',
+                    process: [
+                        {
+                            title: 'mRNA Bağlanması',
+                            description: 'mRNA ribozoma bağlanır ve genetik kodu taşır.',
+                            animation: () => '<div class="animation-element" style="background: #1976d2;">mRNA</div><span class="arrow">→</span><div class="animation-element" style="background: #d32f2f;">Ribozom</div>'
+                        },
+                        {
+                            title: 'tRNA Girişi',
+                            description: 'tRNA molekülleri amino asitleri taşıyarak ribozoma gelir.',
+                            animation: () => '<div class="animation-element" style="background: #f57c00;">tRNA</div><span class="arrow">+</span><div class="animation-element" style="background: #7b1fa2;">Amino Asit</div><span class="arrow">→</span><div class="animation-element" style="background: #d32f2f;">Ribozom</div>'
+                        },
+                        {
+                            title: 'Kodon-Antikodon Eşleşmesi',
+                            description: 'mRNA\'daki kodonlar tRNA\'daki antikodonlarla eşleşir.',
+                            animation: () => '<div class="animation-element" style="background: #1976d2;">Kodon</div><span class="arrow">↔</span><div class="animation-element" style="background: #f57c00;">Antikodon</div>'
+                        },
+                        {
+                            title: 'Peptit Bağı Oluşumu',
+                            description: 'Amino asitler arasında peptit bağı oluşur ve polipeptit zinciri büyür.',
+                            animation: () => '<div class="animation-element" style="background: #7b1fa2;">Amino Asit 1</div><span class="arrow">-</span><div class="animation-element" style="background: #7b1fa2;">Amino Asit 2</div><span class="arrow">→</span><div class="animation-element" style="background: #4caf50;">Polipeptit</div>'
+                        },
+                        {
+                            title: 'Protein Tamamlanması',
+                            description: 'Protein sentezi tamamlandı! Polipeptit zinciri serbest bırakılır.',
+                            animation: () => '<div class="animation-element" style="background: #4caf50;">Protein</div><span class="arrow">✓</span><div class="animation-element" style="background: #00acc1;">Serbest</div>'
+                        }
+                    ]
+                },
+                {
+                    name: 'Golgi Aygıtı',
+                    icon: 'fa-box',
+                    description: 'Protein paketleme',
+                    process: [
+                        {
+                            title: 'Protein Alımı',
+                            description: 'Endoplazmik retikulumdan gelen proteinler Golgi aygıtına gelir.',
+                            animation: () => '<div class="animation-element" style="background: #4caf50;">Protein</div><span class="arrow">→</span><div class="animation-element" style="background: #ff9800;">Golgi Aygıtı</div>'
+                        },
+                        {
+                            title: 'Modifikasyon',
+                            description: 'Proteinler modifiye edilir: glikozilasyon, fosforilasyon gibi işlemler yapılır.',
+                            animation: () => '<div class="animation-element" style="background: #4caf50;">Protein</div><span class="arrow">→</span><div class="animation-element" style="background: #1976d2;">Modifiye Protein</div>'
+                        },
+                        {
+                            title: 'Paketleme',
+                            description: 'Proteinler veziküllere paketlenir ve etiketlenir.',
+                            animation: () => '<div class="animation-element" style="background: #1976d2;">Modifiye Protein</div><span class="arrow">→</span><div class="animation-element" style="background: #7b1fa2;">Vezikül</div>'
+                        },
+                        {
+                            title: 'Sınıflandırma',
+                            description: 'Veziküller hedeflerine göre sınıflandırılır: hücre zarı, lizozom veya salgı.',
+                            animation: () => '<div class="animation-element" style="background: #7b1fa2;">Vezikül</div><span class="arrow">→</span><div class="animation-element" style="background: #00acc1;">Hedef</div>'
+                        },
+                        {
+                            title: 'Salgılama',
+                            description: 'Veziküller hücre zarına kaynaşır ve içerikleri dışarı salgılanır.',
+                            animation: () => '<div class="animation-element" style="background: #7b1fa2;">Vezikül</div><span class="arrow">→</span><div class="animation-element" style="background: #4caf50;">Salgı</div>'
+                        }
+                    ]
+                },
+                {
+                    name: 'Lizozom',
+                    icon: 'fa-cog',
+                    description: 'Hücre sindirimi',
+                    process: [
+                        {
+                            title: 'Fagositoz',
+                            description: 'Hücre zarı dışarıdan maddeleri içine alır ve fagozom oluşturur.',
+                            animation: () => '<div class="animation-element">Dış Madde</div><span class="arrow">→</span><div class="animation-element" style="background: #2196f3;">Fagozom</div>'
+                        },
+                        {
+                            title: 'Lizozom Kaynaşması',
+                            description: 'Lizozom fagozomla kaynaşır ve sindirim enzimleri salınır.',
+                            animation: () => '<div class="animation-element" style="background: #8e24aa;">Lizozom</div><span class="arrow">+</span><div class="animation-element" style="background: #2196f3;">Fagozom</div><span class="arrow">→</span><div class="animation-element" style="background: #f44336;">Enzimler</div>'
+                        },
+                        {
+                            title: 'Sindirim',
+                            description: 'Hidrolaz enzimleri maddeleri parçalar: proteinler → amino asitler, karbonhidratlar → glikoz.',
+                            animation: () => '<div class="animation-element">Büyük Molekül</div><span class="arrow">→</span><div class="animation-element" style="background: #4caf50;">Küçük Moleküller</div>'
+                        },
+                        {
+                            title: 'Emilim',
+                            description: 'Parçalanan moleküller hücre tarafından emilir ve kullanılır.',
+                            animation: () => '<div class="animation-element" style="background: #4caf50;">Küçük Moleküller</div><span class="arrow">→</span><div class="animation-element" style="background: #00acc1;">Hücre</div>'
+                        },
+                        {
+                            title: 'Atık Atılımı',
+                            description: 'Sindirilemeyen maddeler hücre dışına atılır.',
+                            animation: () => '<div class="animation-element" style="background: #9e9e9e;">Atık</div><span class="arrow">→</span><div class="animation-element">Dışarı</div>'
+                        }
+                    ]
+                }
+            ];
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
             }
 
-            function getQuestionsForLevel(level) {
-                return questions.filter(q => q.level <= level && !usedQuestions.has(q.question));
-            }
-
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            }
-
-            function createCellStructure() {
-                // Hücre zarı - sadece görsel
-                const membrane = document.createElement('div');
-                membrane.className = 'cell-membrane';
-                membrane.title = 'Hücre Zarı';
-                cellDiagram.appendChild(membrane);
-
-                // Çekirdek
-                const nucleus = document.createElement('div');
-                nucleus.className = 'nucleus';
-                cellDiagram.appendChild(nucleus);
-                
-                const nucleusMembrane = document.createElement('div');
-                nucleusMembrane.className = 'nucleus-membrane';
-                nucleusMembrane.style.pointerEvents = 'none';
-                nucleus.appendChild(nucleusMembrane);
-
-                // Mitokondri - daha fazla ve gerçekçi yerleşim
-                const mitoPositions = [
-                    {top: '12%', left: '20%', angle: '-30deg'},
-                    {top: '25%', left: '12%', angle: '-45deg'},
-                    {top: '55%', left: '15%', angle: '30deg'},
-                    {top: '68%', left: '22%', angle: '-20deg'}
-                ];
-                for (let i = 0; i < 4; i++) {
-                    const mito = document.createElement('div');
-                    mito.className = 'mitochondria';
-                    mito.style.top = mitoPositions[i].top;
-                    mito.style.left = mitoPositions[i].left;
-                    mito.title = 'Mitokondri';
-                    mito.addEventListener('click', () => checkAnswer('Mitokondri'));
-                    mito.dataset.name = 'Mitokondri';
-                    cellDiagram.appendChild(mito);
-                }
-
-                // Endoplazmik Retikulum - Daha fazla
-                for (let i = 0; i < 2; i++) {
-                    const er = document.createElement('div');
-                    er.className = 'endoplasmic-reticulum';
-                    er.style.top = `${15 + i * 35}%`;
-                    er.style.left = `${50 + i * 5}%`;
-                    er.title = 'Endoplazmik Retikulum';
-                    er.addEventListener('click', () => checkAnswer('Endoplazmik Retikulum'));
-                    er.dataset.name = 'Endoplazmik Retikulum';
-                    cellDiagram.appendChild(er);
-                }
-
-                // Golgi Aygıtı
-                const golgi = document.createElement('div');
-                golgi.className = 'golgi-apparatus';
-                golgi.style.top = '70%';
-                golgi.style.left = '35%';
-                golgi.title = 'Golgi Aygıtı';
-                golgi.addEventListener('click', () => checkAnswer('Golgi Aygıtı'));
-                golgi.dataset.name = 'Golgi Aygıtı';
-                cellDiagram.appendChild(golgi);
-
-                // Kloroplast - bitki hücresinde, daha iyi yerleşim
-                const chloroPositions = [
-                    {top: '38%', left: '15%'},
-                    {top: '48%', left: '18%'},
-                    {top: '42%', left: '65%'},
-                    {top: '52%', left: '68%'}
-                ];
-                for (let i = 0; i < 4; i++) {
-                    const chloro = document.createElement('div');
-                    chloro.className = 'chloroplast';
-                    chloro.style.top = chloroPositions[i].top;
-                    chloro.style.left = chloroPositions[i].left;
-                    chloro.title = 'Kloroplast';
-                    chloro.addEventListener('click', () => checkAnswer('Kloroplast'));
-                    chloro.dataset.name = 'Kloroplast';
-                    cellDiagram.appendChild(chloro);
-                }
-
-                // Lizozom - gerçekçi yerleşim
-                const lysPositions = [
-                    {top: '52%', left: '72%'},
-                    {top: '60%', left: '75%'},
-                    {top: '48%', left: '25%'}
-                ];
-                for (let i = 0; i < 3; i++) {
-                    const lys = document.createElement('div');
-                    lys.className = 'lysosome';
-                    lys.style.top = lysPositions[i].top;
-                    lys.style.left = lysPositions[i].left;
-                    lys.title = 'Lizozom';
-                    lys.addEventListener('click', () => checkAnswer('Lizozom'));
-                    lys.dataset.name = 'Lizozom';
-                    cellDiagram.appendChild(lys);
-                }
-                
-                // Ribozom - küçük noktalar, gerçekçi dağılım
-                const riboPositions = [
-                    {top: '14%', left: '55%'}, {top: '18%', left: '62%'}, {top: '22%', left: '58%'},
-                    {top: '30%', left: '40%'}, {top: '32%', left: '46%'}, {top: '36%', left: '43%'},
-                    {top: '58%', left: '40%'}, {top: '62%', left: '45%'}, {top: '64%', left: '48%'},
-                    {top: '72%', left: '55%'}, {top: '75%', left: '58%'}, {top: '78%', left: '60%'}
-                ];
-                for (let i = 0; i < 12; i++) {
-                    const ribo = document.createElement('div');
-                    ribo.className = 'ribosome';
-                    ribo.style.top = riboPositions[i].top;
-                    ribo.style.left = riboPositions[i].left;
-                    ribo.title = 'Ribozom';
-                    ribo.addEventListener('click', () => checkAnswer('Ribozom'));
-                    ribo.dataset.name = 'Ribozom';
-                    cellDiagram.appendChild(ribo);
-                }
-
-                // Vakuol - bitki hücresinde büyük
-                const vacuole = document.createElement('div');
-                vacuole.className = 'vacuole';
-                vacuole.style.top = '60%';
-                vacuole.style.left = '48%';
-                vacuole.title = 'Vakuol';
-                vacuole.addEventListener('click', () => checkAnswer('Vakuol'));
-                vacuole.dataset.name = 'Vakuol';
-                cellDiagram.appendChild(vacuole);
-
-                // Çekirdeğe tıklanabilirlik ekle
-                nucleus.title = 'Çekirdek';
-                nucleus.addEventListener('click', () => checkAnswer('Çekirdek'));
-                nucleus.dataset.name = 'Çekirdek';
-            }
-
-            function generateGame() {
-                cellDiagram.innerHTML = '';
-                
-                // Hücre modelini oluştur
-                createCellStructure();
-                
-                const availableQuestions = getQuestionsForLevel(level);
-                if (availableQuestions.length === 0) {
-                    usedQuestions.clear();
-                    currentQuestion = questions.find(q => q.level === level);
-                } else {
-                    currentQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-                }
-                usedQuestions.add(currentQuestion.question);
-                questionDisplay.textContent = currentQuestion.question;
-
-                startTimer();
-            }
-
-            function checkAnswer(selectedOrganelle) {
-                // Tüm tıklanabilir elementleri devre dışı bırak
-                const allClickable = cellDiagram.querySelectorAll('[data-name]');
-                allClickable.forEach(el => {
-                    el.style.pointerEvents = 'none';
+            function createOrganelleCards() {
+                organelleSelector.innerHTML = '';
+                organelles.forEach((organelle, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'organelle-card';
+                    card.innerHTML = `
+                        <div class="organelle-icon">
+                            <i class="fas ${organelle.icon}"></i>
+                        </div>
+                        <div class="organelle-name">${organelle.name}</div>
+                        <div class="organelle-desc">${organelle.description}</div>
+                    `;
+                    card.addEventListener('click', () => selectOrganelle(index));
+                    organelleSelector.appendChild(card);
                 });
+            }
 
-                const selectedElement = cellDiagram.querySelector(`[data-name="${selectedOrganelle}"]`);
-                const correctElement = cellDiagram.querySelector(`[data-name="${currentQuestion.answer}"]`);
+            function selectOrganelle(index) {
+                currentOrganelle = organelles[index];
+                currentStep = 0;
+                
+                document.querySelectorAll('.organelle-card').forEach((card, i) => {
+                    card.classList.toggle('active', i === index);
+                });
+                
+                simulationArea.style.display = 'block';
+                controls.style.display = 'flex';
+                simulationTitle.textContent = `${currentOrganelle.name} - Çalışma Süreci`;
+                
+                displaySteps();
+                updateButtons();
+            }
 
-                if (selectedOrganelle === currentQuestion.answer) {
-                    // Doğru cevap
-                    if (selectedElement) {
-                        selectedElement.style.boxShadow = '0 0 20px 5px #4caf50';
-                        selectedElement.style.transform = 'scale(1.15)';
+            function displaySteps() {
+                processSteps.innerHTML = '';
+                currentOrganelle.process.forEach((step, index) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'process-step';
+                    if (index === currentStep) {
+                        stepDiv.classList.add('active');
+                    } else if (index < currentStep) {
+                        stepDiv.classList.add('completed');
                     }
-                    score += level * 10;
-                    scoreDisplay.textContent = score;
                     
-                    setTimeout(() => {
-                        alert('Tebrikler! Doğru cevap! 🎉\n+ ' + (level * 10) + ' puan kazandınız!');
-                        nextQuestion();
-                    }, 800);
+                    stepDiv.innerHTML = `
+                        <span class="step-number">${index + 1}</span>
+                        <div class="step-content">
+                            <div class="step-title">${step.title}</div>
+                            <div class="step-description">${step.description}</div>
+                            ${index === currentStep ? `<div class="step-animation">${step.animation()}</div>` : ''}
+                        </div>
+                    `;
+                    
+                    processSteps.appendChild(stepDiv);
+                });
+            }
+
+            function nextStep() {
+                if (currentStep < currentOrganelle.process.length - 1) {
+                    currentStep++;
+                    displaySteps();
+                    updateButtons();
                 } else {
-                    // Yanlış cevap
-                    if (selectedElement) {
-                        selectedElement.style.boxShadow = '0 0 20px 5px #e74c3c';
-                        selectedElement.style.transform = 'scale(0.9)';
-                    }
-                    if (correctElement) {
-                        correctElement.style.boxShadow = '0 0 20px 5px #4caf50';
-                        correctElement.style.transform = 'scale(1.15)';
-                    }
-                    
-                    setTimeout(() => {
-                        alert(`Yanlış cevap! Doğru organel: ${currentQuestion.answer}`);
-                        nextQuestion();
-                    }, 800);
+                    // Süreç tamamlandı
+                    showToast(`🎉 ${currentOrganelle.name} süreci tamamlandı!`, 'success');
                 }
             }
 
-            function nextQuestion() {
-                level++;
-                if (level > 25) {
-                    alert('Tebrikler! Tüm seviyeleri tamamladınız! Final puanınız: ' + score);
-                    startButton.disabled = false;
-                    nextButton.disabled = true;
-                    clearInterval(timerInterval);
-                    cellDiagram.innerHTML = '';
-                    questionDisplay.textContent = '';
-                    return;
+            function prevStep() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    displaySteps();
+                    updateButtons();
                 }
-                generateGame();
-                scoreDisplay.textContent = score;
-                levelDisplay.textContent = level;
             }
 
-            startButton.addEventListener('click', () => {
-                level = 1;
-                score = 0;
-                usedQuestions.clear();
-                generateGame();
-                startButton.disabled = true;
-                nextButton.disabled = false;
-            });
+            function restart() {
+                currentStep = 0;
+                displaySteps();
+                updateButtons();
+            }
 
-            nextButton.addEventListener('click', nextQuestion);
+            function backToSelection() {
+                simulationArea.style.display = 'none';
+                controls.style.display = 'none';
+                currentOrganelle = null;
+                currentStep = 0;
+                document.querySelectorAll('.organelle-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+            }
+
+            function updateButtons() {
+                prevStepBtn.disabled = currentStep === 0;
+                nextStepBtn.disabled = currentStep >= currentOrganelle.process.length - 1;
+            }
+
+
+            nextStepBtn.addEventListener('click', nextStep);
+            prevStepBtn.addEventListener('click', prevStep);
+            restartBtn.addEventListener('click', restart);
+            backToSelectionBtn.addEventListener('click', backToSelection);
+
+            createOrganelleCards();
         });
     </script>
     <script src="floating-chat.js"></script>
 </body>
 </html>
+
+

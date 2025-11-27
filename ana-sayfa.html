@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusula - Ana Sayfa</title>
+    <title>NetOdak - Ana Sayfa</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1575,14 +1575,152 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+
+        /* Ses Seçme Modal Stilleri */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .sound-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sound-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sound-option:hover {
+            border-color: #3498db;
+            background: rgba(52, 152, 219, 0.05);
+        }
+
+        .sound-option i {
+            margin-right: 10px;
+            font-size: 1.2em;
+            color: #3498db;
+        }
+
+        .sound-option span {
+            flex: 1;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .sound-preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .sound-preview h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
             </div>
             <div class="nav-links">
                 <a href="ana-sayfa.html" class="active"><i class="fas fa-home"></i> Ana Sayfa</a>
@@ -1775,6 +1913,9 @@
                             <button class="control-btn" onclick="resetTYTDeneme()">
                                 <i class="fas fa-redo"></i> Sıfırla
                             </button>
+                            <button class="control-btn" onclick="selectSound('tyt-deneme')">
+                                <i class="fas fa-music"></i> Ses Seç
+                            </button>
                             <button class="control-btn" onclick="fullscreenTYTDeneme()">
                                 <i class="fas fa-expand"></i> Tam Ekran
                             </button>
@@ -1799,6 +1940,9 @@
                             </button>
                             <button class="control-btn" onclick="resetAYTDeneme()">
                                 <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="selectSound('ayt-deneme')">
+                                <i class="fas fa-music"></i> Ses Seç
                             </button>
                             <button class="control-btn" onclick="fullscreenAYTDeneme()">
                                 <i class="fas fa-expand"></i> Tam Ekran
@@ -1840,6 +1984,9 @@
                             </button>
                             <button class="control-btn" onclick="resetOzelCounter()">
                                 <i class="fas fa-redo"></i> Sıfırla
+                            </button>
+                            <button class="control-btn" onclick="selectSound('ozel')">
+                                <i class="fas fa-music"></i> Ses Seç
                             </button>
                             <button class="control-btn" onclick="fullscreenOzel()">
                                 <i class="fas fa-expand"></i> Tam Ekran
@@ -2070,7 +2217,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
         </div>
     </footer>
 
@@ -2819,6 +2966,48 @@
             }
         });
     </script>
+
+    <!-- Ses Seçme Modalı -->
+    <div id="soundModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-music"></i> Ses Seç</h3>
+                <button class="close-btn" onclick="closeSoundModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="sound-options">
+                    <div class="sound-option" onclick="setSound('default')">
+                        <i class="fas fa-volume-up"></i>
+                        <span>Varsayılan Ses (Kayıt.mp3)</span>
+                    </div>
+                    <div class="sound-option" onclick="setSound('custom')">
+                        <i class="fas fa-upload"></i>
+                        <span>Özel Ses Yükle</span>
+                        <input type="file" id="soundFileInput" accept="audio/*" style="display: none;" onchange="handleSoundUpload(event)">
+                    </div>
+                    <div class="sound-option" onclick="setSound('none')">
+                        <i class="fas fa-volume-mute"></i>
+                        <span>Ses Yok</span>
+                    </div>
+                </div>
+                <div class="sound-preview" id="soundPreview" style="display: none;">
+                    <h4>Seçilen Ses:</h4>
+                    <audio id="previewAudio" controls style="width: 100%;">
+                        <source src="" type="audio/mpeg">
+                        Tarayıcınız ses dosyasını desteklemiyor.
+                    </audio>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeSoundModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveSoundSelection()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
     <script src="floating-chat.js"></script>
 </body>
 </html> 
+

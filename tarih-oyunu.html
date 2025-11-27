@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetOdak - Tarih Macerası</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .game-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .game-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .stat-box label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #8B4513;
+        }
+        
+        .event-item {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            cursor: move;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #333;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+        
+        .event-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            border-color: #8B4513;
+        }
+        
+        .event-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .event-item.placed {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .event-item.placed.correct {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+        
+        .event-item.placed.incorrect {
+            background: #f8d7da;
+            border-color: #e74c3c;
+            color: #721c24;
+        }
+        
+        #timeline {
+            position: relative;
+            min-height: 300px;
+            padding: 3rem 2rem;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50px;
+            right: 50px;
+            top: 150px;
+            height: 4px;
+            background: linear-gradient(to right, #8B4513, #D2691E);
+            border-radius: 2px;
+            z-index: 1;
+        }
+        
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 10px solid #8B4513;
+        }
+        
+        .timeline-line::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 10px solid #D2691E;
+        }
+        
+        .timeline-slots-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            min-width: 100%;
+            padding: 0 2rem;
+            z-index: 2;
+        }
+        
+        .timeline-slot {
+            position: relative;
+            width: 180px;
+            min-width: 180px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .timeline-slot::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 70px;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #8B4513;
+            border: 4px solid white;
+            border-radius: 50%;
+            z-index: 3;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .timeline-slot::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 90px;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 60px;
+            background: #8B4513;
+            z-index: 2;
+        }
+        
+        .timeline-slot:hover::before {
+            transform: translateX(-50%) scale(1.3);
+            background: #D2691E;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+        }
+        
+        .timeline-slot.drag-over::before {
+            background: #ffc107;
+            transform: translateX(-50%) scale(1.4);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.6);
+        }
+        
+        .timeline-slot.filled::before {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .timeline-slot .date {
+            font-weight: bold;
+            color: #8B4513;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-slot .event-content {
+            font-size: 0.95rem;
+            color: #333;
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #8B4513;
+            margin-top: 90px;
+            transition: all 0.3s;
+            word-wrap: break-word;
+        }
+        
+        .timeline-slot.drag-over .event-content {
+            border-color: #ffc107;
+            border-width: 3px;
+            background: #fff3cd;
+        }
+        
+        .timeline-slot.filled .event-content {
+            border: 2px solid #8B4513;
+            background: #f8f9fa;
+            font-weight: 500;
+        }
+        
+        .timeline-slot.filled.correct-slot .event-content {
+            border-color: #27ae60;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .timeline-slot.filled.incorrect-slot .event-content {
+            border-color: #e74c3c;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+        
+        .feedback.correct {
+            border: 3px solid #27ae60;
+        }
+        
+        .feedback.incorrect {
+            border: 3px solid #e74c3c;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-slot {
+                width: 140px;
+                min-width: 140px;
+            }
+            
+            .timeline-slot .date {
+                font-size: 1rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .timeline-slot .event-content {
+                font-size: 0.85rem;
+                padding: 0.8rem;
+                min-height: 70px;
+            }
+            
+            .timeline-line {
+                left: 30px;
+                right: 30px;
+            }
+            
+            #timeline {
+                padding: 2rem 1rem;
+            }
+            
+            .timeline-slots-wrapper {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>Tarih Macerası</h2>
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <label>Puan</label>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Doğru</label>
+                        <span id="correct">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Yanlış</label>
+                        <span id="wrong">0</span>
+                    </div>
+                </div>
+                
+                <div id="game-area">
+                    <h3 style="text-align: center; color: white; margin-bottom: 2rem;">Tarihi olayları zaman çizelgesine sürükleyin!</h3>
+                    
+                    <div id="events-container" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+                        <!-- Olaylar buraya eklenecek -->
+                    </div>
+                    
+                    <div id="timeline-container" style="background: white; padding: 2rem; border-radius: 15px; margin-top: 2rem;">
+                        <h4 style="text-align: center; margin-bottom: 2rem; color: #8B4513; font-size: 1.5rem;">
+                            <i class="fas fa-clock"></i> Zaman Çizelgesi
+                        </h4>
+                        <div id="timeline">
+                            <!-- Zaman çizelgesi buraya eklenecek -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="feedback" class="feedback">
+        <h3 id="feedback-text"></h3>
+    </div>
+
+    <script>
+        // Tarihi olaylar veri seti
+        const historicalEvents = [
+            // Osmanlı Dönemi
+            { event: "Osmanlı İmparatorluğu'nun Kuruluşu", year: 1299 },
+            { event: "Bursa'nın Fethi", year: 1326 },
+            { event: "İznik'in Fethi", year: 1331 },
+            { event: "Edirne'nin Fethi", year: 1361 },
+            { event: "Kosova Savaşı", year: 1389 },
+            { event: "Ankara Savaşı", year: 1402 },
+            { event: "İstanbul'un Fethi", year: 1453 },
+            { event: "Fatih Sultan Mehmet'in Tahta Çıkışı", year: 1451 },
+            { event: "Trabzon'un Fethi", year: 1461 },
+            { event: "Otranto'nun Fethi", year: 1480 },
+            { event: "Yavuz Sultan Selim'in Tahta Çıkışı", year: 1512 },
+            { event: "Çaldıran Savaşı", year: 1514 },
+            { event: "Mercidabık Savaşı", year: 1516 },
+            { event: "Ridaniye Savaşı", year: 1517 },
+            { event: "Kanuni Sultan Süleyman'ın Tahta Çıkışı", year: 1520 },
+            { event: "Belgrad'ın Fethi", year: 1521 },
+            { event: "Mohaç Savaşı", year: 1526 },
+            { event: "Viyana Kuşatması", year: 1529 },
+            { event: "Preveze Deniz Savaşı", year: 1538 },
+            { event: "Kıbrıs'ın Fethi", year: 1570 },
+            { event: "İnebahtı Savaşı", year: 1571 },
+            { event: "Haçova Savaşı", year: 1596 },
+            { event: "Zitvatorok Antlaşması", year: 1606 },
+            { event: "Karlofça Antlaşması", year: 1699 },
+            { event: "Prut Savaşı", year: 1711 },
+            { event: "Pasarofça Antlaşması", year: 1718 },
+            { event: "Lale Devri", year: 1718 },
+            { event: "Patrona Halil İsyanı", year: 1730 },
+            { event: "Küçük Kaynarca Antlaşması", year: 1774 },
+            { event: "Nizam-ı Cedid'in Kuruluşu", year: 1793 },
+            { event: "Sened-i İttifak", year: 1808 },
+            { event: "Vaka-i Hayriye", year: 1826 },
+            { event: "Tanzimat Fermanı", year: 1839 },
+            { event: "Kırım Savaşı", year: 1853 },
+            { event: "Islahat Fermanı", year: 1856 },
+            { event: "1. Meşrutiyet", year: 1876 },
+            { event: "93 Harbi (1877-78 Osmanlı-Rus Savaşı)", year: 1877 },
+            { event: "2. Meşrutiyet", year: 1908 },
+            { event: "31 Mart Vakası", year: 1909 },
+            { event: "Trablusgarp Savaşı", year: 1911 },
+            { event: "Balkan Savaşları", year: 1912 },
+            { event: "1. Dünya Savaşı Başlangıcı", year: 1914 },
+            { event: "Çanakkale Zaferi", year: 1915 },
+            { event: "Kut'ül Amare Zaferi", year: 1916 },
+            { event: "Mondros Ateşkes Antlaşması", year: 1918 },
+            { event: "Mudros Ateşkes Antlaşması", year: 1918 },
+            
+            // Milli Mücadele ve Cumhuriyet Dönemi
+            { event: "Kurtuluş Savaşı Başlangıcı", year: 1919 },
+            { event: "Sivas Kongresi", year: 1919 },
+            { event: "Erzurum Kongresi", year: 1919 },
+            { event: "Amasya Genelgesi", year: 1919 },
+            { event: "TBMM'nin Açılışı", year: 1920 },
+            { event: "Ankara'nın Başkent Olması", year: 1920 },
+            { event: "Sakarya Meydan Muharebesi", year: 1921 },
+            { event: "Büyük Taarruz", year: 1922 },
+            { event: "İzmir'in Kurtuluşu", year: 1922 },
+            { event: "Lozan Antlaşması", year: 1923 },
+            { event: "Türkiye Cumhuriyeti'nin Kuruluşu", year: 1923 },
+            { event: "Harf Devrimi", year: 1928 },
+            { event: "Atatürk'ün Ölümü", year: 1938 },
+            { event: "2. Dünya Savaşı Başlangıcı", year: 1939 },
+            { event: "2. Dünya Savaşı'nın Sona Ermesi", year: 1945 },
+            { event: "NATO'ya Katılım", year: 1952 },
+            { event: "27 Mayıs Darbesi", year: 1960 },
+            { event: "12 Mart Muhtırası", year: 1971 },
+            { event: "Kıbrıs Barış Harekatı", year: 1974 },
+            { event: "12 Eylül Darbesi", year: 1980 },
+            { event: "AB'ye Başvuru", year: 1987 },
+            
+            // Selçuklu ve Öncesi
+            { event: "Malazgirt Savaşı", year: 1071 },
+            { event: "Anadolu Selçuklu Devleti'nin Kuruluşu", year: 1077 },
+            { event: "Kösedağ Savaşı", year: 1243 }
+        ];
+
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let draggedElement = null;
+        let currentEvents = [];
+        let placedEvents = [];
+
+        // Oyunu başlat
+        function initGame() {
+            // Rastgele 5 olay seç
+            const shuffled = [...historicalEvents].sort(() => Math.random() - 0.5);
+            currentEvents = shuffled.slice(0, 5);
+            
+            // Olayları ekran
+            displayEvents();
+            
+            // Zaman çizelgesini oluştur
+            createTimeline();
+        }
+
+        // Olayları göster
+        function displayEvents() {
+            const container = document.getElementById('events-container');
+            container.innerHTML = '';
+            
+            currentEvents.forEach((item, index) => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-item';
+                eventDiv.draggable = true;
+                eventDiv.dataset.event = item.event;
+                eventDiv.dataset.year = item.year;
+                eventDiv.dataset.index = index;
+                eventDiv.textContent = item.event;
+                
+                eventDiv.addEventListener('dragstart', handleDragStart);
+                eventDiv.addEventListener('dragend', handleDragEnd);
+                
+                container.appendChild(eventDiv);
+            });
+        }
+
+        // Zaman çizelgesini oluştur
+        function createTimeline() {
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+            
+            // Yılları sırala
+            const years = currentEvents.map(e => e.year).sort((a, b) => a - b);
+            
+            // Çizgi ekle
+            const line = document.createElement('div');
+            line.className = 'timeline-line';
+            timeline.appendChild(line);
+            
+            // Slots wrapper ekle
+            const slotsWrapper = document.createElement('div');
+            slotsWrapper.className = 'timeline-slots-wrapper';
+            
+            years.forEach((year, index) => {
+                const slot = document.createElement('div');
+                slot.className = 'timeline-slot';
+                slot.dataset.year = year;
+                
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = year;
+                
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-content';
+                eventDiv.textContent = 'Olayı buraya sürükleyin';
+                
+                slot.appendChild(dateDiv);
+                slot.appendChild(eventDiv);
+                
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('drop', handleDrop);
+                slot.addEventListener('dragenter', handleDragEnter);
+                slot.addEventListener('dragleave', handleDragLeave);
+                
+                slotsWrapper.appendChild(slot);
+            });
+            
+            timeline.appendChild(slotsWrapper);
+        }
+
+        // Drag olayları
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            this.classList.remove('drag-over');
+            
+            if (draggedElement && !this.classList.contains('filled')) {
+                const eventName = draggedElement.dataset.event;
+                const eventYear = parseInt(draggedElement.dataset.year);
+                const slotYear = parseInt(this.dataset.year);
+                
+                // Doğru mu kontrol et
+                const isCorrect = eventYear === slotYear;
+                
+                // Olayı işaretle
+                draggedElement.classList.add('placed');
+                
+                if (isCorrect) {
+                    // Doğru yerleştirildiğinde slot'u doldur
+                    this.classList.add('filled', 'correct-slot');
+                    this.querySelector('.event-content').textContent = eventName;
+                    draggedElement.classList.add('correct');
+                    score += 10;
+                    correctCount++;
+                    showFeedback('Doğru! ✓', true);
+                } else {
+                    // Yanlış yerleştirildiğinde slot'u doldurma, sadece doğru yerde göster
+                    draggedElement.classList.add('incorrect');
+                    wrongCount++;
+                    showFeedback('Yanlış! ✗ Doğru yıl: ' + eventYear, false);
+                    
+                    // Doğru slot'u bul ve oraya yerleştir
+                    const timeline = document.getElementById('timeline');
+                    const slotsWrapper = timeline.querySelector('.timeline-slots-wrapper');
+                    const correctSlot = slotsWrapper.querySelector(`[data-year="${eventYear}"]`);
+                    
+                    if (correctSlot && !correctSlot.classList.contains('filled')) {
+                        correctSlot.classList.add('filled', 'correct-slot');
+                        correctSlot.querySelector('.event-content').textContent = eventName;
+                    }
+                }
+                
+                // İstatistikleri güncelle
+                updateStats();
+                
+                // Tüm olaylar yerleştirildi mi kontrol et
+                checkGameComplete();
+            }
+            
+            return false;
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('wrong').textContent = wrongCount;
+        }
+
+        // Geri bildirim göster
+        function showFeedback(message, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedbackText.textContent = message;
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect') + ' show';
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // Oyun tamamlandı mı kontrol et
+        function checkGameComplete() {
+            const placed = document.querySelectorAll('.event-item.placed').length;
+            if (placed === currentEvents.length) {
+                setTimeout(() => {
+                    alert(`Oyun Tamamlandı!\nPuan: ${score}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
+                    // Yeni oyun başlat
+                    score = 0;
+                    correctCount = 0;
+                    wrongCount = 0;
+                    placedEvents = [];
+                    initGame();
+                    updateStats();
+                }, 500);
+            }
+        }
+
+        // Sayfa yüklendiğinde oyunu başlat
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+    <script src="script.js"></script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>
+
+
+

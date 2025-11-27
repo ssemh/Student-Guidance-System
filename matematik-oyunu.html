@@ -3,56 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusula - İkinci Dereceden Denklem Çözücü</title>
+    <title>NetOdak - YKS Formül Ezberleme</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .game-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
+            max-width: 1200px;
+            margin: 1.5rem auto;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .topic-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .topic-card {
             background: white;
-            border-radius: 10px;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 3px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-        .equation-display {
-            font-size: 1.5rem;
-            text-align: center;
-            margin: 2rem 0;
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 8px;
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
         }
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        .option {
-            background: var(--primary-color);
+
+        .topic-card.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .topic-card.active .topic-icon {
+            color: white;
+        }
+
+        .topic-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .formula-display-area {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            min-height: 400px;
+            border: 3px solid #2196F3;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .formula-header {
+            text-align: center;
+            color: #1565c0;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .formula-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .formula-title {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .formula-content {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e65100;
+            text-align: center;
+            padding: 1.5rem;
+            background: #fff9c4;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: 'Times New Roman', serif;
+            border: 2px solid #ffc107;
+        }
+
+        .formula-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .formula-example {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .formula-example h4 {
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .formula-example p {
+            color: #1b5e20;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .practice-area {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .practice-question {
+            background: linear-gradient(135deg, #fff9c4 0%, #ffe082 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 2px solid #ffc107;
+        }
+
+        .practice-question h4 {
+            color: #f57c00;
+            margin-bottom: 1rem;
+        }
+
+        .practice-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .practice-option {
+            background: white;
             padding: 1rem;
             border-radius: 8px;
-            text-align: center;
+            border: 2px solid #e9ecef;
             cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .option:hover {
-            transform: scale(1.05);
-        }
-        .option.selected {
-            background: #357abd;
-        }
-        .equation {
-            font-family: 'Times New Roman', Times, serif;
-            font-style: italic;
-        }
-        .timer {
+            transition: all 0.3s ease;
             text-align: center;
-            font-size: 1.5rem;
-            margin: 1rem 0;
-            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .practice-option:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .practice-option.selected {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+
+        .practice-option.correct {
+            background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%);
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .practice-option.wrong {
+            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            color: white;
+            border-color: #d32f2f;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            padding: 0.75rem 1.75rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .game-btn.primary {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .game-btn.primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        .game-btn.secondary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .game-btn.secondary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+        }
+
+        .game-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: slideInRight 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+            min-width: 300px;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+        }
+
+        .toast.info {
+            background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        .formula-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .mastery-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+            color: #e65100;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
         }
     </style>
 </head>
@@ -60,15 +322,13 @@
     <nav>
         <div class="container">
             <div class="logo">
-                <img src="images/logo.png" alt="Pusula Logo">
-                Pusula
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
             </div>
             <div class="nav-links">
                 <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
                 <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
-
                 <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
-
                 <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
                 <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
                 <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
@@ -79,23 +339,28 @@
 
     <section class="game-section">
         <div class="container">
-            <h2>İkinci Dereceden Denklem Çözücü</h2>
+            <h2><i class="fas fa-book"></i> YKS Formül Ezberleme</h2>
             <div class="game-container">
-                <div class="score-display">
-                    Puan: <span id="score">0</span>
-                    Seviye: <span id="level">1</span>
+                <div class="topic-selector" id="topicSelector"></div>
+
+                <div class="formula-display-area" id="formulaArea" style="display: none;">
+                    <div class="formula-header" id="formulaHeader"></div>
+                    <div class="formula-list" id="formulaList"></div>
                 </div>
-                <div class="timer">
-                    Kalan Süre: <span id="timer">40</span> saniye
-                </div>
-                <div class="equation-display">
-                    <h3>Denklem:</h3>
-                    <p id="equation" class="equation"></p>
-                </div>
-                <div class="options-container" id="optionsContainer"></div>
+
+                <div class="practice-area" id="practiceArea" style="display: none;">
+                    <div class="practice-question" id="practiceQuestion"></div>
                 <div class="game-controls">
-                    <button id="startGame" class="game-btn">Oyunu Başlat</button>
-                    <button id="checkAnswer" class="game-btn" disabled>Kontrol Et</button>
+                        <button id="checkPractice" class="game-btn primary" disabled>
+                            <i class="fas fa-check"></i> Kontrol Et
+                        </button>
+                        <button id="nextPractice" class="game-btn secondary" disabled>
+                            <i class="fas fa-arrow-right"></i> Sonraki Soru
+                        </button>
+                        <button id="backToFormulas" class="game-btn secondary">
+                            <i class="fas fa-arrow-left"></i> Formüllere Dön
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,169 +368,534 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Pusula. Tüm hakları saklıdır.</p>
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
         </div>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const equationDisplay = document.getElementById('equation');
-            const optionsContainer = document.getElementById('optionsContainer');
-            const startButton = document.getElementById('startGame');
-            const checkButton = document.getElementById('checkAnswer');
-            const scoreDisplay = document.getElementById('score');
-            const levelDisplay = document.getElementById('level');
-            const timerDisplay = document.getElementById('timer');
+            const topicSelector = document.getElementById('topicSelector');
+            const formulaArea = document.getElementById('formulaArea');
+            const formulaHeader = document.getElementById('formulaHeader');
+            const formulaList = document.getElementById('formulaList');
+            const practiceArea = document.getElementById('practiceArea');
+            const practiceQuestion = document.getElementById('practiceQuestion');
+            const checkPracticeBtn = document.getElementById('checkPractice');
+            const nextPracticeBtn = document.getElementById('nextPractice');
+            const backToFormulasBtn = document.getElementById('backToFormulas');
 
+            let currentTopic = null;
+            let currentPracticeQuestion = null;
+            let selectedAnswer = null;
+            let learnedFormulas = new Set();
+            let masteredFormulas = new Set();
+            let formulaPracticeCount = {};
+            let correctCount = 0;
             let score = 0;
-            let level = 1;
-            let selectedOptions = [];
-            let currentEquation = null;
-            let currentRoots = [];
-            let timeLeft = 40;
-            let timerInterval;
 
-            const equations = [
-                // Seviye 1-5: Basit denklemler
-                {equation: "x² + 2x + 1 = 0", roots: [-1], level: 1},
-                {equation: "x² - 4 = 0", roots: [-2, 2], level: 1},
-                {equation: "x² + 3x + 2 = 0", roots: [-2, -1], level: 2},
-                {equation: "x² - 5x + 6 = 0", roots: [2, 3], level: 2},
-                {equation: "x² + x - 6 = 0", roots: [-3, 2], level: 3},
-                
-                // Seviye 6-10: Temel denklemler
-                {equation: "2x² + 5x + 2 = 0", roots: [-2, -1], level: 6},
-                {equation: "3x² - 12x + 12 = 0", roots: [2, 2], level: 6},
-                {equation: "x² - 6x + 9 = 0", roots: [3], level: 7},
-                {equation: "2x² - 7x + 3 = 0", roots: [3, 1], level: 8},
-                {equation: "4x² - 4x + 1 = 0", roots: [1], level: 9},
-                
-                // Seviye 11-15: Orta seviye denklemler
-                {equation: "6x² + x - 2 = 0", roots: [-1, 1], level: 11},
-                {equation: "3x² + 10x + 3 = 0", roots: [-3, -1], level: 12},
-                {equation: "2x² - x - 3 = 0", roots: [-1, 2], level: 13},
-                {equation: "4x² + 12x + 9 = 0", roots: [-2], level: 14},
-                {equation: "x² + 4x + 3 = 0", roots: [-3, -1], level: 15},
-                
-                // Seviye 16-20: Zor denklemler
-                {equation: "8x² + 14x + 3 = 0", roots: [-2, -1], level: 16},
-                {equation: "3x² - 7x + 4 = 0", roots: [1, 2], level: 17},
-                {equation: "5x² + 6x + 1 = 0", roots: [-1, -1], level: 18},
-                {equation: "2x² - 3x - 2 = 0", roots: [2, -1], level: 19},
-                {equation: "4x² + x - 3 = 0", roots: [1, -1], level: 20},
-                
-                // Seviye 21-25: Çok zor denklemler
-                {equation: "6x² - 13x + 6 = 0", roots: [2, 1], level: 21},
-                {equation: "9x² + 12x + 4 = 0", roots: [-1, -1], level: 22},
-                {equation: "3x² - 5x - 2 = 0", roots: [2, -1], level: 23},
-                {equation: "7x² + 15x + 8 = 0", roots: [-1, -2], level: 24},
-                {equation: "5x² - 9x + 4 = 0", roots: [2, 1], level: 25}
+            const topics = [
+                {
+                    name: 'Fonksiyonlar',
+                    icon: 'fa-project-diagram',
+                    formulas: [
+                        {
+                            name: 'Bileşke Fonksiyon',
+                            formula: '(f ∘ g)(x) = f(g(x))',
+                            description: 'İki fonksiyonun bileşkesi, bir fonksiyonun çıktısını diğer fonksiyonun girdisi olarak kullanır.',
+                            example: 'f(x) = x + 2, g(x) = 3x ise (f ∘ g)(x) = 3x + 2'
+                        },
+                        {
+                            name: 'Ters Fonksiyon',
+                            formula: 'f⁻¹(f(x)) = x',
+                            description: 'Bir fonksiyonun tersi, fonksiyonu geri alır.',
+                            example: 'f(x) = 2x + 3 ise f⁻¹(x) = (x - 3)/2'
+                        },
+                        {
+                            name: 'Çift Fonksiyon',
+                            formula: 'f(-x) = f(x)',
+                            description: 'Çift fonksiyonlar y eksenine göre simetriktir.',
+                            example: 'f(x) = x² çift fonksiyondur'
+                        },
+                        {
+                            name: 'Tek Fonksiyon',
+                            formula: 'f(-x) = -f(x)',
+                            description: 'Tek fonksiyonlar orijine göre simetriktir.',
+                            example: 'f(x) = x³ tek fonksiyondur'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'f(x) = 2x + 1 ve g(x) = x - 3 ise (f ∘ g)(2) = ?',
+                            options: ['-1', '0', '1', '2'],
+                            correct: 0,
+                            formula: 'Bileşke Fonksiyon'
+                        },
+                        {
+                            question: 'f(x) = 3x - 5 fonksiyonunun tersi nedir?',
+                            options: ['(x+5)/3', '(x-5)/3', '(x+5)/-3', '3x+5'],
+                            correct: 0,
+                            formula: 'Ters Fonksiyon'
+                        }
+                    ]
+                },
+                {
+                    name: 'Türev',
+                    icon: 'fa-chart-line',
+                    formulas: [
+                        {
+                            name: 'Temel Türev Kuralları',
+                            formula: 'd/dx(xⁿ) = nxⁿ⁻¹',
+                            description: 'Kuvvet kuralı: x\'in n. kuvvetinin türevi n çarpı x\'in (n-1). kuvvetidir.',
+                            example: 'd/dx(x³) = 3x²'
+                        },
+                        {
+                            name: 'Çarpım Kuralı',
+                            formula: '(fg)\' = f\'g + fg\'',
+                            description: 'İki fonksiyonun çarpımının türevi, birincinin türevi çarpı ikinci artı birinci çarpı ikincinin türevi.',
+                            example: '(x²·sin x)\' = 2x·sin x + x²·cos x'
+                        },
+                        {
+                            name: 'Bölüm Kuralı',
+                            formula: '(f/g)\' = (f\'g - fg\')/g²',
+                            description: 'İki fonksiyonun bölümünün türevi, payın türevi çarpı payda eksi pay çarpı paydanın türevi, bölü paydanın karesi.',
+                            example: '(x²/x)\' = (2x·x - x²·1)/x² = 1'
+                        },
+                        {
+                            name: 'Zincir Kuralı',
+                            formula: 'd/dx(f(g(x))) = f\'(g(x))·g\'(x)',
+                            description: 'Bileşke fonksiyonun türevi, dış fonksiyonun türevi çarpı iç fonksiyonun türevi.',
+                            example: 'd/dx((x²+1)³) = 3(x²+1)²·2x = 6x(x²+1)²'
+                        },
+                        {
+                            name: 'Trigonometrik Türevler',
+                            formula: 'd/dx(sin x) = cos x, d/dx(cos x) = -sin x',
+                            description: 'Sinüsün türevi kosinüs, kosinüsün türevi negatif sinüstür.',
+                            example: 'd/dx(sin x) = cos x'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'f(x) = x⁴ fonksiyonunun türevi nedir?',
+                            options: ['4x³', 'x³', '4x', 'x⁴'],
+                            correct: 0,
+                            formula: 'Temel Türev Kuralları'
+                        },
+                        {
+                            question: 'f(x) = sin x fonksiyonunun türevi nedir?',
+                            options: ['cos x', '-cos x', 'sin x', '-sin x'],
+                            correct: 0,
+                            formula: 'Trigonometrik Türevler'
+                        }
+                    ]
+                },
+                {
+                    name: 'İntegral',
+                    icon: 'fa-calculator',
+                    formulas: [
+                        {
+                            name: 'Belirsiz İntegral',
+                            formula: '∫xⁿ dx = xⁿ⁺¹/(n+1) + C',
+                            description: 'Kuvvet kuralı: x\'in n. kuvvetinin integrali, x\'in (n+1). kuvveti bölü (n+1) artı sabit.',
+                            example: '∫x² dx = x³/3 + C'
+                        },
+                        {
+                            name: 'Belirli İntegral',
+                            formula: '∫[a to b] f(x) dx = F(b) - F(a)',
+                            description: 'Belirli integral, üst sınırda antiderivatif eksi alt sınırda antiderivatif.',
+                            example: '∫[0 to 2] x dx = [x²/2]₀² = 2 - 0 = 2'
+                        },
+                        {
+                            name: 'Kısmi İntegrasyon',
+                            formula: '∫u dv = uv - ∫v du',
+                            description: 'İki fonksiyonun çarpımının integrali için kullanılır.',
+                            example: '∫x·eˣ dx = x·eˣ - eˣ + C'
+                        },
+                        {
+                            name: 'Trigonometrik İntegraller',
+                            formula: '∫sin x dx = -cos x + C, ∫cos x dx = sin x + C',
+                            description: 'Sinüsün integrali negatif kosinüs, kosinüsün integrali sinüstür.',
+                            example: '∫sin x dx = -cos x + C'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: '∫x³ dx = ?',
+                            options: ['x⁴/4 + C', 'x⁴ + C', '3x² + C', 'x³/3 + C'],
+                            correct: 0,
+                            formula: 'Belirsiz İntegral'
+                        },
+                        {
+                            question: '∫cos x dx = ?',
+                            options: ['sin x + C', '-sin x + C', 'cos x + C', '-cos x + C'],
+                            correct: 0,
+                            formula: 'Trigonometrik İntegraller'
+                        }
+                    ]
+                },
+                {
+                    name: 'Limit',
+                    icon: 'fa-infinity',
+                    formulas: [
+                        {
+                            name: 'Limit Tanımı',
+                            formula: 'lim[x→a] f(x) = L',
+                            description: 'x, a\'ya yaklaşırken f(x) fonksiyonunun limiti L\'dir.',
+                            example: 'lim[x→2] (x+1) = 3'
+                        },
+                        {
+                            name: 'Limit Kuralları',
+                            formula: 'lim(f+g) = lim f + lim g, lim(f·g) = lim f · lim g',
+                            description: 'Toplamın limiti limitlerin toplamı, çarpımın limiti limitlerin çarpımıdır.',
+                            example: 'lim[x→0] (x + x²) = 0 + 0 = 0'
+                        },
+                        {
+                            name: 'L\'Hôpital Kuralı',
+                            formula: 'lim[f/g] = lim[f\'/g\'] (0/0 veya ∞/∞ durumunda)',
+                            description: 'Belirsiz formlarda pay ve paydanın türevlerinin oranının limiti alınır.',
+                            example: 'lim[x→0] (sin x)/x = lim[x→0] cos x/1 = 1'
+                        },
+                        {
+                            name: 'Önemli Limitler',
+                            formula: 'lim[x→0] sin x/x = 1, lim[x→∞] (1+1/x)ˣ = e',
+                            description: 'Temel limit formülleri.',
+                            example: 'lim[x→0] sin x/x = 1'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'lim[x→3] (x² - 9)/(x - 3) = ?',
+                            options: ['6', '3', '0', '∞'],
+                            correct: 0,
+                            formula: 'Limit Kuralları'
+                        }
+                    ]
+                },
+                {
+                    name: 'Trigonometri',
+                    icon: 'fa-circle',
+                    formulas: [
+                        {
+                            name: 'Pisagor Özdeşliği',
+                            formula: 'sin²θ + cos²θ = 1',
+                            description: 'Birim çember üzerindeki temel trigonometrik özdeşlik.',
+                            example: 'sin²30° + cos²30° = (1/2)² + (√3/2)² = 1'
+                        },
+                        {
+                            name: 'Toplam Formülleri',
+                            formula: 'sin(a+b) = sin a cos b + cos a sin b',
+                            description: 'İki açının toplamının sinüsü için formül.',
+                            example: 'sin(30°+60°) = sin 30° cos 60° + cos 30° sin 60° = 1'
+                        },
+                        {
+                            name: 'İki Kat Açı',
+                            formula: 'sin 2θ = 2 sin θ cos θ',
+                            description: 'İki kat açının sinüsü için formül.',
+                            example: 'sin 60° = 2 sin 30° cos 30° = √3/2'
+                        },
+                        {
+                            name: 'Yarım Açı',
+                            formula: 'sin²(θ/2) = (1-cos θ)/2',
+                            description: 'Yarım açının sinüsünün karesi için formül.',
+                            example: 'sin²15° = (1-cos 30°)/2'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'sin²30° + cos²30° = ?',
+                            options: ['0', '1', '2', '1/2'],
+                            correct: 1,
+                            formula: 'Pisagor Özdeşliği'
+                        }
+                    ]
+                },
+                {
+                    name: 'Logaritma',
+                    icon: 'fa-chart-bar',
+                    formulas: [
+                        {
+                            name: 'Logaritma Tanımı',
+                            formula: 'logₐ(b) = c ⟺ aᶜ = b',
+                            description: 'a tabanında b\'nin logaritması c ise, a\'nın c. kuvveti b\'ye eşittir.',
+                            example: 'log₂(8) = 3 çünkü 2³ = 8'
+                        },
+                        {
+                            name: 'Logaritma Kuralları',
+                            formula: 'log(ab) = log a + log b, log(a/b) = log a - log b',
+                            description: 'Çarpımın logaritması logaritmaların toplamı, bölümün logaritması farkıdır.',
+                            example: 'log(10·100) = log 10 + log 100 = 1 + 2 = 3'
+                        },
+                        {
+                            name: 'Üs Kuralı',
+                            formula: 'log(aⁿ) = n log a',
+                            description: 'Bir sayının n. kuvvetinin logaritması, logaritmanın n katıdır.',
+                            example: 'log(10³) = 3 log 10 = 3'
+                        },
+                        {
+                            name: 'Taban Değiştirme',
+                            formula: 'logₐ(b) = log(b)/log(a)',
+                            description: 'Bir logaritmanın tabanını değiştirmek için formül.',
+                            example: 'log₂(8) = log(8)/log(2) = 3'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'log(100) = ?',
+                            options: ['1', '2', '10', '100'],
+                            correct: 1,
+                            formula: 'Logaritma Tanımı'
+                        },
+                        {
+                            question: 'log(10·100) = ?',
+                            options: ['3', '2', '1', '0'],
+                            correct: 0,
+                            formula: 'Logaritma Kuralları'
+                        }
+                    ]
+                },
+                {
+                    name: 'Geometri',
+                    icon: 'fa-shapes',
+                    formulas: [
+                        {
+                            name: 'Daire Alanı',
+                            formula: 'A = πr²',
+                            description: 'Dairenin alanı, pi çarpı yarıçapın karesi.',
+                            example: 'r = 5 ise A = π·25 = 25π'
+                        },
+                        {
+                            name: 'Daire Çevresi',
+                            formula: 'C = 2πr',
+                            description: 'Dairenin çevresi, 2 çarpı pi çarpı yarıçap.',
+                            example: 'r = 5 ise C = 2π·5 = 10π'
+                        },
+                        {
+                            name: 'Üçgen Alanı',
+                            formula: 'A = (1/2)bh',
+                            description: 'Üçgenin alanı, taban çarpı yükseklik bölü 2.',
+                            example: 'b = 10, h = 6 ise A = (1/2)·10·6 = 30'
+                        },
+                        {
+                            name: 'Küp Hacmi',
+                            formula: 'V = a³',
+                            description: 'Küpün hacmi, bir kenarın küpü.',
+                            example: 'a = 5 ise V = 5³ = 125'
+                        }
+                    ],
+                    practiceQuestions: [
+                        {
+                            question: 'Yarıçapı 7 cm olan dairenin alanı kaç cm²? (π ≈ 3.14)',
+                            options: ['43.96', '153.86', '21.98', '49'],
+                            correct: 1,
+                            formula: 'Daire Alanı'
+                        }
+                    ]
+                }
             ];
 
-            function startTimer() {
-                timeLeft = 40;
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        nextQuestion();
-                    }
-                }, 1000);
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-times-circle',
+                    info: 'fa-info-circle'
+                };
+                
+                toast.innerHTML = `
+                    <i class="fas ${icons[type]}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
             }
 
-            function generateOptions(roots) {
-                const allOptions = new Set();
-                
-                // Doğru kökleri ekle
-                roots.forEach(root => allOptions.add(root));
-                
-                // Yanlış seçenekler için tam sayılar üret
-                while(allOptions.size < 5) {
-                    // -5 ile 5 arasında rastgele tam sayılar
-                    const fakeRoot = Math.floor(Math.random() * 11) - 5;
-                    // Eğer üretilen sayı gerçek köklerden biri değilse ekle
-                    if (!roots.includes(fakeRoot)) {
-                        allOptions.add(fakeRoot);
-                    }
-                }
-                
-                return Array.from(allOptions).sort((a, b) => a - b);
-            }
-
-            function getEquationsForLevel(level) {
-                return equations.filter(eq => eq.level <= level);
-            }
-
-            function generateGame() {
-                optionsContainer.innerHTML = '';
-                selectedOptions = [];
-                startTimer();
-                
-                const availableEquations = getEquationsForLevel(level);
-                currentEquation = availableEquations[Math.floor(Math.random() * availableEquations.length)];
-                currentRoots = currentEquation.roots;
-                
-                equationDisplay.textContent = currentEquation.equation;
-                
-                const options = generateOptions(currentRoots);
-                
-                options.forEach(option => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'option';
-                    optionDiv.textContent = option;
-                    optionDiv.addEventListener('click', () => selectOption(optionDiv, option));
-                    optionsContainer.appendChild(optionDiv);
+            function createTopicCards() {
+                topicSelector.innerHTML = '';
+                topics.forEach((topic, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'topic-card';
+                    card.innerHTML = `
+                        <div class="topic-icon">
+                            <i class="fas ${topic.icon}"></i>
+                        </div>
+                        <div class="topic-name">${topic.name}</div>
+                        <div style="font-size: 0.85rem; opacity: 0.8;">${topic.formulas.length} formül</div>
+                    `;
+                    card.addEventListener('click', () => selectTopic(index));
+                    topicSelector.appendChild(card);
                 });
             }
 
-            function selectOption(optionDiv, value) {
-                if(selectedOptions.includes(value)) {
-                    selectedOptions = selectedOptions.filter(v => v !== value);
-                    optionDiv.classList.remove('selected');
-                } else if(selectedOptions.length < currentRoots.length) {
-                    selectedOptions.push(value);
-                    optionDiv.classList.add('selected');
-                }
-            }
-
-            function checkAnswer() {
-                const correct = selectedOptions.length === currentRoots.length &&
-                              selectedOptions.every(option => currentRoots.includes(option));
-
-                if(correct) {
-                    score += level * 10;
-                    alert('Tebrikler! Doğru kökleri buldun!');
+            function selectTopic(index) {
+                currentTopic = topics[index];
+                
+                document.querySelectorAll('.topic-card').forEach((card, i) => {
+                    card.classList.toggle('active', i === index);
+                });
+                
+                formulaArea.style.display = 'block';
+                practiceArea.style.display = 'none';
+                formulaHeader.innerHTML = `
+                    ${currentTopic.name} - Formüller
+                    <button id="practiceBtn" class="game-btn primary" style="margin-left: 1rem; padding: 0.5rem 1rem; font-size: 0.9rem;">
+                        <i class="fas fa-dumbbell"></i> Pratik Yap
+                    </button>
+                `;
+                
+                const practiceBtn = document.getElementById('practiceBtn');
+                if (practiceBtn) {
+                    practiceBtn.addEventListener('click', startPractice);
                 }
                 
-                nextQuestion();
+                displayFormulas();
             }
 
-            function nextQuestion() {
-                level++;
-                if (level > 25) {
-                    alert('Tebrikler! Tüm seviyeleri tamamladınız!');
-                    startButton.disabled = false;
-                    checkButton.disabled = true;
-                    clearInterval(timerInterval);
+            function displayFormulas() {
+                formulaList.innerHTML = '';
+                currentTopic.formulas.forEach(formula => {
+                    const formulaCard = document.createElement('div');
+                    formulaCard.className = 'formula-card';
+                    
+                    const isLearned = learnedFormulas.has(`${currentTopic.name}-${formula.name}`);
+                    const isMastered = masteredFormulas.has(`${currentTopic.name}-${formula.name}`);
+                    
+                    formulaCard.innerHTML = `
+                        <div class="formula-title">
+                            <i class="fas fa-formula"></i>
+                            ${formula.name}
+                            ${isMastered ? '<span class="mastery-badge"><i class="fas fa-star"></i> Uzman</span>' : ''}
+                        </div>
+                        <div class="formula-content">${formula.formula}</div>
+                        <div class="formula-description">
+                            <strong>Açıklama:</strong> ${formula.description}
+                        </div>
+                        <div class="formula-example">
+                            <h4><i class="fas fa-lightbulb"></i> Örnek:</h4>
+                            <p>${formula.example}</p>
+                        </div>
+                    `;
+                    
+                    formulaList.appendChild(formulaCard);
+                    
+                    if (!isLearned) {
+                        learnedFormulas.add(`${currentTopic.name}-${formula.name}`);
+                        score += 20;
+                    }
+                });
+            }
+
+            function startPractice() {
+                if (!currentTopic || currentTopic.practiceQuestions.length === 0) {
+                    showToast('Bu konu için pratik sorusu bulunmuyor!', 'error');
                     return;
                 }
-                generateGame();
-                scoreDisplay.textContent = score;
-                levelDisplay.textContent = level;
+                
+                formulaArea.style.display = 'none';
+                practiceArea.style.display = 'block';
+                generatePracticeQuestion();
             }
 
-            startButton.addEventListener('click', () => {
-                level = 1;
-                score = 0;
-                generateGame();
-                startButton.disabled = true;
-                checkButton.disabled = false;
-            });
+            function generatePracticeQuestion() {
+                const questions = currentTopic.practiceQuestions;
+                currentPracticeQuestion = questions[Math.floor(Math.random() * questions.length)];
+                selectedAnswer = null;
+                
+                practiceQuestion.innerHTML = `
+                    <h4><i class="fas fa-question-circle"></i> ${currentPracticeQuestion.question}</h4>
+                    <div class="practice-options"></div>
+                `;
+                
+                const optionsContainer = practiceQuestion.querySelector('.practice-options');
+                currentPracticeQuestion.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'practice-option';
+                    optionDiv.textContent = option;
+                    optionDiv.dataset.index = index;
+                    optionDiv.addEventListener('click', () => selectPracticeAnswer(optionDiv, index));
+                    optionsContainer.appendChild(optionDiv);
+                });
+                
+                checkPracticeBtn.disabled = true;
+                nextPracticeBtn.disabled = true;
+            }
 
-            checkButton.addEventListener('click', checkAnswer);
+            function selectPracticeAnswer(optionDiv, index) {
+                document.querySelectorAll('.practice-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                    optionDiv.classList.add('selected');
+                selectedAnswer = index;
+                checkPracticeBtn.disabled = false;
+            }
+
+            function checkPracticeAnswer() {
+                if (selectedAnswer === null) {
+                    showToast('Lütfen bir seçenek seçin!', 'error');
+                    return;
+                }
+                
+                const options = document.querySelectorAll('.practice-option');
+                const correct = selectedAnswer === currentPracticeQuestion.correct;
+                
+                options.forEach((opt, index) => {
+                    if (index === currentPracticeQuestion.correct) {
+                        opt.classList.add('correct');
+                    } else if (index === selectedAnswer) {
+                        opt.classList.add('wrong');
+                    }
+                    opt.style.pointerEvents = 'none';
+                });
+                
+                const formulaKey = `${currentTopic.name}-${currentPracticeQuestion.formula}`;
+                if (!formulaPracticeCount[formulaKey]) {
+                    formulaPracticeCount[formulaKey] = 0;
+                }
+                formulaPracticeCount[formulaKey]++;
+                
+                if (correct) {
+                    correctCount++;
+                    score += 30;
+                    
+                    if (formulaPracticeCount[formulaKey] >= 3 && !masteredFormulas.has(formulaKey)) {
+                        masteredFormulas.add(formulaKey);
+                        showToast(`🎉 ${currentPracticeQuestion.formula} formülünde uzman oldunuz!`, 'success');
+                    } else {
+                        showToast('🎉 Doğru cevap!', 'success');
+                    }
+                } else {
+                    showToast('❌ Yanlış cevap!', 'error');
+                }
+                
+                checkPracticeBtn.disabled = true;
+                nextPracticeBtn.disabled = false;
+            }
+
+            function nextPracticeQuestion() {
+                generatePracticeQuestion();
+            }
+
+            function backToFormulas() {
+                practiceArea.style.display = 'none';
+                formulaArea.style.display = 'block';
+            }
+
+
+
+            checkPracticeBtn.addEventListener('click', checkPracticeAnswer);
+            nextPracticeBtn.addEventListener('click', nextPracticeQuestion);
+            backToFormulasBtn.addEventListener('click', backToFormulas);
+
+            createTopicCards();
         });
     </script>
     <script src="floating-chat.js"></script>
 </body>
 </html>
+
+

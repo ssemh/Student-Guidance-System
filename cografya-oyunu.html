@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetOdak - Coğrafya Keşfi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .game-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        
+        .game-stats {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box {
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        
+        .stat-box label {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-box span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .maps-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .map-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .map-title {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .map-area {
+            width: 100%;
+            height: 400px;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .leaflet-container {
+            border-radius: 7px;
+        }
+        
+        .mountain-item {
+            background: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            cursor: move;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #333;
+            border: 2px solid transparent;
+            user-select: none;
+            margin: 0.5rem;
+            display: inline-block;
+        }
+        
+        .mountain-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            border-color: #3498db;
+        }
+        
+        .mountain-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .mountain-item.placed {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .mountain-item.placed.correct {
+            background: #d4edda;
+            border-color: #27ae60;
+            color: #155724;
+        }
+        
+        .mountain-item.placed.incorrect {
+            background: #f8d7da;
+            border-color: #e74c3c;
+            color: #721c24;
+        }
+        
+        .mountains-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .mountains-container h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .mountain-marker-leaflet {
+            z-index: 1000;
+        }
+        
+        .mountain-marker-leaflet div {
+            transition: all 0.3s;
+        }
+        
+        .mountain-marker-leaflet:hover div {
+            transform: scale(1.3);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.6);
+        }
+        
+        .mountain-marker-leaflet.drag-over div {
+            background: #ffc107 !important;
+            transform: scale(1.5);
+            border-color: #ffc107 !important;
+        }
+        
+        .mountain-marker-leaflet.filled.correct div {
+            background: #27ae60 !important;
+            border-color: #27ae60 !important;
+        }
+        
+        .mountain-marker-leaflet.filled.incorrect div {
+            background: #e74c3c !important;
+            border-color: #e74c3c !important;
+        }
+        
+        .feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+        
+        .feedback.correct {
+            border: 3px solid #27ae60;
+        }
+        
+        .feedback.incorrect {
+            border: 3px solid #e74c3c;
+        }
+        
+        @keyframes popIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .maps-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
+                <a href="ana-sayfa.html"><i class="fas fa-home"></i> Ana Sayfa</a>
+                <a href="analiz.html"><i class="fas fa-chart-line"></i> Analiz</a>
+                <a href="oyunlar.html"><i class="fas fa-gamepad"></i> Oyunlar</a>
+                <a href="homework.html"><i class="fas fa-tasks"></i> Ödev ve Hedefler</a>
+                <a href="profil.html"><i class="fas fa-user"></i> Profilim</a>
+                <a href="chat.html"><i class="fas fa-robot"></i> Yapay Zeka</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <section class="game-section">
+        <div class="container">
+            <h2>Coğrafya Keşfi</h2>
+            <div class="game-container">
+                <div class="game-stats">
+                    <div class="stat-box">
+                        <label>Puan</label>
+                        <span id="score">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Doğru</label>
+                        <span id="correct">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <label>Yanlış</label>
+                        <span id="wrong">0</span>
+                    </div>
+                </div>
+                
+                <div id="game-area">
+                    <h3 style="text-align: center; color: white; margin-bottom: 2rem;">
+                        Dağ isimlerini doğru haritaya ve konuma sürükleyin!
+                    </h3>
+                    
+                    <div class="mountains-container">
+                        <h3>Dağlar</h3>
+                        <div id="mountains-container">
+                            <!-- Dağ isimleri buraya eklenecek -->
+                        </div>
+                    </div>
+                    
+                    <div class="maps-container">
+                        <div class="map-section">
+                            <div class="map-title">
+                                <i class="fas fa-mountain"></i> Türkiye Dağları
+                            </div>
+                            <div id="turkey-map" class="map-area">
+                                <!-- Leaflet haritası buraya eklenecek -->
+                            </div>
+                        </div>
+                        
+                        <div class="map-section">
+                            <div class="map-title">
+                                <i class="fas fa-globe"></i> Dünya Dağları
+                            </div>
+                            <div id="world-map" class="map-area">
+                                <!-- Leaflet haritası buraya eklenecek -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="feedback" class="feedback">
+        <h3 id="feedback-text"></h3>
+    </div>
+
+    <script>
+        // Türkiye dağları (gerçek koordinatlar)
+        const turkeyMountains = [
+            { name: "Ağrı Dağı", lat: 39.7021, lng: 44.2978, type: "turkey" },
+            { name: "Erciyes", lat: 38.5319, lng: 35.4483, type: "turkey" },
+            { name: "Uludağ", lat: 40.1136, lng: 29.2283, type: "turkey" },
+            { name: "Kaçkar", lat: 40.8333, lng: 41.1167, type: "turkey" },
+            { name: "Beydağları", lat: 36.5833, lng: 30.5000, type: "turkey" },
+            { name: "Toroslar", lat: 37.0000, lng: 33.0000, type: "turkey" },
+            { name: "Süphan", lat: 38.9278, lng: 42.8356, type: "turkey" },
+            { name: "Nemrut", lat: 37.9833, lng: 38.7333, type: "turkey" },
+            { name: "Ararat", lat: 39.7021, lng: 44.2978, type: "turkey" },
+            { name: "Aydos", lat: 40.9833, lng: 29.1833, type: "turkey" },
+            { name: "Bolu Dağı", lat: 40.7333, lng: 31.6167, type: "turkey" },
+            { name: "Cilo Dağı", lat: 37.3667, lng: 43.8333, type: "turkey" },
+            { name: "Demirkazık", lat: 37.8000, lng: 35.1667, type: "turkey" },
+            { name: "Elbrus", lat: 43.3500, lng: 42.4333, type: "turkey" },
+            { name: "Geyik Dağı", lat: 36.9000, lng: 33.4000, type: "turkey" },
+            { name: "Honaz", lat: 37.7500, lng: 29.2833, type: "turkey" },
+            { name: "Ilgaz", lat: 40.9167, lng: 33.7833, type: "turkey" },
+            { name: "Kazdağı", lat: 39.6667, lng: 26.8333, type: "turkey" },
+            { name: "Kızıldağ", lat: 37.3667, lng: 30.7500, type: "turkey" },
+            { name: "Meriç", lat: 41.1833, lng: 27.0833, type: "turkey" }
+        ];
+        
+        // Dünya dağları (gerçek koordinatlar)
+        const worldMountains = [
+            { name: "Everest", lat: 27.9881, lng: 86.9250, type: "world" },
+            { name: "K2", lat: 35.8814, lng: 76.5133, type: "world" },
+            { name: "Kilimanjaro", lat: -3.0674, lng: 37.3556, type: "world" },
+            { name: "Alp Dağları", lat: 46.5197, lng: 9.8597, type: "world" },
+            { name: "And Dağları", lat: -32.6532, lng: -70.0114, type: "world" },
+            { name: "Rocky Dağları", lat: 40.3430, lng: -105.6836, type: "world" },
+            { name: "Himalaya", lat: 28.0000, lng: 84.0000, type: "world" },
+            { name: "Fuji", lat: 35.3606, lng: 138.7274, type: "world" },
+            { name: "Mont Blanc", lat: 45.8326, lng: 6.8652, type: "world" },
+            { name: "Matterhorn", lat: 45.9763, lng: 7.6586, type: "world" },
+            { name: "McKinley", lat: 63.0694, lng: -151.0072, type: "world" },
+            { name: "Aconcagua", lat: -32.6532, lng: -70.0114, type: "world" },
+            { name: "Vinson", lat: -78.5254, lng: -85.6171, type: "world" },
+            { name: "Elbrus", lat: 43.3500, lng: 42.4333, type: "world" },
+            { name: "Kangchenjunga", lat: 27.7025, lng: 88.1475, type: "world" },
+            { name: "Lhotse", lat: 27.9617, lng: 86.9336, type: "world" },
+            { name: "Makalu", lat: 27.8892, lng: 87.0889, type: "world" },
+            { name: "Cho Oyu", lat: 28.0944, lng: 86.6608, type: "world" },
+            { name: "Dhaulagiri", lat: 28.6967, lng: 83.4931, type: "world" },
+            { name: "Manaslu", lat: 28.5500, lng: 84.5597, type: "world" }
+        ];
+        
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let draggedElement = null;
+        let currentMountains = [];
+        let turkeyMapLeaflet = null;
+        let worldMapLeaflet = null;
+        let turkeyMarkers = [];
+        let worldMarkers = [];
+        
+        // Oyunu başlat
+        function initGame() {
+            // Rastgele dağlar seç (10-12 arası rastgele)
+            const allMountains = [...turkeyMountains, ...worldMountains];
+            const shuffled = [...allMountains].sort(() => Math.random() - 0.5);
+            const count = Math.floor(Math.random() * 3) + 10; // 10-12 arası
+            currentMountains = shuffled.slice(0, count);
+            
+            // Dağları göster
+            displayMountains();
+            
+            // Haritaları oluştur
+            createMaps();
+        }
+        
+        // Dağları göster
+        function displayMountains() {
+            const container = document.getElementById('mountains-container');
+            container.innerHTML = '';
+            
+            currentMountains.forEach((mountain, index) => {
+                const mountainDiv = document.createElement('div');
+                mountainDiv.className = 'mountain-item';
+                mountainDiv.draggable = true;
+                mountainDiv.dataset.name = mountain.name;
+                mountainDiv.dataset.type = mountain.type;
+                mountainDiv.dataset.index = index;
+                mountainDiv.textContent = mountain.name;
+                
+                mountainDiv.addEventListener('dragstart', handleDragStart);
+                mountainDiv.addEventListener('dragend', handleDragEnd);
+                
+                container.appendChild(mountainDiv);
+            });
+        }
+        
+        // Haritaları oluştur
+        function createMaps() {
+            // Türkiye haritası
+            if (turkeyMapLeaflet) {
+                turkeyMapLeaflet.remove();
+            }
+            turkeyMapLeaflet = L.map('turkey-map').setView([39.0, 35.0], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 10,
+                minZoom: 5
+            }).addTo(turkeyMapLeaflet);
+            
+            // Dünya haritası
+            if (worldMapLeaflet) {
+                worldMapLeaflet.remove();
+            }
+            worldMapLeaflet = L.map('world-map').setView([20, 0], 2);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 5,
+                minZoom: 2
+            }).addTo(worldMapLeaflet);
+            
+            // Mevcut marker'ları temizle
+            turkeyMarkers.forEach(m => m.remove());
+            worldMarkers.forEach(m => m.remove());
+            turkeyMarkers = [];
+            worldMarkers = [];
+            
+            // Türkiye dağları için işaretler
+            turkeyMountains.forEach(mountain => {
+                const marker = createLeafletMarker(mountain, turkeyMapLeaflet, 'turkey');
+                turkeyMarkers.push(marker);
+            });
+            
+            // Dünya dağları için işaretler
+            worldMountains.forEach(mountain => {
+                const marker = createLeafletMarker(mountain, worldMapLeaflet, 'world');
+                worldMarkers.push(marker);
+            });
+        }
+        
+        // Leaflet marker oluştur
+        function createLeafletMarker(mountain, map, mapType) {
+            const marker = L.marker([mountain.lat, mountain.lng], {
+                draggable: false,
+                icon: L.divIcon({
+                    className: 'mountain-marker-leaflet',
+                    html: '<div style="width: 30px; height: 30px; background: #e74c3c; border: 3px solid white; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">?</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                })
+            }).addTo(map);
+            
+            marker.mountainData = {
+                name: mountain.name,
+                type: mountain.type,
+                mapType: mapType
+            };
+            
+            // Drag & drop için marker'ı hazırla
+            const markerElement = marker.getElement();
+            if (markerElement) {
+                markerElement.dataset.name = mountain.name;
+                markerElement.dataset.type = mountain.type;
+                markerElement.addEventListener('dragover', handleDragOver);
+                markerElement.addEventListener('drop', handleDrop);
+                markerElement.addEventListener('dragenter', handleDragEnter);
+                markerElement.addEventListener('dragleave', handleDragLeave);
+            }
+            
+            return marker;
+        }
+        
+        // Drag olayları
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            // Leaflet marker elementini bul
+            let markerElement = this;
+            let marker = null;
+            
+            // Marker'ı bul (Leaflet marker wrapper)
+            if (markerElement.classList.contains('leaflet-marker-icon')) {
+                // Leaflet marker'ı bul
+                const allMarkers = [...turkeyMarkers, ...worldMarkers];
+                marker = allMarkers.find(m => {
+                    const el = m.getElement();
+                    return el && el.contains(markerElement);
+                });
+            } else if (markerElement.classList.contains('mountain-marker-leaflet')) {
+                // DivIcon durumu
+                const allMarkers = [...turkeyMarkers, ...worldMarkers];
+                marker = allMarkers.find(m => {
+                    const el = m.getElement();
+                    return el === markerElement || el?.contains(markerElement);
+                });
+            }
+            
+            if (marker) {
+                markerElement = marker.getElement();
+            }
+            
+            if (markerElement) {
+                markerElement.classList.remove('drag-over');
+            }
+            
+            if (draggedElement && marker) {
+                // Eğer marker daha önce doldurulmuşsa ve doğru ise, tekrar kullanılamaz
+                if (markerElement.classList.contains('filled') && markerElement.classList.contains('correct')) {
+                    return false;
+                }
+                const mountainName = draggedElement.dataset.name;
+                const mountainType = draggedElement.dataset.type;
+                const markerData = marker.mountainData;
+                
+                // Doğru mu kontrol et
+                const isCorrect = (mountainType === markerData.type) && (mountainName === markerData.name);
+                
+                // İşareti doldur
+                const iconDiv = markerElement.querySelector('div');
+                
+                // Dağı işaretle
+                draggedElement.classList.add('placed');
+                if (isCorrect) {
+                    draggedElement.classList.add('correct');
+                    markerElement.classList.add('filled', 'correct');
+                    score += 10;
+                    correctCount++;
+                    showFeedback('Doğru! ✓', true);
+                    
+                    // Doğru yerleştirildiğinde marker'da ismin baş harflerini göster
+                    if (iconDiv) {
+                        const nameParts = mountainName.split(' ');
+                        let initials = '';
+                        if (nameParts.length > 1) {
+                            initials = nameParts.map(part => part[0]).join('').substring(0, 2);
+                        } else {
+                            initials = mountainName.substring(0, 2).toUpperCase();
+                        }
+                        iconDiv.textContent = initials;
+                        iconDiv.style.fontSize = '10px';
+                    }
+                } else {
+                    draggedElement.classList.add('incorrect');
+                    // Yanlış yerleştirildiğinde marker'a incorrect class'ı ekle ama filled ekleme (tekrar kullanılabilir olsun)
+                    markerElement.classList.add('incorrect');
+                    // Eğer daha önce filled varsa kaldır (tekrar kullanılabilir yapmak için)
+                    markerElement.classList.remove('filled');
+                    markerElement.classList.remove('correct');
+                    
+                    wrongCount++;
+                    const correctType = mountainType === 'turkey' ? 'Türkiye' : 'Dünya';
+                    showFeedback('Yanlış! ✗ Doğru harita: ' + correctType, false);
+                    
+                    // Yanlış yerleştirilen marker kırmızı kalır ama tekrar kullanılabilir
+                    if (iconDiv) {
+                        const nameParts = mountainName.split(' ');
+                        let initials = '';
+                        if (nameParts.length > 1) {
+                            initials = nameParts.map(part => part[0]).join('').substring(0, 2);
+                        } else {
+                            initials = mountainName.substring(0, 2).toUpperCase();
+                        }
+                        iconDiv.textContent = initials;
+                        iconDiv.style.fontSize = '10px';
+                        // Kırmızı yap
+                        iconDiv.style.background = '#e74c3c';
+                        iconDiv.style.borderColor = '#e74c3c';
+                    }
+                    
+                    // Yanlış yerleştirildiğinde, dağın gerçek yerindeki marker'a ismini yaz ve yeşile döndür
+                    const allMountains = [...turkeyMountains, ...worldMountains];
+                    const correctMountain = allMountains.find(m => m.name === mountainName && m.type === mountainType);
+                    
+                    if (correctMountain) {
+                        // Doğru haritadaki doğru marker'ı bul
+                        const correctMarkers = mountainType === 'turkey' ? turkeyMarkers : worldMarkers;
+                        
+                        const correctMarker = correctMarkers.find(m => {
+                            const data = m.mountainData;
+                            return data.name === mountainName && data.type === mountainType;
+                        });
+                        
+                        if (correctMarker) {
+                            const correctMarkerElement = correctMarker.getElement();
+                            const correctIconDiv = correctMarkerElement.querySelector('div');
+                            if (correctIconDiv && !correctMarkerElement.classList.contains('filled')) {
+                                // İsmin baş harflerini al (2-3 harf)
+                                const nameParts = mountainName.split(' ');
+                                let initials = '';
+                                if (nameParts.length > 1) {
+                                    initials = nameParts.map(part => part[0]).join('').substring(0, 2);
+                                } else {
+                                    initials = mountainName.substring(0, 2).toUpperCase();
+                                }
+                                
+                                correctIconDiv.textContent = initials;
+                                correctIconDiv.style.fontSize = '10px';
+                                correctIconDiv.style.background = '#27ae60';
+                                correctIconDiv.style.borderColor = '#27ae60';
+                                correctMarkerElement.classList.add('filled');
+                            }
+                        }
+                    }
+                }
+                
+                // İstatistikleri güncelle
+                updateStats();
+                
+                // Tüm dağlar yerleştirildi mi kontrol et
+                checkGameComplete();
+            }
+            
+            return false;
+        }
+        
+        // İstatistikleri güncelle
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('wrong').textContent = wrongCount;
+        }
+        
+        // Geri bildirim göster
+        function showFeedback(message, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedbackText.textContent = message;
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect') + ' show';
+            
+            setTimeout(() => {
+                feedback.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Oyun tamamlandı mı kontrol et
+        function checkGameComplete() {
+            const placed = document.querySelectorAll('.mountain-item.placed').length;
+            if (placed === currentMountains.length) {
+                setTimeout(() => {
+                    alert(`Oyun Tamamlandı!\nPuan: ${score}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
+                    // Yeni oyun başlat
+                    score = 0;
+                    correctCount = 0;
+                    wrongCount = 0;
+                    initGame();
+                    updateStats();
+                }, 500);
+            }
+        }
+        
+        // Sayfa yüklendiğinde oyunu başlat
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+    <script src="script.js"></script>
+    <script src="floating-chat.js"></script>
+</body>
+</html>
+
+
+

@@ -17,7 +17,7 @@ class FloatingChatWidget {
     }
 
     initializeSystemPrompt() {
-        const SYSTEM_PROMPT = `Sen Pusula adlı bir eğitim platformunun AI asistanısın. Görevin öğrencilere derslerinde yardımcı olmak ve eğitim konularında rehberlik etmek.
+        const SYSTEM_PROMPT = `Sen NetOdak adlı bir eğitim platformunun AI asistanısın. Görevin öğrencilere derslerinde yardımcı olmak ve eğitim konularında rehberlik etmek.
 
 Özelliklerin:
 - Kişisel koçluk yapay zekasısın

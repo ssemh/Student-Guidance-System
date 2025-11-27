@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'ozel': null
     };
     const defaultSound = 'sound/Kayıt.mp3';
+    let currentSoundType = null;
+    let selectedSound = null;
 
 
     let isResizing = false;
@@ -47,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     displayNotes();
     updateStats();
     initializeCounters();
+    loadSoundSettings();
     
 
     initBoard();
@@ -559,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     tytDenemeInterval = null;
                     tytDenemeTime = 0;
 
-                    playAlarm('tyt-deneme');
+                    playSound('tyt-deneme');
                 }
                 updateTYTDenemeDisplay();
             }, 1000);
@@ -593,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     aytDenemeInterval = null;
                     aytDenemeTime = 0;
 
-                    playAlarm('ayt-deneme');
+                    playSound('ayt-deneme');
                 }
                 updateAYTDenemeDisplay();
             }, 1000);
@@ -633,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ozelInterval = null;
                     ozelTime = 0;
 
-                    playAlarm('ozel');
+                    playSound('ozel');
                 }
                 updateOzelDisplay();
             }, 1000);
@@ -1555,4 +1558,135 @@ document.addEventListener('DOMContentLoaded', function() {
     window.startResize = startResize;
     window.handleResize = handleResize;
     window.stopResize = stopResize;
+
+    // Ses Seçme Fonksiyonları
+    function loadSoundSettings() {
+        const savedSounds = localStorage.getItem('customSounds');
+        if (savedSounds) {
+            customSounds = JSON.parse(savedSounds);
+        }
+    }
+
+    function saveSoundSettings() {
+        localStorage.setItem('customSounds', JSON.stringify(customSounds));
+    }
+
+    function selectSound(soundType) {
+        currentSoundType = soundType;
+        document.getElementById('soundModal').style.display = 'flex';
+        
+        // Mevcut ses ayarını göster
+        const currentSound = customSounds[soundType];
+        if (currentSound) {
+            if (currentSound === 'default') {
+                setSound('default');
+            } else if (currentSound === 'none') {
+                setSound('none');
+            } else {
+                // Özel ses
+                document.getElementById('previewAudio').src = currentSound;
+                document.getElementById('soundPreview').style.display = 'block';
+            }
+        } else {
+            setSound('default');
+        }
+    }
+
+    function setSound(soundType) {
+        // Önceki seçimleri temizle
+        document.querySelectorAll('.sound-option').forEach(option => {
+            option.style.borderColor = '#e0e0e0';
+            option.style.backgroundColor = '';
+        });
+
+        // Yeni seçimi vurgula
+        const selectedOption = event.target.closest('.sound-option');
+        if (selectedOption) {
+            selectedOption.style.borderColor = '#3498db';
+            selectedOption.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+        }
+
+        selectedSound = soundType;
+        
+        if (soundType === 'default') {
+            document.getElementById('previewAudio').src = defaultSound;
+            document.getElementById('soundPreview').style.display = 'block';
+        } else if (soundType === 'none') {
+            document.getElementById('soundPreview').style.display = 'none';
+        } else if (soundType === 'custom') {
+            document.getElementById('soundFileInput').click();
+        }
+    }
+
+    function handleSoundUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewAudio').src = e.target.result;
+                document.getElementById('soundPreview').style.display = 'block';
+                selectedSound = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveSoundSelection() {
+        if (currentSoundType && selectedSound !== null) {
+            customSounds[currentSoundType] = selectedSound;
+            saveSoundSettings();
+            closeSoundModal();
+            
+            // Başarı mesajı göster
+            showNotification('Ses ayarı kaydedildi!', 'success');
+        }
+    }
+
+    function closeSoundModal() {
+        document.getElementById('soundModal').style.display = 'none';
+        currentSoundType = null;
+        selectedSound = null;
+        document.getElementById('soundPreview').style.display = 'none';
+        document.getElementById('soundFileInput').value = '';
+    }
+
+    function playSound(soundType) {
+        const sound = customSounds[soundType];
+        if (sound && sound !== 'none') {
+            const audio = new Audio(sound === 'default' ? defaultSound : sound);
+            audio.play().catch(e => console.log('Ses çalınamadı:', e));
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#28a745' : '#17a2b8'};
+            color: white;
+            border-radius: 6px;
+            z-index: 1001;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // Global fonksiyonları tanımla
+    window.selectSound = selectSound;
+    window.setSound = setSound;
+    window.handleSoundUpload = handleSoundUpload;
+    window.saveSoundSelection = saveSoundSelection;
+    window.closeSoundModal = closeSoundModal;
+    window.playSound = playSound;
 }); 

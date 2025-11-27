@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log('DOM elementleri başarıyla bulundu');
 
-        const API_KEY = 'Your_API_KEY';
+        const API_KEY = 'Your_API_Key';
         const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent';
         let retryCount = 0;
         const MAX_RETRIES = 3;
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
 
-        const SYSTEM_PROMPT = `Sen Pusula adlı bir eğitim platformunun AI asistanısın. Görevin öğrencilere derslerinde yardımcı olmak ve eğitim konularında rehberlik etmek.
+        const SYSTEM_PROMPT = `Sen NetOdak adlı bir eğitim platformunun AI asistanısın. Görevin öğrencilere derslerinde yardımcı olmak ve eğitim konularında rehberlik etmek.
 
 Özelliklerin:
 - Kişisel koçluk yapay zekasısın
@@ -434,7 +434,7 @@ Kuralların:
         console.log('Final userName (capitalized):', userName);
         console.log('All localStorage keys:', Object.keys(localStorage));
         
-        const greetingMessage = `Merhaba ${userName}! 👋\n\nBen Pusula'nın AI asistanıyım. Derslerinde sana yardımcı olmak için buradayım! 📚\n\nHangi konuda yardıma ihtiyacın var? Matematik, Fizik, Kimya, Biyoloji veya başka bir dersle ilgili sorularını sorabilirsin.`;
+        const greetingMessage = `Merhaba ${userName}! 👋\n\nBen NetOdak'nın AI asistanıyım. Derslerinde sana yardımcı olmak için buradayım! 📚\n\nHangi konuda yardıma ihtiyacın var? Matematik, Fizik, Kimya, Biyoloji veya başka bir dersle ilgili sorularını sorabilirsin.`;
         addMessage(greetingMessage, 'ai');
         
 
