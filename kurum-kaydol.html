@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetOdak - Kurum Kayıt</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .institution-register-page {
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .institution-register-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .institution-register-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.5s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .institution-register-box .logo {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .institution-register-box h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .institution-type-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .institution-form-group {
+            margin-bottom: 20px;
+        }
+
+        .institution-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .institution-form-group label i {
+            color: #667eea;
+            margin-right: 5px;
+        }
+
+        .institution-form-group input,
+        .institution-form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .institution-form-group input:focus,
+        .institution-form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .institution-register-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .institution-register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .institution-register-btn:active {
+            transform: translateY(0);
+        }
+
+        .institution-form-footer {
+            margin-top: 20px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .institution-form-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .institution-form-footer a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .switch-login-type {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .switch-login-type a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .switch-login-type a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="giris.html">Öğrenci Girişi</a>
+                <a href="kurum-giris.html">Kurum Girişi</a>
+                <a href="kurum-kaydol.html" class="active">Kurum Kayıt</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <div class="institution-register-page">
+        <div class="institution-register-container">
+            <div class="institution-register-box">
+                <div class="logo">NetOdak</div>
+                <h2>Kurum Kayıt</h2>
+                <div class="institution-type-badge">
+                    <i class="fas fa-building"></i> Kurumsal Hesap Oluştur
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+
+                <form class="institution-register-form" id="institutionRegisterForm">
+                    <div class="institution-form-group">
+                        <label for="institutionName">
+                            <i class="fas fa-building"></i> Kurum Adı *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="institutionName" 
+                            name="institutionName" 
+                            required 
+                            placeholder="Kurum adınızı girin"
+                        >
+                    </div>
+
+                    <div class="institution-form-group">
+                        <label for="institutionEmail">
+                            <i class="fas fa-envelope"></i> E-posta *
+                        </label>
+                        <input 
+                            type="email" 
+                            id="institutionEmail" 
+                            name="email" 
+                            required 
+                            placeholder="kurum@example.com"
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="institution-form-group">
+                            <label for="institutionPassword">
+                                <i class="fas fa-lock"></i> Şifre *
+                            </label>
+                            <input 
+                                type="password" 
+                                id="institutionPassword" 
+                                name="password" 
+                                required 
+                                placeholder="En az 6 karakter"
+                                minlength="6"
+                            >
+                        </div>
+
+                        <div class="institution-form-group">
+                            <label for="institutionPasswordConfirm">
+                                <i class="fas fa-lock"></i> Şifre Tekrar *
+                            </label>
+                            <input 
+                                type="password" 
+                                id="institutionPasswordConfirm" 
+                                name="passwordConfirm" 
+                                required 
+                                placeholder="Şifrenizi tekrar girin"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="institution-form-group">
+                        <label for="institutionType">
+                            <i class="fas fa-tag"></i> Kurum Tipi *
+                        </label>
+                        <select id="institutionType" name="institutionType" required>
+                            <option value="">Kurum tipini seçin</option>
+                            <option value="okul">Okul</option>
+                            <option value="kurs">Kurs</option>
+                            <option value="ozel-egitim">Özel Eğitim</option>
+                            <option value="diger">Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="institution-form-group">
+                            <label for="institutionPhone">
+                                <i class="fas fa-phone"></i> Telefon
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="institutionPhone" 
+                                name="phone" 
+                                placeholder="0XXX XXX XX XX"
+                            >
+                        </div>
+
+                        <div class="institution-form-group">
+                            <label for="institutionCity">
+                                <i class="fas fa-map-marker-alt"></i> Şehir
+                            </label>
+                            <input 
+                                type="text" 
+                                id="institutionCity" 
+                                name="city" 
+                                placeholder="Şehir adı"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="institution-form-group">
+                        <label for="institutionAddress">
+                            <i class="fas fa-map"></i> Adres
+                        </label>
+                        <input 
+                            type="text" 
+                            id="institutionAddress" 
+                            name="address" 
+                            placeholder="Kurum adresi"
+                        >
+                    </div>
+
+                    <div class="institution-form-group">
+                        <label for="taxNumber">
+                            <i class="fas fa-file-invoice"></i> Vergi Numarası
+                        </label>
+                        <input 
+                            type="text" 
+                            id="taxNumber" 
+                            name="taxNumber" 
+                            placeholder="Vergi numaranız (opsiyonel)"
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="institution-form-group">
+                            <label for="authorizedPersonName">
+                                <i class="fas fa-user-tie"></i> Yetkili Kişi Adı
+                            </label>
+                            <input 
+                                type="text" 
+                                id="authorizedPersonName" 
+                                name="authorizedPersonName" 
+                                placeholder="Yetkili kişi adı"
+                            >
+                        </div>
+
+                        <div class="institution-form-group">
+                            <label for="authorizedPersonTitle">
+                                <i class="fas fa-briefcase"></i> Yetkili Kişi Ünvanı
+                            </label>
+                            <input 
+                                type="text" 
+                                id="authorizedPersonTitle" 
+                                name="authorizedPersonTitle" 
+                                placeholder="Müdür, Koordinatör vb."
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="institution-register-btn">
+                        <i class="fas fa-user-plus"></i> Kurum Kaydı Oluştur
+                    </button>
+                </form>
+
+                <div class="institution-form-footer">
+                    <span>Zaten hesabınız var mı?</span>
+                    <a href="kurum-giris.html">Kurum Girişi Yap</a>
+                </div>
+
+                <div class="switch-login-type">
+                    <a href="kaydol.html">
+                        <i class="fas fa-user"></i> Öğrenci kaydı için tıklayın
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('institutionRegisterForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+                successMessage.classList.remove('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000);
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.classList.add('show');
+                errorMessage.classList.remove('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }
+
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const institutionName = document.getElementById('institutionName').value.trim();
+                    const email = document.getElementById('institutionEmail').value.trim();
+                    const password = document.getElementById('institutionPassword').value;
+                    const passwordConfirm = document.getElementById('institutionPasswordConfirm').value;
+                    const institutionType = document.getElementById('institutionType').value;
+                    const phone = document.getElementById('institutionPhone').value.trim();
+                    const city = document.getElementById('institutionCity').value.trim();
+                    const address = document.getElementById('institutionAddress').value.trim();
+                    const taxNumber = document.getElementById('taxNumber').value.trim();
+                    const authorizedPersonName = document.getElementById('authorizedPersonName').value.trim();
+                    const authorizedPersonTitle = document.getElementById('authorizedPersonTitle').value.trim();
+
+                    // Validasyon
+                    if (!institutionName || !email || !password || !passwordConfirm || !institutionType) {
+                        showError('Lütfen zorunlu alanları doldurun.');
+                        return;
+                    }
+
+                    if (password.length < 6) {
+                        showError('Şifre en az 6 karakter olmalıdır.');
+                        return;
+                    }
+
+                    if (password !== passwordConfirm) {
+                        showError('Şifreler eşleşmiyor!');
+                        return;
+                    }
+
+                    try {
+                        const institutionData = {
+                            institutionName,
+                            email,
+                            password,
+                            phone: phone || '',
+                            city: city || '',
+                            address: address || '',
+                            institutionType,
+                            taxNumber: taxNumber || '',
+                            authorizedPerson: {
+                                name: authorizedPersonName || '',
+                                title: authorizedPersonTitle || ''
+                            }
+                        };
+
+                        const response = await window.NetOdakAPI.institutionAuth.register(institutionData);
+                        
+                        if (response.success && response.institution) {
+                            // Kurum bilgilerini localStorage'a kaydet
+                            localStorage.setItem('isInstitutionLoggedIn', 'true');
+                            localStorage.setItem('isLoggedIn', 'false'); // Öğrenci girişini temizle
+                            localStorage.setItem('currentInstitution', JSON.stringify({
+                                id: response.institution.id,
+                                institutionName: response.institution.institutionName,
+                                email: response.institution.email,
+                                phone: response.institution.phone,
+                                address: response.institution.address,
+                                city: response.institution.city,
+                                institutionType: response.institution.institutionType,
+                                authorizedPerson: response.institution.authorizedPerson,
+                                subscription: response.institution.subscription || { plan: 'free' },
+                                studentCount: 0
+                            }));
+
+                            // Öğrenci verilerini temizle
+                            localStorage.removeItem('currentUser');
+                            localStorage.removeItem('firstName');
+                            localStorage.removeItem('lastName');
+                            localStorage.removeItem('email');
+                            localStorage.removeItem('school');
+                            localStorage.removeItem('grade');
+                            localStorage.removeItem('branch');
+                            localStorage.removeItem('userBranch');
+                            localStorage.removeItem('profilePhoto');
+
+                            showSuccess('Kayıt başarılı! Yönlendiriliyorsunuz...');
+                            
+                            setTimeout(() => {
+                                window.location.href = 'kurum-dashboard.html';
+                            }, 1000);
+                        } else {
+                            showError(response.message || 'Kayıt başarısız!');
+                        }
+                    } catch (error) {
+                        console.error('Kurum kayıt hatası:', error);
+                        showError(error.message || 'Kayıt yapılamadı. Lütfen tekrar deneyin.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+
