@@ -215,6 +215,163 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
         }
+
+        .add-student-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .add-student-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .add-student-form .form-group {
+            flex: 1;
+        }
+
+        .add-student-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .add-student-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .add-student-form input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .add-student-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .add-student-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .students-list {
+            margin-top: 20px;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            transition: background 0.3s ease;
+        }
+
+        .student-item:hover {
+            background: #f8f9fa;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .student-details h4 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .student-details p {
+            margin: 5px 0 0 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .remove-student-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-student-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .alert-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-message.show {
+            display: block;
+        }
+
+        .alert-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
     </style>
 </head>
 <body>
@@ -299,6 +456,34 @@
                 </div>
             </div>
 
+            <div class="add-student-section">
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">
+                    <i class="fas fa-user-plus"></i> Öğrenci Ekle
+                </h3>
+                <div class="alert-message" id="alertMessage"></div>
+                <form class="add-student-form" id="addStudentForm">
+                    <div class="form-group">
+                        <label for="studentId">
+                            <i class="fas fa-id-card"></i> Öğrenci ID (MongoDB ObjectId)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="studentId" 
+                            name="studentId" 
+                            required 
+                            placeholder="Örn: 507f1f77bcf86cd799439011"
+                            pattern="^[0-9a-fA-F]{24}$"
+                        >
+                    </div>
+                    <button type="submit" class="add-student-btn">
+                        <i class="fas fa-plus"></i> Öğrenci Ekle
+                    </button>
+                </form>
+                <p style="margin-top: 10px; font-size: 12px; color: #7f8c8d;">
+                    <i class="fas fa-info-circle"></i> MongoDB ObjectId formatında öğrenci ID'si girin (24 karakterlik hex string)
+                </p>
+            </div>
+
             <div class="content-section">
                 <h2><i class="fas fa-users"></i> Öğrenciler</h2>
                 <div id="studentsContainer">
@@ -323,9 +508,39 @@
         document.addEventListener('DOMContentLoaded', async function() {
             // Kurum girişi kontrolü
             const isInstitutionLoggedIn = localStorage.getItem('isInstitutionLoggedIn') === 'true';
-            if (!isInstitutionLoggedIn) {
+            const authToken = localStorage.getItem('authToken');
+            
+            if (!isInstitutionLoggedIn || !authToken) {
+                // Token yoksa veya kurum girişi yapılmamışsa
+                localStorage.removeItem('isInstitutionLoggedIn');
+                localStorage.removeItem('currentInstitution');
+                localStorage.removeItem('authToken');
                 window.location.href = 'kurum-giris.html';
                 return;
+            }
+            
+            // Token'ın kurum token'ı olup olmadığını kontrol et
+            try {
+                // Token'ı decode et (JWT)
+                const tokenParts = authToken.split('.');
+                if (tokenParts.length === 3) {
+                    const payload = JSON.parse(atob(tokenParts[1]));
+                    console.log('Token payload:', payload);
+                    if (!payload.institutionId) {
+                        // Bu bir kurum token'ı değil, öğrenci token'ı
+                        console.warn('Bu bir kurum token\'ı değil, öğrenci token\'ı. Kurum girişi yapılmalı.');
+                        console.warn('Token içeriği:', { userId: payload.userId, institutionId: payload.institutionId, type: payload.type });
+                        localStorage.removeItem('isInstitutionLoggedIn');
+                        localStorage.removeItem('currentInstitution');
+                        localStorage.removeItem('authToken');
+                        window.location.href = 'kurum-giris.html';
+                        return;
+                    } else {
+                        console.log('Kurum token\'ı doğrulandı. InstitutionId:', payload.institutionId);
+                    }
+                }
+            } catch (e) {
+                console.error('Token decode hatası:', e);
             }
 
             // Kurum bilgilerini yükle
@@ -375,11 +590,162 @@
                 } catch (error) {
                     console.error('Kurum bilgileri yüklenirken hata:', error);
                 }
+
+                // Öğrencileri yükle
+                loadStudents();
             } else {
                 // Kurum bilgisi yoksa giriş sayfasına yönlendir
                 window.location.href = 'kurum-giris.html';
             }
         });
+
+        // Öğrenci ekleme formu
+        const addStudentForm = document.getElementById('addStudentForm');
+        const alertMessage = document.getElementById('alertMessage');
+
+        function showAlert(message, type = 'info') {
+            alertMessage.textContent = message;
+            alertMessage.className = `alert-message ${type} show`;
+            setTimeout(() => {
+                alertMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        if (addStudentForm) {
+            addStudentForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const studentId = document.getElementById('studentId').value.trim();
+
+                if (!studentId) {
+                    showAlert('Lütfen öğrenci ID girin.', 'error');
+                    return;
+                }
+
+                // ObjectId formatını kontrol et (24 karakterlik hex string)
+                if (!/^[0-9a-fA-F]{24}$/.test(studentId)) {
+                    showAlert('Geçersiz ID formatı. MongoDB ObjectId formatında olmalıdır (24 karakterlik hex string).', 'error');
+                    return;
+                }
+
+                try {
+                    console.log('Öğrenci ekleme isteği gönderiliyor...', studentId);
+                    console.log('API:', window.NetOdakAPI);
+                    console.log('Institutions API:', window.NetOdakAPI?.institutions);
+                    
+                    const response = await window.NetOdakAPI.institutions.addStudent(studentId);
+                    
+                    console.log('API Response:', response);
+                    
+                    if (response.success) {
+                        showAlert(`Öğrenci başarıyla eklendi: ${response.student.firstName} ${response.student.lastName}`, 'success');
+                        document.getElementById('studentId').value = '';
+                        
+                        // Öğrenci sayısını güncelle
+                        document.getElementById('totalStudents').textContent = response.totalStudents;
+                        document.getElementById('activeStudents').textContent = response.totalStudents;
+                        
+                        // Öğrenci listesini yenile
+                        loadStudents();
+                    } else {
+                        showAlert(response.message || 'Öğrenci eklenirken bir hata oluştu.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Öğrenci ekleme hatası:', error);
+                    console.error('Hata detayları:', {
+                        message: error.message,
+                        status: error.status,
+                        response: error.response
+                    });
+                    
+                    let errorMessage = 'Öğrenci eklenirken bir hata oluştu.';
+                    if (error.status === 404) {
+                        errorMessage = 'Endpoint bulunamadı. Backend sunucusunun çalıştığından ve route\'un doğru yüklendiğinden emin olun.';
+                    } else if (error.message) {
+                        errorMessage = error.message;
+                    }
+                    
+                    showAlert(errorMessage, 'error');
+                }
+            });
+        }
+
+        // Öğrencileri yükle
+        async function loadStudents() {
+            try {
+                const response = await window.NetOdakAPI.institutions.getStudents();
+                const studentsContainer = document.getElementById('studentsContainer');
+
+                if (response.success && response.students && response.students.length > 0) {
+                    let html = '<div class="students-list">';
+                    
+                    response.students.forEach(student => {
+                        const initials = (student.firstName?.[0] || '') + (student.lastName?.[0] || '');
+                        const fullName = `${student.firstName || ''} ${student.lastName || ''}`.trim();
+                        
+                        html += `
+                            <div class="student-item">
+                                <div class="student-info">
+                                    <div class="student-avatar">
+                                        ${initials || '?'}
+                                    </div>
+                                    <div class="student-details">
+                                        <h4>${fullName || 'İsimsiz Öğrenci'}</h4>
+                                        <p>
+                                            ${student.email || ''} 
+                                            ${student.school ? `• ${student.school}` : ''}
+                                            ${student.grade ? `• ${student.grade}. Sınıf` : ''}
+                                        </p>
+                                    </div>
+                                </div>
+                                <button class="remove-student-btn" onclick="removeStudent('${student.id || student._id}')">
+                                    <i class="fas fa-times"></i> Kaldır
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    studentsContainer.innerHTML = html;
+                } else {
+                    studentsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-user-friends"></i>
+                            <p>Henüz öğrenci bulunmuyor</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Öğrenciler yüklenirken hata:', error);
+                showAlert('Öğrenciler yüklenirken bir hata oluştu.', 'error');
+            }
+        }
+
+        // Öğrenci kaldırma
+        async function removeStudent(studentId) {
+            if (!confirm('Bu öğrenciyi kurumdan kaldırmak istediğinize emin misiniz?')) {
+                return;
+            }
+
+            try {
+                const response = await window.NetOdakAPI.institutions.removeStudent(studentId);
+                
+                if (response.success) {
+                    showAlert('Öğrenci başarıyla kaldırıldı.', 'success');
+                    
+                    // Öğrenci sayısını güncelle
+                    document.getElementById('totalStudents').textContent = response.totalStudents;
+                    document.getElementById('activeStudents').textContent = response.totalStudents;
+                    
+                    // Öğrenci listesini yenile
+                    loadStudents();
+                } else {
+                    showAlert(response.message || 'Öğrenci kaldırılırken bir hata oluştu.', 'error');
+                }
+            } catch (error) {
+                console.error('Öğrenci kaldırma hatası:', error);
+                showAlert(error.message || 'Öğrenci kaldırılırken bir hata oluştu.', 'error');
+            }
+        }
 
         // Çıkış işlemi
         function handleLogout() {

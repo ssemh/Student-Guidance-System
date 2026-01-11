@@ -299,12 +299,26 @@
                     }
 
                     try {
+                        console.log('Kurum girişi deneniyor...', email);
                         const response = await window.NetOdakAPI.institutionAuth.login(email, password);
+                        console.log('Kurum girişi response:', response);
                         
                         if (response.success && response.institution) {
+                            console.log('Kurum girişi başarılı. Token:', response.token ? 'Var' : 'Yok');
+                            // Önce tüm eski verileri temizle
+                            localStorage.removeItem('isLoggedIn');
+                            localStorage.removeItem('currentUser');
+                            localStorage.removeItem('firstName');
+                            localStorage.removeItem('lastName');
+                            localStorage.removeItem('email');
+                            localStorage.removeItem('school');
+                            localStorage.removeItem('grade');
+                            localStorage.removeItem('branch');
+                            localStorage.removeItem('userBranch');
+                            localStorage.removeItem('profilePhoto');
+                            
                             // Kurum bilgilerini localStorage'a kaydet
                             localStorage.setItem('isInstitutionLoggedIn', 'true');
-                            localStorage.setItem('isLoggedIn', 'false'); // Öğrenci girişini temizle
                             localStorage.setItem('currentInstitution', JSON.stringify({
                                 id: response.institution.id,
                                 institutionName: response.institution.institutionName,
