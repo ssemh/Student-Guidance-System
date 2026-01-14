@@ -672,6 +672,356 @@
                 display: none;
             }
         }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e1e5e9;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: #2c3e50;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .exam-select-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .exam-select-section h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .exam-select-row {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .exam-select-group {
+            flex: 1;
+        }
+
+        .exam-select-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .exam-select-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .exam-select-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .create-exam-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .create-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .students-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .students-results-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .students-results-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .students-results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            color: #34495e;
+        }
+
+        .students-results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .students-results-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .result-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .result-badge.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .result-badge.danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .result-badge.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .view-report-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .view-report-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            margin: 10px 0;
+        }
+
+        .progress-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #e1e5e9;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .exam-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .exam-form .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .submit-exam-btn {
+            grid-column: 1 / -1;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-card h4 {
+            margin: 0 0 10px 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .subject-stats {
+            margin: 30px 0;
+        }
+
+        .subject-stats h4 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .subject-item {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .exams-list {
+            margin: 30px 0;
+        }
+
+        .exams-list h4 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .exam-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+        }
+
+        .exam-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .exam-item-header h5 {
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .exam-item-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .exam-stat {
+            text-align: center;
+        }
+
+        .exam-stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .exam-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -756,6 +1106,17 @@
                 </div>
             </div>
 
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="students">
+                    <i class="fas fa-users"></i> Öğrenciler
+                </button>
+                <button class="tab-btn" data-tab="exams">
+                    <i class="fas fa-clipboard-list"></i> Sınavlar
+                </button>
+            </div>
+
+            <!-- Öğrenciler Sekmesi -->
+            <div class="tab-content active" id="studentsTab">
             <div class="add-student-section">
                 <h3 style="margin-bottom: 20px; color: #2c3e50;">
                     <i class="fas fa-user-plus"></i> Öğrenci Ekle
@@ -790,6 +1151,32 @@
                     <div class="empty-state">
                         <i class="fas fa-user-friends"></i>
                         <p>Henüz öğrenci bulunmuyor</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Sınavlar Sekmesi -->
+            <div class="tab-content" id="examsTab">
+                <div class="exam-select-section">
+                    <h3><i class="fas fa-clipboard-list"></i> Sınav Yönetimi</h3>
+                    <div class="exam-select-row">
+                        <div class="exam-select-group">
+                            <label for="examSelect">Sınav Seç</label>
+                            <select id="examSelect" onchange="loadExamResults()">
+                                <option value="">Sınav seçiniz...</option>
+                            </select>
+                        </div>
+                        <button class="create-exam-btn" onclick="openCreateExamModal()">
+                            <i class="fas fa-plus"></i> Yeni Sınav Oluştur
+                        </button>
+                    </div>
+                </div>
+
+                <div class="content-section" id="examResultsSection" style="display: none;">
+                    <h2><i class="fas fa-chart-bar"></i> Sınav Sonuçları</h2>
+                    <div id="examResultsContainer">
+                        <!-- Sınav sonuçları buraya yüklenecek -->
                     </div>
                 </div>
             </div>
@@ -883,6 +1270,59 @@
         </div>
     </div>
 
+    <!-- Sınav Oluşturma Modal -->
+    <div id="createExamModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Yeni Sınav Oluştur</h2>
+                <button class="close-btn" onclick="closeCreateExamModal()">&times;</button>
+            </div>
+            <div class="alert-message" id="createExamAlertMessage"></div>
+            <form id="createExamForm" class="exam-form">
+                <div class="form-group">
+                    <label for="newExamName">Sınav Adı *</label>
+                    <input type="text" id="newExamName" required placeholder="Örn: TYT Deneme Sınavı 1">
+                </div>
+                <div class="form-group">
+                    <label for="newExamType">Sınav Tipi *</label>
+                    <select id="newExamType" required>
+                        <option value="">Seçiniz</option>
+                        <option value="tyt">TYT</option>
+                        <option value="ayt">AYT</option>
+                        <option value="fen">Fen</option>
+                        <option value="matematik">Matematik</option>
+                        <option value="fizik">Fizik</option>
+                        <option value="kimya">Kimya</option>
+                        <option value="biyoloji">Biyoloji</option>
+                        <option value="türkçe">Türkçe</option>
+                        <option value="paragraf">Paragraf</option>
+                        <option value="Sosyal">Sosyal</option>
+                        <option value="tarih">Tarih</option>
+                        <option value="coğrafya">Coğrafya</option>
+                        <option value="felsefe">Felsefe</option>
+                        <option value="din">Din</option>
+                        <option value="genel">Genel</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newExamDate">Sınav Tarihi *</label>
+                    <input type="date" id="newExamDate" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="newExamDescription">Açıklama</label>
+                    <input type="text" id="newExamDescription" placeholder="Sınav hakkında açıklama (opsiyonel)">
+                </div>
+                <div class="form-group">
+                    <label for="newExamTotalQuestions">Toplam Soru Sayısı</label>
+                    <input type="number" id="newExamTotalQuestions" min="0" placeholder="Opsiyonel">
+                </div>
+                <button type="submit" class="submit-exam-btn">
+                    <i class="fas fa-save"></i> Sınav Oluştur
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Karne Modal -->
     <div id="reportModal" class="modal">
         <div class="modal-content">
@@ -944,10 +1384,28 @@
 
                 // Öğrencileri yükle
                 loadStudents();
+                
+                // Sınavları yükle
+                loadExams();
             } else {
                 // Kurum bilgisi yoksa giriş sayfasına yönlendir
                 window.location.href = 'kurum-giris.html';
             }
+
+            // Tab değiştirme
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Tüm tab butonlarını ve içeriklerini deaktif et
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Seçilen tab'ı aktif et
+                    this.classList.add('active');
+                    document.getElementById(tabName + 'Tab').classList.add('active');
+                });
+            });
         });
 
         // Öğrenci ekleme formu
@@ -1348,15 +1806,487 @@
             document.getElementById('reportModal').classList.remove('show');
         }
 
+        // Sınav Yönetimi Fonksiyonları
+        let currentExamId = null;
+
+        // Sınavları yükle
+        async function loadExams() {
+            try {
+                const response = await window.NetOdakAPI.exams.getAll();
+                const examSelect = document.getElementById('examSelect');
+                
+                examSelect.innerHTML = '<option value="">Sınav seçiniz...</option>';
+                
+                if (response.success && response.exams && response.exams.length > 0) {
+                    response.exams.forEach(exam => {
+                        const option = document.createElement('option');
+                        option.value = exam.id || exam._id;
+                        option.textContent = `${exam.examName} (${exam.examType.toUpperCase()}) - ${new Date(exam.examDate).toLocaleDateString('tr-TR')}`;
+                        examSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Sınavlar yüklenirken hata:', error);
+            }
+        }
+
+        // Sınav sonuçlarını yükle
+        async function loadExamResults() {
+            const examId = document.getElementById('examSelect').value;
+            const examResultsSection = document.getElementById('examResultsSection');
+            const examResultsContainer = document.getElementById('examResultsContainer');
+            
+            if (!examId) {
+                examResultsSection.style.display = 'none';
+                return;
+            }
+
+            currentExamId = examId;
+            examResultsSection.style.display = 'block';
+            examResultsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Sonuçlar yükleniyor...</p>
+                </div>
+            `;
+
+            try {
+                const response = await window.NetOdakAPI.exams.getResults(examId);
+                
+                if (response.success) {
+                    const { exam, studentResults } = response;
+                    
+                    let html = `
+                        <div style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                            <h3 style="margin: 0 0 10px 0;">${exam.examName}</h3>
+                            <p style="margin: 5px 0; opacity: 0.9;">
+                                ${exam.examType.toUpperCase()} • ${new Date(exam.examDate).toLocaleDateString('tr-TR')}
+                                ${exam.description ? `• ${exam.description}` : ''}
+                            </p>
+                            <p style="margin: 5px 0; opacity: 0.9;">
+                                Toplam: ${response.totalStudents} öğrenci • 
+                                Sonuç giren: ${response.studentsWithResults} öğrenci
+                            </p>
+                        </div>
+                    `;
+
+                    if (studentResults && studentResults.length > 0) {
+                        html += `
+                            <table class="students-results-table">
+                                <thead>
+                                    <tr>
+                                        <th>Öğrenci</th>
+                                        <th>Toplam Soru</th>
+                                        <th>Doğru</th>
+                                        <th>Yanlış</th>
+                                        <th>Boş</th>
+                                        <th>Net</th>
+                                        <th>Başarı %</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+
+                        studentResults.forEach(result => {
+                            const student = result.student;
+                            const latest = result.latestResult;
+                            const fullName = `${student.firstName} ${student.lastName}`;
+                            
+                            if (latest) {
+                                const successBadgeClass = latest.successRate >= 70 ? 'success' : 
+                                                         latest.successRate >= 50 ? 'warning' : 'danger';
+                                
+                                html += `
+                                    <tr>
+                                        <td>
+                                            <strong>${fullName}</strong><br>
+                                            <small style="color: #7f8c8d;">${student.school || ''} ${student.grade ? `• ${student.grade}. Sınıf` : ''}</small>
+                                        </td>
+                                        <td>${latest.totalQuestions}</td>
+                                        <td><span class="result-badge success">${latest.correctAnswers}</span></td>
+                                        <td><span class="result-badge danger">${latest.wrongAnswers}</span></td>
+                                        <td>${latest.emptyAnswers}</td>
+                                        <td><strong style="color: #667eea;">${latest.net.toFixed(2)}</strong></td>
+                                        <td>
+                                            <span class="result-badge ${successBadgeClass}">
+                                                ${latest.successRate.toFixed(2)}%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="view-report-btn" onclick="viewExamStudentReport('${examId}', '${student.id}')">
+                                                <i class="fas fa-file-alt"></i> Detaylı Karne
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            } else {
+                                html += `
+                                    <tr>
+                                        <td>
+                                            <strong>${fullName}</strong><br>
+                                            <small style="color: #7f8c8d;">${student.school || ''} ${student.grade ? `• ${student.grade}. Sınıf` : ''}</small>
+                                        </td>
+                                        <td colspan="6" style="text-align: center; color: #7f8c8d;">
+                                            <i class="fas fa-exclamation-circle"></i> Henüz sonuç girilmemiş
+                                        </td>
+                                        <td>-</td>
+                                    </tr>
+                                `;
+                            }
+                        });
+
+                        html += `
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        html += `
+                            <div class="empty-state">
+                                <i class="fas fa-user-friends"></i>
+                                <p>Bu sınav için henüz sonuç bulunmuyor</p>
+                            </div>
+                        `;
+                    }
+
+                    examResultsContainer.innerHTML = html;
+                } else {
+                    examResultsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>${response.message || 'Sonuçlar yüklenirken bir hata oluştu.'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Sınav sonuçları yükleme hatası:', error);
+                examResultsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>${error.message || 'Sonuçlar yüklenirken bir hata oluştu.'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Sınav oluşturma modal
+        function openCreateExamModal() {
+            document.getElementById('createExamForm').reset();
+            document.getElementById('newExamDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('createExamModal').classList.add('show');
+        }
+
+        function closeCreateExamModal() {
+            document.getElementById('createExamModal').classList.remove('show');
+            document.getElementById('createExamForm').reset();
+        }
+
+        // Sınav oluşturma formu
+        const createExamForm = document.getElementById('createExamForm');
+        const createExamAlertMessage = document.getElementById('createExamAlertMessage');
+
+        function showCreateExamAlert(message, type = 'info') {
+            createExamAlertMessage.textContent = message;
+            createExamAlertMessage.className = `alert-message ${type} show`;
+            setTimeout(() => {
+                createExamAlertMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        if (createExamForm) {
+            createExamForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const examName = document.getElementById('newExamName').value.trim();
+                const examType = document.getElementById('newExamType').value;
+                const examDate = document.getElementById('newExamDate').value;
+                const description = document.getElementById('newExamDescription').value.trim();
+                const totalQuestions = document.getElementById('newExamTotalQuestions').value ? 
+                    parseInt(document.getElementById('newExamTotalQuestions').value) : 0;
+
+                if (!examName || !examType || !examDate) {
+                    showCreateExamAlert('Lütfen zorunlu alanları doldurun.', 'error');
+                    return;
+                }
+
+                try {
+                    const examData = {
+                        examName,
+                        examType,
+                        examDate,
+                        description,
+                        totalQuestions
+                    };
+
+                    const response = await window.NetOdakAPI.exams.create(examData);
+                    
+                    if (response.success) {
+                        showCreateExamAlert('Sınav başarıyla oluşturuldu!', 'success');
+                        setTimeout(() => {
+                            closeCreateExamModal();
+                            loadExams();
+                        }, 1500);
+                    } else {
+                        showCreateExamAlert(response.message || 'Sınav oluşturulurken bir hata oluştu.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Sınav oluşturma hatası:', error);
+                    showCreateExamAlert(error.message || 'Sınav oluşturulurken bir hata oluştu.', 'error');
+                }
+            });
+        }
+
+        // Detaylı sınav karnesi görüntüleme
+        async function viewExamStudentReport(examId, studentId) {
+            const reportModal = document.getElementById('reportModal');
+            const reportContent = document.getElementById('reportContent');
+            
+            reportModal.classList.add('show');
+            reportContent.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Detaylı karne yükleniyor...</p>
+                </div>
+            `;
+
+            try {
+                const response = await window.NetOdakAPI.exams.getStudentReport(examId, studentId);
+                
+                if (response.success) {
+                    const { exam, student, institution, summary, subjectDetails, allAttempts } = response;
+                    
+                    let html = `
+                        <div class="report-container">
+                            <div class="report-header">
+                                <h3>${exam.examName} - Detaylı Karne</h3>
+                                <p style="color: #7f8c8d; margin: 5px 0;">${student.firstName} ${student.lastName}</p>
+                                <p style="color: #7f8c8d; margin: 5px 0;">${institution.institutionName}</p>
+                                <p style="color: #7f8c8d; margin: 5px 0;">
+                                    ${exam.examType.toUpperCase()} • ${new Date(exam.examDate).toLocaleDateString('tr-TR')}
+                                </p>
+                            </div>
+
+                            <div class="report-summary">
+                                <div class="summary-card">
+                                    <h4>Toplam Deneme</h4>
+                                    <div class="value">${summary.totalAttempts}</div>
+                                </div>
+                                <div class="summary-card">
+                                    <h4>Toplam Soru</h4>
+                                    <div class="value">${summary.totalQuestions}</div>
+                                </div>
+                                <div class="summary-card">
+                                    <h4>Doğru Cevap</h4>
+                                    <div class="value">${summary.totalCorrect}</div>
+                                </div>
+                                <div class="summary-card">
+                                    <h4>Yanlış Cevap</h4>
+                                    <div class="value">${summary.totalWrong}</div>
+                                </div>
+                                <div class="summary-card">
+                                    <h4>Toplam Net</h4>
+                                    <div class="value">${summary.totalNet.toFixed(2)}</div>
+                                </div>
+                                <div class="summary-card">
+                                    <h4>Ortalama Başarı</h4>
+                                    <div class="value">${summary.avgSuccessRate.toFixed(2)}%</div>
+                                </div>
+                            </div>
+                    `;
+
+                    // Ders bazında detaylı istatistikler ve grafikler
+                    if (Object.keys(subjectDetails).length > 0) {
+                        html += `
+                            <div class="subject-stats">
+                                <h4><i class="fas fa-book"></i> Ders Bazında Detaylı İstatistikler</h4>
+                        `;
+                        
+                        Object.keys(subjectDetails).forEach(subject => {
+                            const details = subjectDetails[subject];
+                            const avgSuccess = details.totalQuestions > 0 ? 
+                                (details.totalCorrect / details.totalQuestions) * 100 : 0;
+                            
+                            html += `
+                                <div class="subject-item" style="margin-bottom: 20px; padding: 20px;">
+                                    <div style="width: 100%;">
+                                        <h5 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">
+                                            ${subject}
+                                        </h5>
+                                        
+                                        <div class="chart-container">
+                                            <div class="chart-title">Başarı Oranı</div>
+                                            <div class="progress-bar-container">
+                                                <div class="progress-bar-label">
+                                                    <span>Ortalama Başarı</span>
+                                                    <span><strong>${avgSuccess.toFixed(2)}%</strong></span>
+                                                </div>
+                                                <div class="progress-bar">
+                                                    <div class="progress-bar-fill" style="width: ${avgSuccess}%">
+                                                        ${avgSuccess.toFixed(1)}%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Toplam Soru</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #2c3e50;">${details.totalQuestions}</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Doğru</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #27ae60;">${details.totalCorrect}</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Yanlış</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #e74c3c;">${details.totalWrong}</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Ortalama Net</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #667eea;">${details.avgNet ? details.avgNet.toFixed(2) : '0.00'}</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">En İyi Net</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #27ae60;">${details.bestNet !== -Infinity ? details.bestNet.toFixed(2) : '-'}</div>
+                                            </div>
+                                            <div>
+                                                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 5px;">Deneme Sayısı</div>
+                                                <div style="font-size: 20px; font-weight: bold; color: #2c3e50;">${details.attempts.length}</div>
+                                            </div>
+                                        </div>
+
+                                        ${details.attempts.length > 1 ? `
+                                            <div style="margin-top: 20px;">
+                                                <div class="chart-title">Net Değişimi</div>
+                                                <div style="display: flex; align-items: flex-end; gap: 5px; height: 150px; margin-top: 10px;">
+                                        ` : ''}
+                                        
+                                        ${details.attempts.map((attempt, index) => {
+                                            const maxNet = Math.max(...details.attempts.map(a => a.net));
+                                            const height = maxNet > 0 ? (attempt.net / maxNet) * 100 : 0;
+                                            return `
+                                                <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                                    <div style="width: 100%; background: #e1e5e9; border-radius: 4px 4px 0 0; position: relative; height: 150px; display: flex; align-items: flex-end;">
+                                                        <div style="width: 100%; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); height: ${height}%; border-radius: 4px 4px 0 0; transition: all 0.3s ease;"></div>
+                                                    </div>
+                                                    <div style="font-size: 10px; color: #7f8c8d; margin-top: 5px; text-align: center;">
+                                                        ${new Date(attempt.date).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' })}
+                                                    </div>
+                                                    <div style="font-size: 12px; font-weight: bold; color: #2c3e50; margin-top: 2px;">
+                                                        ${attempt.net.toFixed(2)}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                        
+                                        ${details.attempts.length > 1 ? `</div></div>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `</div>`;
+                    }
+
+                    // Tüm deneme kayıtları
+                    if (allAttempts && allAttempts.length > 0) {
+                        html += `
+                            <div class="exams-list">
+                                <h4><i class="fas fa-history"></i> Tüm Deneme Kayıtları</h4>
+                        `;
+                        
+                        allAttempts.forEach((attempt, index) => {
+                            const attemptDate = new Date(attempt.date).toLocaleDateString('tr-TR', {
+                                day: '2-digit',
+                                month: 'long',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            
+                            html += `
+                                <div class="exam-item">
+                                    <div class="exam-item-header">
+                                        <h5>Deneme #${allAttempts.length - index}</h5>
+                                        <span style="color: #7f8c8d; font-size: 14px;">${attemptDate}</span>
+                                    </div>
+                                    <div style="margin: 10px 0; color: #7f8c8d; font-size: 14px;">
+                                        ${attempt.subject}
+                                    </div>
+                                    <div class="exam-item-stats">
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Toplam Soru</div>
+                                            <div class="exam-stat-value">${attempt.totalQuestions}</div>
+                                        </div>
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Doğru</div>
+                                            <div class="exam-stat-value" style="color: #27ae60;">${attempt.correctAnswers}</div>
+                                        </div>
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Yanlış</div>
+                                            <div class="exam-stat-value" style="color: #e74c3c;">${attempt.wrongAnswers}</div>
+                                        </div>
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Boş</div>
+                                            <div class="exam-stat-value">${attempt.emptyAnswers}</div>
+                                        </div>
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Net</div>
+                                            <div class="exam-stat-value" style="color: #667eea;">${attempt.net.toFixed(2)}</div>
+                                        </div>
+                                        <div class="exam-stat">
+                                            <div class="exam-stat-label">Başarı</div>
+                                            <div class="exam-stat-value" style="color: #f39c12;">${attempt.successRate.toFixed(2)}%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        
+                        html += `</div>`;
+                    }
+
+                    html += `
+                            <button class="print-btn" onclick="window.print()">
+                                <i class="fas fa-print"></i> Yazdır / PDF Olarak Kaydet
+                            </button>
+                        </div>
+                    `;
+
+                    reportContent.innerHTML = html;
+                } else {
+                    reportContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>${response.message || 'Detaylı karne yüklenirken bir hata oluştu.'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Detaylı karne yükleme hatası:', error);
+                reportContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>${error.message || 'Detaylı karne yüklenirken bir hata oluştu.'}</p>
+                    </div>
+                `;
+            }
+        }
+
         // Modal dışına tıklanınca kapat
         window.onclick = function(event) {
             const examModal = document.getElementById('examModal');
             const reportModal = document.getElementById('reportModal');
+            const createExamModal = document.getElementById('createExamModal');
+            
             if (event.target === examModal) {
                 closeExamModal();
             }
             if (event.target === reportModal) {
                 closeReportModal();
+            }
+            if (event.target === createExamModal) {
+                closeCreateExamModal();
             }
         }
 
