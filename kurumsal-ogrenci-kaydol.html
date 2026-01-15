@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetOdak - Kurumsal Öğrenci Kaydı</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="NetOdak Logo">
+                NetOdak
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="giris.html">Giriş Yap</a>
+                <a href="kurumsal-ogrenci-kaydol.html" class="active register-btn">Kurumsal Öğrenci Kaydı</a>
+            </div>
+            <div class="menu-button">☰</div>
+        </div>
+    </nav>
+
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="logo">NetOdak</div>
+                <h2>Kurumsal Öğrenci Kaydı</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;">
+                    Bu kayıt formu kurumlar tarafından eklenebilecek öğrenciler içindir.
+                </p>
+                <form class="login-form" id="corporateRegisterForm">
+                    <div class="form-group">
+                        <label for="firstName">Ad</label>
+                        <input type="text" id="firstName" name="firstName" required placeholder="Adınızı girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Soyad</label>
+                        <input type="text" id="lastName" name="lastName" required placeholder="Soyadınızı girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" required placeholder="E-posta adresinizi girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentNumber">Öğrenci Numarası *</label>
+                        <input type="text" id="studentNumber" name="studentNumber" required placeholder="Öğrenci numaranızı girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <input type="password" id="password" name="password" required placeholder="Şifrenizi girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="password-confirm">Şifre Tekrar</label>
+                        <input type="password" id="password-confirm" name="password-confirm" required placeholder="Şifrenizi tekrar girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="school">Okul</label>
+                        <input type="text" id="school" name="school" required placeholder="Okulunuzu girin">
+                    </div>
+                    <div class="form-group">
+                        <label for="grade">Sınıf</label>
+                        <select id="grade" name="grade" required>
+                            <option value="">Sınıfınızı seçin</option>
+                            <option value="9">9. Sınıf</option>
+                            <option value="10">10. Sınıf</option>
+                            <option value="11">11. Sınıf</option>
+                            <option value="12">12. Sınıf</option>
+                            <option value="mezun">Mezun</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="branch">Branş</label>
+                        <select id="branch" name="branch" required>
+                            <option value="">Branşınızı seçin</option>
+                            <option value="sayisal">Sayısal</option>
+                            <option value="sozel">Sözel</option>
+                            <option value="esit-agirlik">Eşit Ağırlık</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="login-btn">Kurumsal Öğrenci Olarak Kayıt Ol</button>
+                    <div class="form-footer">
+                        <span>Zaten hesabınız var mı?</span>
+                        <a href="giris.html" class="create-account">Giriş Yap</a>
+                    </div>
+                    <div class="form-footer" style="margin-top: 10px;">
+                        <span>Kişisel öğrenci misiniz?</span>
+                        <a href="kaydol.html" class="create-account">Kişisel Kayıt</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 NetOdak. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const corporateRegisterForm = document.getElementById('corporateRegisterForm');
+            if (corporateRegisterForm) {
+                corporateRegisterForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    const firstName = document.getElementById('firstName').value.trim();
+                    const lastName = document.getElementById('lastName').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const studentNumber = document.getElementById('studentNumber').value.trim();
+                    const password = document.getElementById('password').value;
+                    const passwordConfirm = document.getElementById('password-confirm').value;
+                    const school = document.getElementById('school').value.trim();
+                    const grade = document.getElementById('grade').value;
+                    const branch = document.getElementById('branch').value;
+
+                    // Şifre kontrolü
+                    if (password !== passwordConfirm) {
+                        alert('Şifreler eşleşmiyor!');
+                        return;
+                    }
+
+                    if (password.length < 6) {
+                        alert('Şifre en az 6 karakter olmalıdır!');
+                        return;
+                    }
+
+                    try {
+                        const response = await window.NetOdakAPI.auth.registerCorporate({
+                            firstName,
+                            lastName,
+                            email,
+                            password,
+                            school,
+                            grade,
+                            branch,
+                            studentNumber
+                        });
+
+                        if (response.success) {
+                            alert('Kurumsal öğrenci kaydı başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
+                            window.location.href = 'giris.html';
+                        } else {
+                            const errorMsg = response?.message || response?.error || 'Kayıt başarısız!';
+                            alert(errorMsg);
+                        }
+                    } catch (error) {
+                        console.error('Kurumsal öğrenci kayıt hatası:', error);
+                        let errorMessage = 'Kayıt yapılamadı. Lütfen tekrar deneyin.';
+                        
+                        if (error.response) {
+                            errorMessage = error.response.message || errorMessage;
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+                        
+                        alert(errorMessage);
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
+
