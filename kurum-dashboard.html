@@ -1323,6 +1323,60 @@
         </div>
     </div>
 
+    <!-- Sınav Sonucu Girme Modal -->
+    <div id="addResultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Sınav Sonucu Gir</h2>
+                <button class="close-btn" onclick="closeAddResultModal()">&times;</button>
+            </div>
+            <div class="alert-message" id="addResultAlertMessage"></div>
+            <form id="addResultForm" class="exam-form">
+                <input type="hidden" id="addResultExamId">
+                <input type="hidden" id="addResultStudentId">
+                <div class="form-group full-width">
+                    <label>Öğrenci</label>
+                    <input type="text" id="addResultStudentName" readonly style="background: #f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label for="addResultSubject">Ders *</label>
+                    <input type="text" id="addResultSubject" required placeholder="Örn: Matematik">
+                </div>
+                <div class="form-group">
+                    <label for="addResultTotalQuestions">Toplam Soru *</label>
+                    <input type="number" id="addResultTotalQuestions" required min="1" placeholder="40">
+                </div>
+                <div class="form-group">
+                    <label for="addResultCorrectAnswers">Doğru Cevap *</label>
+                    <input type="number" id="addResultCorrectAnswers" required min="0" placeholder="30">
+                </div>
+                <div class="form-group">
+                    <label for="addResultWrongAnswers">Yanlış Cevap *</label>
+                    <input type="number" id="addResultWrongAnswers" required min="0" placeholder="8">
+                </div>
+                <div class="form-group">
+                    <label for="addResultEmptyAnswers">Boş Cevap</label>
+                    <input type="number" id="addResultEmptyAnswers" min="0" placeholder="2" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="addResultNet">Net</label>
+                    <input type="number" id="addResultNet" step="0.25" placeholder="Otomatik hesaplanır" readonly style="background: #f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label for="addResultSuccessRate">Başarı Oranı (%)</label>
+                    <input type="number" id="addResultSuccessRate" step="0.01" placeholder="Otomatik hesaplanır" readonly style="background: #f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label for="addResultEstimatedScore">Tahmini Puan</label>
+                    <input type="number" id="addResultEstimatedScore" step="0.01" placeholder="Opsiyonel">
+                </div>
+                <button type="submit" class="submit-exam-btn">
+                    <i class="fas fa-save"></i> Sonucu Kaydet
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Karne Modal -->
     <div id="reportModal" class="modal">
         <div class="modal-content">
@@ -1479,7 +1533,7 @@
                                         ${initials || '?'}
                                     </div>
                                     <div class="student-details">
-                                        <h4>${fullName || 'İsimsiz Öğrenci'}</h4>
+                                        <h4>${fullName || 'İsimsiz Öğrenci'} ${student.studentNumber ? `<span style="color: #667eea; font-weight: normal; font-size: 0.9em;">(#${student.studentNumber})</span>` : ''}</h4>
                                         <p>
                                             ${student.email || ''} 
                                             ${student.school ? `• ${student.school}` : ''}
@@ -1900,7 +1954,7 @@
                                 html += `
                                     <tr>
                                         <td>
-                                            <strong>${fullName}</strong><br>
+                                            <strong>${fullName} ${student.studentNumber ? `<span style="color: #667eea; font-weight: normal;">(#${student.studentNumber})</span>` : ''}</strong><br>
                                             <small style="color: #7f8c8d;">${student.school || ''} ${student.grade ? `• ${student.grade}. Sınıf` : ''}</small>
                                         </td>
                                         <td>${latest.totalQuestions}</td>
@@ -1924,13 +1978,17 @@
                                 html += `
                                     <tr>
                                         <td>
-                                            <strong>${fullName}</strong><br>
+                                            <strong>${fullName} ${student.studentNumber ? `<span style="color: #667eea; font-weight: normal;">(#${student.studentNumber})</span>` : ''}</strong><br>
                                             <small style="color: #7f8c8d;">${student.school || ''} ${student.grade ? `• ${student.grade}. Sınıf` : ''}</small>
                                         </td>
                                         <td colspan="6" style="text-align: center; color: #7f8c8d;">
                                             <i class="fas fa-exclamation-circle"></i> Henüz sonuç girilmemiş
                                         </td>
-                                        <td>-</td>
+                                        <td>
+                                            <button class="view-report-btn" onclick="openAddResultModal('${examId}', '${student.id}', '${fullName}')" style="background: #3498db;">
+                                                <i class="fas fa-plus"></i> Sonuç Gir
+                                            </button>
+                                        </td>
                                     </tr>
                                 `;
                             }
@@ -2273,11 +2331,128 @@
             }
         }
 
+        // Sınav Sonucu Girme Modal İşlemleri
+        function openAddResultModal(examId, studentId, studentName) {
+            document.getElementById('addResultExamId').value = examId;
+            document.getElementById('addResultStudentId').value = studentId;
+            document.getElementById('addResultStudentName').value = studentName;
+            document.getElementById('addResultForm').reset();
+            document.getElementById('addResultExamId').value = examId;
+            document.getElementById('addResultStudentId').value = studentId;
+            document.getElementById('addResultStudentName').value = studentName;
+            document.getElementById('addResultModal').classList.add('show');
+            
+            // Net ve başarı oranı hesaplama event listener'ları
+            const correctInput = document.getElementById('addResultCorrectAnswers');
+            const wrongInput = document.getElementById('addResultWrongAnswers');
+            const emptyInput = document.getElementById('addResultEmptyAnswers');
+            const totalInput = document.getElementById('addResultTotalQuestions');
+            const netInput = document.getElementById('addResultNet');
+            const successRateInput = document.getElementById('addResultSuccessRate');
+            
+            const calculateResults = () => {
+                const correct = parseFloat(correctInput.value) || 0;
+                const wrong = parseFloat(wrongInput.value) || 0;
+                const empty = parseFloat(emptyInput.value) || 0;
+                const total = parseFloat(totalInput.value) || 0;
+                
+                if (total > 0) {
+                    const net = correct - (wrong / 4);
+                    const successRate = (correct / total) * 100;
+                    
+                    netInput.value = net.toFixed(2);
+                    successRateInput.value = successRate.toFixed(2);
+                } else {
+                    netInput.value = '';
+                    successRateInput.value = '';
+                }
+            };
+            
+            // Eski event listener'ları kaldır ve yenilerini ekle
+            [correctInput, wrongInput, emptyInput, totalInput].forEach(input => {
+                input.removeEventListener('input', calculateResults);
+                input.addEventListener('input', calculateResults);
+            });
+        }
+
+        function closeAddResultModal() {
+            document.getElementById('addResultModal').classList.remove('show');
+            document.getElementById('addResultForm').reset();
+        }
+
+        // Sınav sonucu girme formu
+        const addResultForm = document.getElementById('addResultForm');
+        const addResultAlertMessage = document.getElementById('addResultAlertMessage');
+
+        function showAddResultAlert(message, type = 'info') {
+            addResultAlertMessage.textContent = message;
+            addResultAlertMessage.className = `alert-message ${type} show`;
+            setTimeout(() => {
+                addResultAlertMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        if (addResultForm) {
+            addResultForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const examId = document.getElementById('addResultExamId').value;
+                const studentId = document.getElementById('addResultStudentId').value;
+                const subject = document.getElementById('addResultSubject').value.trim();
+                const totalQuestions = parseInt(document.getElementById('addResultTotalQuestions').value);
+                const correctAnswers = parseInt(document.getElementById('addResultCorrectAnswers').value);
+                const wrongAnswers = parseInt(document.getElementById('addResultWrongAnswers').value);
+                const emptyAnswers = parseInt(document.getElementById('addResultEmptyAnswers').value) || 0;
+                const net = document.getElementById('addResultNet').value ? parseFloat(document.getElementById('addResultNet').value) : undefined;
+                const successRate = document.getElementById('addResultSuccessRate').value ? parseFloat(document.getElementById('addResultSuccessRate').value) : undefined;
+                const estimatedScore = document.getElementById('addResultEstimatedScore').value ? parseFloat(document.getElementById('addResultEstimatedScore').value) : undefined;
+
+                if (!subject || !totalQuestions || 
+                    correctAnswers === undefined || wrongAnswers === undefined) {
+                    showAddResultAlert('Lütfen zorunlu alanları doldurun.', 'error');
+                    return;
+                }
+
+                if (correctAnswers + wrongAnswers + emptyAnswers > totalQuestions) {
+                    showAddResultAlert('Doğru + Yanlış + Boş toplamı, toplam soru sayısından fazla olamaz.', 'error');
+                    return;
+                }
+
+                try {
+                    const resultData = {
+                        subject,
+                        totalQuestions,
+                        correctAnswers,
+                        wrongAnswers,
+                        emptyAnswers,
+                        net,
+                        successRate,
+                        estimatedScore
+                    };
+
+                    const response = await window.NetOdakAPI.exams.addResult(examId, studentId, resultData);
+                    
+                    if (response.success) {
+                        showAddResultAlert('Sınav sonucu başarıyla kaydedildi!', 'success');
+                        setTimeout(() => {
+                            closeAddResultModal();
+                            loadExamResults(); // Sonuçları yenile
+                        }, 1500);
+                    } else {
+                        showAddResultAlert(response.message || 'Sınav sonucu kaydedilirken bir hata oluştu.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Sınav sonucu kaydetme hatası:', error);
+                    showAddResultAlert(error.message || 'Sınav sonucu kaydedilirken bir hata oluştu.', 'error');
+                }
+            });
+        }
+
         // Modal dışına tıklanınca kapat
         window.onclick = function(event) {
             const examModal = document.getElementById('examModal');
             const reportModal = document.getElementById('reportModal');
             const createExamModal = document.getElementById('createExamModal');
+            const addResultModal = document.getElementById('addResultModal');
             
             if (event.target === examModal) {
                 closeExamModal();
@@ -2287,6 +2462,9 @@
             }
             if (event.target === createExamModal) {
                 closeCreateExamModal();
+            }
+            if (event.target === addResultModal) {
+                closeAddResultModal();
             }
         }
 
