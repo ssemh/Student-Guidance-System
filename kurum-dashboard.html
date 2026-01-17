@@ -1378,6 +1378,48 @@
     </div>
 
     <!-- Karne Modal -->
+    <!-- Toplu Sınav Sonucu Yükleme Modal -->
+    <div id="bulkUploadModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-upload"></i> Toplu Sınav Sonucu Yükle</h2>
+                <button class="close-btn" onclick="closeBulkUploadModal()">&times;</button>
+            </div>
+            <div class="alert-message" id="bulkUploadAlertMessage"></div>
+            <div style="padding: 20px;">
+                <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 16px;"><i class="fas fa-info-circle"></i> Dosya Formatı</h3>
+                    <p style="margin: 5px 0; font-size: 14px; color: #666;">
+                        <strong>Excel Formatı (.xlsx, .xls):</strong><br>
+                        Sütunlar: Öğrenci No, [Ders Adı] Doğru, [Ders Adı] Yanlış, [Ders Adı] Boş<br>
+                        Örnek: Öğrenci No, Türkçe Doğru, Türkçe Yanlış, Türkçe Boş, Matematik Doğru, Matematik Yanlış, Matematik Boş
+                    </p>
+                    <p style="margin: 10px 0 5px 0; font-size: 14px; color: #666;">
+                        <strong>Optik Okuyucu Formatı (.txt, .dat, .csv):</strong><br>
+                        Her satır: İlk 10 karakter öğrenci numarası, sonraki karakterler cevaplar<br>
+                        <small style="color: #999;">Not: Optik okuyucu formatı için doğru cevap anahtarı gereklidir. Şu an sadece Excel formatı tam desteklenmektedir.</small>
+                    </p>
+                </div>
+                <form id="bulkUploadForm">
+                    <div class="form-group full-width">
+                        <label for="bulkUploadFile">Dosya Seç *</label>
+                        <input type="file" id="bulkUploadFile" accept=".xlsx,.xls,.txt,.dat,.csv" required style="padding: 10px; border: 2px dashed #667eea; border-radius: 8px; width: 100%; cursor: pointer;">
+                        <small style="color: #666; display: block; margin-top: 5px;">Desteklenen formatlar: .xlsx, .xls, .txt, .dat, .csv (Max: 10MB)</small>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn-primary" style="flex: 1;">
+                            <i class="fas fa-upload"></i> Yükle ve İşle
+                        </button>
+                        <button type="button" onclick="closeBulkUploadModal()" class="btn-secondary" style="flex: 1;">
+                            <i class="fas fa-times"></i> İptal
+                        </button>
+                    </div>
+                </form>
+                <div id="bulkUploadResults" style="margin-top: 20px; display: none;"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="reportModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1912,15 +1954,22 @@
                     
                     let html = `
                         <div style="margin-bottom: 20px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
-                            <h3 style="margin: 0 0 10px 0;">${exam.examName}</h3>
-                            <p style="margin: 5px 0; opacity: 0.9;">
-                                ${exam.examType.toUpperCase()} • ${new Date(exam.examDate).toLocaleDateString('tr-TR')}
-                                ${exam.description ? `• ${exam.description}` : ''}
-                            </p>
-                            <p style="margin: 5px 0; opacity: 0.9;">
-                                Toplam: ${response.totalStudents} öğrenci • 
-                                Sonuç giren: ${response.studentsWithResults} öğrenci
-                            </p>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div style="flex: 1;">
+                                    <h3 style="margin: 0 0 10px 0;">${exam.examName}</h3>
+                                    <p style="margin: 5px 0; opacity: 0.9;">
+                                        ${exam.examType.toUpperCase()} • ${new Date(exam.examDate).toLocaleDateString('tr-TR')}
+                                        ${exam.description ? `• ${exam.description}` : ''}
+                                    </p>
+                                    <p style="margin: 5px 0; opacity: 0.9;">
+                                        Toplam: ${response.totalStudents} öğrenci • 
+                                        Sonuç giren: ${response.studentsWithResults} öğrenci
+                                    </p>
+                                </div>
+                                <button onclick="openBulkUploadModal('${examId}')" style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+                                    <i class="fas fa-file-upload"></i> Toplu Sonuç Yükle
+                                </button>
+                            </div>
                         </div>
                     `;
 
@@ -2380,6 +2429,33 @@
             document.getElementById('addResultForm').reset();
         }
 
+        // Toplu yükleme modal fonksiyonları
+        function openBulkUploadModal(examId) {
+            document.getElementById('bulkUploadModal').classList.add('show');
+            document.getElementById('bulkUploadForm').dataset.examId = examId;
+            document.getElementById('bulkUploadFile').value = '';
+            document.getElementById('bulkUploadResults').style.display = 'none';
+            document.getElementById('bulkUploadResults').innerHTML = '';
+            document.getElementById('bulkUploadAlertMessage').textContent = '';
+            document.getElementById('bulkUploadAlertMessage').className = 'alert-message';
+        }
+
+        function closeBulkUploadModal() {
+            document.getElementById('bulkUploadModal').classList.remove('show');
+            document.getElementById('bulkUploadForm').reset();
+            document.getElementById('bulkUploadResults').style.display = 'none';
+            document.getElementById('bulkUploadResults').innerHTML = '';
+        }
+
+        function showBulkUploadAlert(message, type = 'info') {
+            const alertMessage = document.getElementById('bulkUploadAlertMessage');
+            alertMessage.textContent = message;
+            alertMessage.className = `alert-message ${type} show`;
+            setTimeout(() => {
+                alertMessage.classList.remove('show');
+            }, 5000);
+        }
+
         // Sınav sonucu girme formu
         const addResultForm = document.getElementById('addResultForm');
         const addResultAlertMessage = document.getElementById('addResultAlertMessage');
@@ -2447,6 +2523,152 @@
             });
         }
 
+        // Toplu yükleme formu
+        const bulkUploadForm = document.getElementById('bulkUploadForm');
+        if (bulkUploadForm) {
+            bulkUploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const examId = bulkUploadForm.dataset.examId;
+                const fileInput = document.getElementById('bulkUploadFile');
+                const file = fileInput.files[0];
+                const resultsDiv = document.getElementById('bulkUploadResults');
+                
+                if (!file) {
+                    showBulkUploadAlert('Lütfen bir dosya seçin.', 'error');
+                    return;
+                }
+
+                if (!examId) {
+                    showBulkUploadAlert('Sınav ID bulunamadı.', 'error');
+                    return;
+                }
+
+                // Loading state
+                showBulkUploadAlert('Dosya yükleniyor ve işleniyor...', 'info');
+                resultsDiv.style.display = 'none';
+                resultsDiv.innerHTML = '';
+
+                try {
+                    const response = await window.NetOdakAPI.exams.bulkUpload(examId, file);
+                    
+                    if (response.success) {
+                        showBulkUploadAlert(response.message, 'success');
+                        
+                        // Sonuçları göster
+                        let resultsHtml = `
+                            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                <h3 style="margin: 0 0 15px 0; font-size: 16px;">
+                                    <i class="fas fa-check-circle" style="color: #28a745;"></i> İşlem Sonuçları
+                                </h3>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px;">
+                                    <div style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                                        <div style="font-size: 24px; font-weight: bold; color: #28a745;">${response.successCount}</div>
+                                        <div style="font-size: 12px; color: #666;">Başarılı</div>
+                                    </div>
+                                    <div style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                                        <div style="font-size: 24px; font-weight: bold; color: #dc3545;">${response.errorCount}</div>
+                                        <div style="font-size: 12px; color: #666;">Hata</div>
+                                    </div>
+                                    <div style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                                        <div style="font-size: 24px; font-weight: bold; color: #667eea;">${response.totalProcessed}</div>
+                                        <div style="font-size: 12px; color: #666;">Toplam</div>
+                                    </div>
+                                </div>
+                        `;
+
+                        if (response.errors && response.errors.length > 0) {
+                            resultsHtml += `
+                                <div style="margin-top: 15px;">
+                                    <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #dc3545;">
+                                        <i class="fas fa-exclamation-triangle"></i> Hatalar (${response.errors.length})
+                                    </h4>
+                                    <div style="max-height: 200px; overflow-y: auto; background: white; padding: 10px; border-radius: 6px;">
+                                        <table style="width: 100%; font-size: 12px;">
+                                            <thead>
+                                                <tr style="border-bottom: 1px solid #ddd;">
+                                                    <th style="padding: 5px; text-align: left;">Satır</th>
+                                                    <th style="padding: 5px; text-align: left;">Öğrenci No</th>
+                                                    <th style="padding: 5px; text-align: left;">Hata</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                            `;
+                            response.errors.forEach(error => {
+                                resultsHtml += `
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 5px;">${error.row || '-'}</td>
+                                        <td style="padding: 5px;">${error.studentNumber || '-'}</td>
+                                        <td style="padding: 5px; color: #dc3545;">${error.message}</td>
+                                    </tr>
+                                `;
+                            });
+                            resultsHtml += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        if (response.results && response.results.length > 0) {
+                            resultsHtml += `
+                                <div style="margin-top: 15px;">
+                                    <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #28a745;">
+                                        <i class="fas fa-check"></i> Başarıyla Kaydedilenler (${response.results.length})
+                                    </h4>
+                                    <div style="max-height: 200px; overflow-y: auto; background: white; padding: 10px; border-radius: 6px;">
+                                        <table style="width: 100%; font-size: 12px;">
+                                            <thead>
+                                                <tr style="border-bottom: 1px solid #ddd;">
+                                                    <th style="padding: 5px; text-align: left;">Öğrenci</th>
+                                                    <th style="padding: 5px; text-align: left;">Ders</th>
+                                                    <th style="padding: 5px; text-align: center;">Doğru</th>
+                                                    <th style="padding: 5px; text-align: center;">Yanlış</th>
+                                                    <th style="padding: 5px; text-align: center;">Boş</th>
+                                                    <th style="padding: 5px; text-align: center;">Net</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                            `;
+                            response.results.forEach(result => {
+                                resultsHtml += `
+                                    <tr style="border-bottom: 1px solid #f0f0f0;">
+                                        <td style="padding: 5px;">${result.studentName} (${result.studentNumber})</td>
+                                        <td style="padding: 5px;">${result.subject}</td>
+                                        <td style="padding: 5px; text-align: center; color: #28a745;">${result.correct}</td>
+                                        <td style="padding: 5px; text-align: center; color: #dc3545;">${result.wrong}</td>
+                                        <td style="padding: 5px; text-align: center;">${result.empty}</td>
+                                        <td style="padding: 5px; text-align: center; font-weight: bold; color: #667eea;">${result.net.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            });
+                            resultsHtml += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        resultsHtml += `</div>`;
+                        resultsDiv.innerHTML = resultsHtml;
+                        resultsDiv.style.display = 'block';
+
+                        // Sonuçları yenile
+                        setTimeout(() => {
+                            loadExamResults();
+                        }, 2000);
+                    } else {
+                        showBulkUploadAlert(response.message || 'Dosya işlenirken bir hata oluştu.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Toplu yükleme hatası:', error);
+                    showBulkUploadAlert(error.message || 'Dosya yüklenirken bir hata oluştu.', 'error');
+                }
+            });
+        }
+
         // Modal dışına tıklanınca kapat
         window.onclick = function(event) {
             const examModal = document.getElementById('examModal');
@@ -2465,6 +2687,11 @@
             }
             if (event.target === addResultModal) {
                 closeAddResultModal();
+            }
+            
+            const bulkUploadModal = document.getElementById('bulkUploadModal');
+            if (event.target === bulkUploadModal) {
+                closeBulkUploadModal();
             }
         }
 
